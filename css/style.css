@@ -1,0 +1,221 @@
+/* ============================================================================
+ * style.css — All custom CSS for Revision Tracker
+ * ----------------------------------------------------------------------------
+ * NOTE ON TAILWIND
+ *   Tailwind utilities come from the CDN <script> in index.html. This file
+ *   only contains:
+ *     • Base font + theme transition
+ *     • Custom scrollbars
+ *     • LIGHT-THEME OVERRIDES (Tailwind CDN can't do this declaratively)
+ *     • Styles for the standalone revision pages loaded in the subject iframe
+ * ==========================================================================*/
+
+/* ==========================================================================
+ * 1. BASE
+ * ==========================================================================*/
+
+body {
+  font-family: 'Inter', sans-serif;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* ==========================================================================
+ * 2. CUSTOM SCROLLBARS  (webkit + firefox)
+ * ==========================================================================*/
+
+.custom-scrollbar::-webkit-scrollbar        { width: 6px; height: 6px; }
+.custom-scrollbar::-webkit-scrollbar-track  { background: rgba(15, 23, 42, 0.6); }
+.custom-scrollbar::-webkit-scrollbar-thumb  { background: rgba(51, 65, 85, 0.8); border-radius: 9999px; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(71, 85, 105, 1); }
+
+.custom-scrollbar { scrollbar-width: thin; scrollbar-color: rgba(51,65,85,.8) rgba(15,23,42,.6); }
+
+/* ==========================================================================
+ * 3. LIGHT THEME OVERRIDES
+ * --------------------------------------------------------------------------
+ * The Tailwind CDN is used in its default (dark-friendly) mode. To flip
+ * themes we override the specific utility classes the app actually uses,
+ * scoped to html[data-theme="light"].
+ *
+ * ⚠️ If you add a NEW Tailwind colour utility to index.html in future, you
+ *    probably also need to add a matching override below — otherwise it will
+ *    look wrong in light mode. Search this section for the closest match.
+ * ==========================================================================*/
+
+html[data-theme="light"] {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+/* --- Backgrounds --- */
+html[data-theme="light"] .bg-slate-950             { background-color: #f1f5f9 !important; }
+html[data-theme="light"] .bg-slate-900             { background-color: #ffffff !important; }
+html[data-theme="light"] .bg-slate-900\/80         { background-color: rgba(255,255,255,0.9) !important; }
+html[data-theme="light"] .bg-slate-900\/50         { background-color: #f8fafc !important; }
+html[data-theme="light"] .bg-slate-900\/90         { background-color: rgba(255,255,255,0.95) !important; }
+html[data-theme="light"] .bg-slate-900\/95         { background-color: rgba(255,255,255,0.97) !important; }
+html[data-theme="light"] .bg-slate-800             { background-color: #e2e8f0 !important; }
+html[data-theme="light"] .bg-slate-800\/80         { background-color: #e2e8f0 !important; }
+html[data-theme="light"] .bg-slate-800\/50         { background-color: #eef2f7 !important; }
+html[data-theme="light"] .bg-slate-950\/60         { background-color: #f8fafc !important; }
+html[data-theme="light"] .bg-slate-950\/80         { background-color: rgba(241,245,249,0.85) !important; }
+
+/* --- Borders --- */
+html[data-theme="light"] .border-slate-800,
+html[data-theme="light"] .border-slate-800\/80,
+html[data-theme="light"] .border-slate-800\/60,
+html[data-theme="light"] .border-slate-700\/50,
+html[data-theme="light"] .border-slate-700\/60 { border-color: #cbd5e1 !important; }
+
+html[data-theme="light"] .border-slate-900      { border-color: #e2e8f0 !important; }
+
+/* --- Text --- */
+html[data-theme="light"] .text-slate-100,
+html[data-theme="light"] .text-slate-200,
+html[data-theme="light"] .text-white            { color: #0f172a !important; }
+
+html[data-theme="light"] .text-slate-300,
+html[data-theme="light"] .text-slate-400        { color: #475569 !important; }
+
+html[data-theme="light"] .text-slate-500        { color: #64748b !important; }
+
+/* Keep the brand mark readable on white — it sits on a coloured gradient. */
+html[data-theme="light"] .bg-gradient-to-tr .text-white { color: #ffffff !important; }
+
+/* ==========================================================================
+ * 4. REVISION PAGES  (revision/*.html loaded inside the subject iframe)
+ * --------------------------------------------------------------------------
+ * These files link to this same stylesheet. They carry their own theme in
+ * the URL hash (#theme=dark | #theme=light) which index sets when loading
+ * the iframe, and a tiny inline script in each revision file reads it.
+ * ==========================================================================*/
+
+.rev-page {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+  font-family: 'Inter', system-ui, sans-serif;
+  line-height: 1.7;
+  color: #cbd5e1;
+  background: transparent;
+}
+html[data-theme="light"] .rev-page { color: #334155; }
+
+.rev-page h1 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0 0 4px;
+  color: #f1f5f9;
+  letter-spacing: -0.01em;
+}
+html[data-theme="light"] .rev-page h1 { color: #0f172a; }
+
+.rev-page .rev-subtitle {
+  font-size: .8rem;
+  color: #64748b;
+  margin-bottom: 20px;
+}
+
+.rev-page h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 26px 0 10px;
+  color: #a5b4fc;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+html[data-theme="light"] .rev-page h2 { color: #4f46e5; }
+
+.rev-page h3 {
+  font-size: .9rem;
+  font-weight: 700;
+  margin: 18px 0 6px;
+  color: #e2e8f0;
+}
+html[data-theme="light"] .rev-page h3 { color: #1e293b; }
+
+.rev-page p,
+.rev-page li {
+  font-size: .875rem;
+  color: #cbd5e1;
+  margin-bottom: 6px;
+}
+html[data-theme="light"] .rev-page p,
+html[data-theme="light"] .rev-page li { color: #334155; }
+
+.rev-page ul,
+.rev-page ol { padding-left: 1.3rem; margin-bottom: 12px; }
+.rev-page ul { list-style: disc; }
+.rev-page ol { list-style: decimal; }
+
+.rev-page code,
+.rev-page pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .8rem;
+}
+
+.rev-page code {
+  background: rgba(99,102,241,.12);
+  padding: 1px 5px;
+  border-radius: 4px;
+  color: #a5b4fc;
+}
+html[data-theme="light"] .rev-page code { color: #4338ca; }
+
+.rev-page pre {
+  background: #020617;
+  border: 1px solid #1e293b;
+  padding: 12px 14px;
+  border-radius: 10px;
+  overflow-x: auto;
+  margin-bottom: 14px;
+}
+html[data-theme="light"] .rev-page pre {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.rev-page .rev-note {
+  background: rgba(15,23,42,.6);
+  border: 1px solid #1e293b;
+  border-left: 3px solid #6366f1;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: .75rem;
+  color: #94a3b8;
+  margin: 14px 0;
+}
+html[data-theme="light"] .rev-page .rev-note {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  border-left-color: #6366f1;
+  color: #475569;
+}
+
+.rev-page table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .8rem;
+  margin: 12px 0 18px;
+}
+.rev-page th,
+.rev-page td {
+  border: 1px solid #1e293b;
+  padding: 7px 10px;
+  text-align: left;
+}
+.rev-page th {
+  background: rgba(99,102,241,.10);
+  font-weight: 700;
+  color: #c7d2fe;
+}
+html[data-theme="light"] .rev-page th { background: #eef2ff; color: #3730a3; }
+html[data-theme="light"] .rev-page th,
+html[data-theme="light"] .rev-page td { border-color: #cbd5e1; }
+
+.rev-page hr {
+  border: 0;
+  border-top: 1px solid #1e293b;
+  margin: 24px 0;
+}
+html[data-theme="light"] .rev-page hr { border-top-color: #e2e8f0; }

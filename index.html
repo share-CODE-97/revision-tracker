@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Revision Tracker</title>
+  <meta name="description" content="Spaced repetition & revision workflow engine.">
+
+  <!-- ── PWA ─────────────────────────────────────────────────────────── -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#0f172a">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+
+  <!-- ── Tailwind CSS (CDN) ─────────────────────────────────────────── -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- ── Font Awesome Icons ─────────────────────────────────────────── -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- ── Inter Font ─────────────────────────────────────────────────── -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- ── Tailwind config (must come AFTER the CDN script) ───────────── -->
+  <script>
+    tailwind.config = {
+      darkMode: ['class', '[data-theme="dark"]'],
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            brand: { 50: '#f0fdf4', 500: '#10b981', 600: '#059669' }
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- ── App styles ────────────────────────────────────────────────── -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
+
+  <!-- ==================================================================
+       HEADER + LIVE CLOCK BAR
+       ================================================================== -->
+  <header class="bg-slate-900/90 border-b border-slate-800 sticky top-0 z-30 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+
+      <!-- Branding -->
+      <div class="flex items-center gap-3 cursor-pointer" onclick="navigateToView('dashboard')">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-emerald-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+          <i class="fa-solid fa-brain text-white text-lg"></i>
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-bold tracking-tight text-white flex items-center gap-2">
+            Revision Tracker
+            <span class="text-[10px] font-semibold uppercase tracking-wider bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded-full border border-indigo-500/20">v1.1</span>
+          </h1>
+          <p class="text-[11px] text-slate-400 font-medium hidden sm:block">Spaced Repetition &amp; Workflow Engine</p>
+        </div>
+      </div>
+
+      <!-- Live clock + Settings -->
+      <div class="flex items-center gap-4">
+        <div class="text-right border-r border-slate-800 pr-4 hidden sm:block">
+          <div id="liveClock" class="text-sm font-mono font-bold text-indigo-400 tracking-wider">00/00/0000 --:--:--</div>
+          <div class="text-[10px] text-slate-500 font-medium uppercase tracking-widest">Device Local Time</div>
+        </div>
+        <button onclick="openModal('settingsModal')" aria-label="Settings"
+                class="w-10 h-10 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700/50 flex items-center justify-center transition-all duration-150 active:scale-95 shadow-sm">
+          <i class="fa-solid fa-gear text-base"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Recent views + quick jump search -->
+    <div class="bg-slate-900 border-t border-b border-slate-800/80 px-4 sm:px-8 py-2 flex items-center justify-between text-xs overflow-x-auto gap-4">
+      <div class="flex items-center gap-2 shrink-0">
+        <span class="font-bold tracking-wider text-slate-500 uppercase text-[10px] flex items-center gap-1">
+          <i class="fa-solid fa-clock-rotate-left"></i> RECENT VIEWS:
+        </span>
+        <div id="recentViewsContainer" class="flex items-center gap-2 overflow-x-auto py-0.5 custom-scrollbar">
+          <!-- Rendered by renderRecentViews() -->
+        </div>
+      </div>
+
+      <div class="relative shrink-0 hidden md:block">
+        <div class="relative">
+          <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-[11px]"></i>
+          <input type="text" id="quickViewSearch" placeholder="Jump to subject..."
+                 class="bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-full pl-8 pr-3 py-1 w-44 focus:w-60 focus:outline-none focus:border-indigo-500 transition-all placeholder:text-slate-600" />
+        </div>
+        <div id="quickSearchResults" class="hidden absolute right-0 top-full mt-1 w-60 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl z-50 max-h-52 overflow-y-auto custom-scrollbar"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================================================================
+       MAIN APP CONTAINER
+       ================================================================== -->
+  <div id="appContainer" class="flex-1">
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         VIEW 1 — DASHBOARD
+         ═══════════════════════════════════════════════════════════════ -->
+    <div id="dashboardView" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+      <!-- STAT CARDS -->
+      <section class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+        <div class="bg-slate-900/80 rounded-2xl p-4 border border-slate-800/80 shadow-sm relative overflow-hidden group hover:border-slate-700 transition">
+          <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Total Revisions</div>
+          <div id="statTotal" class="text-2xl sm:text-3xl font-extrabold text-white">0</div>
+          <div class="text-[10px] text-slate-500 mt-1">Cumulative completed count</div>
+          <div class="absolute -right-2 -bottom-2 opacity-5 text-indigo-400 text-6xl font-black group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-list-check"></i>
+          </div>
+        </div>
+
+        <div class="bg-slate-900/80 rounded-2xl p-4 border border-slate-800/80 shadow-sm relative overflow-hidden group hover:border-slate-700 transition">
+          <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Completed Today</div>
+          <div id="statToday" class="text-2xl sm:text-3xl font-extrabold text-emerald-400">0</div>
+          <div class="text-[10px] text-slate-500 mt-1">Calendar date completions</div>
+          <div class="absolute -right-2 -bottom-2 opacity-5 text-emerald-400 text-6xl font-black group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+        </div>
+
+        <div class="bg-slate-900/80 rounded-2xl p-4 border border-slate-800/80 shadow-sm relative overflow-hidden group hover:border-slate-700 transition">
+          <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Overdue Revisions</div>
+          <div id="statOverdue" class="text-2xl sm:text-3xl font-extrabold text-rose-400">0</div>
+          <div class="text-[10px] text-slate-500 mt-1">Requires urgent revision</div>
+          <div class="absolute -right-2 -bottom-2 opacity-5 text-rose-400 text-6xl font-black group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+          </div>
+        </div>
+
+        <div class="bg-slate-900/80 rounded-2xl p-4 border border-slate-800/80 shadow-sm relative overflow-hidden group hover:border-slate-700 transition">
+          <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Current Streak</div>
+          <div id="statStreak" class="text-2xl sm:text-3xl font-extrabold text-amber-400 flex items-center gap-2">
+            <span>0</span> <span class="text-sm font-normal text-slate-400">Days</span>
+          </div>
+          <div class="text-[10px] text-slate-500 mt-1">Consecutive active days</div>
+          <div class="absolute -right-2 -bottom-2 opacity-5 text-amber-400 text-6xl font-black group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-fire"></i>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION: TODAY -->
+      <section class="bg-slate-900/80 rounded-2xl border border-slate-800/80 shadow-sm overflow-hidden">
+        <button onclick="toggleSection('todayContent')" class="w-full p-4 sm:p-5 flex items-center justify-between bg-slate-900/50 hover:bg-slate-800/40 transition">
+          <div class="flex items-center gap-3">
+            <i class="fa-solid fa-calendar-day text-emerald-400 text-base"></i>
+            <h2 class="text-sm font-bold tracking-wider text-slate-200 uppercase">TODAY</h2>
+            <span id="todayBadge" class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-0.5 rounded-full text-xs font-bold">0</span>
+          </div>
+          <i id="todayContent-icon" class="fa-solid fa-chevron-down text-slate-400 transition-transform duration-200"></i>
+        </button>
+        <div id="todayContent" class="p-4 border-t border-slate-800/60 space-y-3"></div>
+      </section>
+
+      <!-- SECTION: NEXT 6 HOURS -->
+      <section class="bg-slate-900/80 rounded-2xl border border-slate-800/80 shadow-sm overflow-hidden">
+        <button onclick="toggleSection('next6HoursContent')" class="w-full p-4 sm:p-5 flex items-center justify-between bg-slate-900/50 hover:bg-slate-800/40 transition">
+          <div class="flex items-center gap-3">
+            <i class="fa-solid fa-hourglass-half text-indigo-400 text-base"></i>
+            <h2 class="text-sm font-bold tracking-wider text-slate-200 uppercase">NEXT 6 HOURS</h2>
+            <span id="next6HoursBadge" class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-2.5 py-0.5 rounded-full text-xs font-bold">0</span>
+          </div>
+          <i id="next6HoursContent-icon" class="fa-solid fa-chevron-down text-slate-400 transition-transform duration-200 rotate-180"></i>
+        </button>
+        <div id="next6HoursContent" class="hidden p-4 border-t border-slate-800/60 space-y-3"></div>
+      </section>
+
+      <!-- SECTION: OVERDUE -->
+      <section class="bg-slate-900/80 rounded-2xl border border-slate-800/80 shadow-sm overflow-hidden">
+        <button onclick="toggleSection('overdueContent')" class="w-full p-4 sm:p-5 flex items-center justify-between bg-slate-900/50 hover:bg-slate-800/40 transition">
+          <div class="flex items-center gap-3">
+            <i class="fa-solid fa-clock text-rose-400 text-base"></i>
+            <h2 class="text-sm font-bold tracking-wider text-slate-200 uppercase">OVERDUE</h2>
+            <span id="overdueBadge" class="bg-rose-500/10 text-rose-400 border border-rose-500/20 px-2.5 py-0.5 rounded-full text-xs font-bold">0</span>
+          </div>
+          <i id="overdueContent-icon" class="fa-solid fa-chevron-down text-slate-400 transition-transform duration-200 rotate-180"></i>
+        </button>
+        <div id="overdueContent" class="hidden p-4 border-t border-slate-800/60 space-y-3"></div>
+      </section>
+
+      <!-- SECTION: ALL REVISIONS (with inline search) -->
+      <section class="bg-slate-900/80 rounded-2xl border border-slate-800/80 shadow-md overflow-hidden">
+        <div class="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900/50 border-b border-slate-800/80">
+          <div class="flex items-center justify-between sm:justify-start w-full sm:w-auto gap-3">
+            <div class="flex items-center gap-2.5">
+              <i class="fa-solid fa-layer-group text-indigo-400 text-base"></i>
+              <h2 class="text-sm font-bold tracking-wider text-slate-200 uppercase">ALL REVISIONS</h2>
+              <span id="allRevisionsBadge" class="bg-slate-800 text-indigo-300 border border-slate-700/60 px-2.5 py-0.5 rounded-full text-xs font-bold">0</span>
+            </div>
+            <button onclick="toggleSection('allRevisionsContent')" class="text-slate-400 hover:text-white sm:hidden">
+              <i id="allRevisionsContent-icon-mobile" class="fa-solid fa-chevron-down transition-transform duration-200"></i>
+            </button>
+          </div>
+
+          <div class="flex items-center gap-3 w-full sm:w-auto">
+            <div class="relative flex-1 sm:w-72">
+              <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+              <input type="text" id="allRevisionsSearch" placeholder="Search subject by title..."
+                     oninput="handleAllRevisionsSearch(this.value)"
+                     class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-xl pl-9 pr-8 py-2 focus:outline-none focus:border-indigo-500 transition placeholder:text-slate-600" />
+              <button id="clearSearchBtn" onclick="clearRevisionsSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300">
+                <i class="fa-solid fa-circle-xmark text-xs"></i>
+              </button>
+            </div>
+            <button onclick="toggleSection('allRevisionsContent')" class="text-slate-400 hover:text-white hidden sm:block">
+              <i id="allRevisionsContent-icon" class="fa-solid fa-chevron-down transition-transform duration-200"></i>
+            </button>
+          </div>
+        </div>
+        <div id="allRevisionsContent" class="p-4 border-t border-slate-800/60 space-y-3"></div>
+      </section>
+
+      <!-- SECTION: GLOBAL HISTORY -->
+      <section class="bg-slate-900/80 rounded-2xl border border-slate-800/80 shadow-sm overflow-hidden">
+        <button onclick="toggleSection('historyContent')" class="w-full p-4 sm:p-5 flex items-center justify-between bg-slate-900/50 hover:bg-slate-800/40 transition">
+          <div class="flex items-center gap-3">
+            <i class="fa-solid fa-history text-slate-400 text-base"></i>
+            <h2 class="text-sm font-bold tracking-wider text-slate-200 uppercase">HISTORY (LATEST 50)</h2>
+            <span id="globalHistoryBadge" class="bg-slate-800 text-slate-300 border border-slate-700/60 px-2.5 py-0.5 rounded-full text-xs font-bold">0</span>
+          </div>
+          <i id="historyContent-icon" class="fa-solid fa-chevron-down text-slate-400 transition-transform duration-200 rotate-180"></i>
+        </button>
+        <div id="historyContent" class="hidden p-4 border-t border-slate-800/60 space-y-3 max-h-96 overflow-y-auto custom-scrollbar"></div>
+      </section>
+
+      <!-- SECTION: NO MORE REVISION NEEDED -->
+      <section class="bg-slate-900/80 rounded-2xl border border-slate-800/80 shadow-sm overflow-hidden">
+        <button onclick="toggleSection('noMoreContent')" class="w-full p-4 sm:p-5 flex items-center justify-between bg-slate-900/50 hover:bg-slate-800/40 transition">
+          <div class="flex items-center gap-3">
+            <i class="fa-solid fa-circle-check text-slate-500 text-base"></i>
+            <h2 class="text-sm font-bold tracking-wider text-slate-200 uppercase">NO MORE REVISION NEEDED</h2>
+            <span id="noMoreBadge" class="bg-slate-800 text-slate-400 border border-slate-700/60 px-2.5 py-0.5 rounded-full text-xs font-bold">0</span>
+          </div>
+          <i id="noMoreContent-icon" class="fa-solid fa-chevron-down text-slate-400 transition-transform duration-200 rotate-180"></i>
+        </button>
+        <div id="noMoreContent" class="hidden p-4 border-t border-slate-800/60 space-y-3"></div>
+      </section>
+
+    </div><!-- /#dashboardView -->
+
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         VIEW 2 — INDIVIDUAL SUBJECT PAGE
+         ═══════════════════════════════════════════════════════════════ -->
+    <div id="subjectView" class="hidden max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+      <!-- Top nav -->
+      <div class="flex items-center justify-between bg-slate-900/80 p-4 rounded-2xl border border-slate-800/80">
+        <button onclick="navigateToView('dashboard')"
+                class="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-700 px-3.5 py-2 rounded-xl transition border border-slate-700/50">
+          <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+        </button>
+        <div class="text-right">
+          <h2 id="subjectViewTitle" class="text-lg font-bold text-white">Subject Title</h2>
+          <span id="subjectViewBadge" class="text-[11px] font-semibold text-indigo-400">Loading state...</span>
+        </div>
+      </div>
+
+      <!-- Study material (iframe loads revision/<id>.html) -->
+      <div class="bg-slate-900/80 rounded-2xl border border-slate-800/80 p-4 sm:p-6 space-y-4 shadow-md">
+        <div class="flex items-center justify-between border-b border-slate-800/80 pb-4">
+          <h3 class="text-sm font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-book-open text-indigo-400"></i> Revision Notes &amp; Materials
+          </h3>
+          <span id="subjectViewCompletedCount" class="text-xs bg-slate-800 text-slate-300 px-3 py-1 rounded-full font-semibold border border-slate-700/50">Total Revised: 0 times</span>
+        </div>
+
+        <!-- The revision HTML file is loaded here. -->
+        <div class="rounded-xl border border-slate-800/80 bg-slate-950/60 overflow-hidden">
+          <iframe id="subjectIframe"
+                  title="Revision content"
+                  scrolling="no"
+                  class="w-full block border-0"
+                  style="height: 400px; min-height: 320px; background: transparent;">
+          </iframe>
+        </div>
+      </div>
+
+      <!-- Fixed bottom action bar -->
+      <!-- Inline action panel — scrolls with content, no longer fixed -->
+      <div class="bg-slate-900/80 rounded-2xl border border-slate-800/80 p-4 shadow-md space-y-3">
+
+        <!-- Undo (only shown when the last action was for this subject) -->
+        <button id="undoBtn" onclick="handleUndo()"
+                class="hidden text-xs font-semibold text-amber-400 hover:text-amber-300 bg-amber-500/10 hover:bg-amber-500/20 px-3.5 py-2 rounded-xl transition border border-amber-500/30 flex items-center gap-1.5">
+          <i class="fa-solid fa-rotate-left"></i> Undo Last Complete
+        </button>
+
+        <!-- Custom date picker (revealed when "PICK DATE" is selected) -->
+        <div id="customDateContainer" class="hidden bg-slate-950 border border-slate-800 p-3 rounded-xl flex items-center justify-between gap-3">
+          <span class="text-xs text-slate-400 font-medium">Select future timestamp:</span>
+          <input type="datetime-local" id="customDateTimePicker"
+                 class="bg-slate-900 border border-slate-800 text-white text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-indigo-500" />
+        </div>
+
+        <!-- All 4 actions on a single line -->
+        <div class="flex gap-2 sm:gap-3">
+
+          <button id="opt24h" onclick="selectScheduleOption('24h')"
+                  class="flex-1 py-2 sm:py-2.5 px-1 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-800 text-slate-300 font-semibold text-[11px] sm:text-xs flex flex-col items-center justify-center transition-all">
+            <span>+24 HOURS</span>
+            <span class="text-[9px] sm:text-[10px] text-slate-500 font-normal">Next Day</span>
+          </button>
+
+          <button id="opt48h" onclick="selectScheduleOption('48h')"
+                  class="flex-1 py-2 sm:py-2.5 px-1 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-800 text-slate-300 font-semibold text-[11px] sm:text-xs flex flex-col items-center justify-center transition-all">
+            <span>+48 HOURS</span>
+            <span class="text-[9px] sm:text-[10px] text-slate-500 font-normal">In 2 Days</span>
+          </button>
+
+          <button id="optCustom" onclick="selectScheduleOption('custom')"
+                  class="flex-1 py-2 sm:py-2.5 px-1 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-800 text-slate-300 font-semibold text-[11px] sm:text-xs flex flex-col items-center justify-center transition-all">
+            <span>PICK DATE</span>
+            <span class="text-[9px] sm:text-[10px] text-slate-500 font-normal">Custom</span>
+          </button>
+
+          <button onclick="handleComplete()"
+                  class="flex-[1.3] py-2 sm:py-2.5 px-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-[11px] sm:text-xs shadow-lg shadow-emerald-600/20 transition active:scale-95 flex items-center justify-center gap-1.5">
+            <i class="fa-solid fa-check"></i> <span>COMPLETE</span>
+          </button>
+
+        </div>
+
+      </div>
+    </div><!-- /#subjectView -->
+
+  </div><!-- /#appContainer -->
+
+
+  <!-- ==================================================================
+       MODAL 1 — SUBJECT ⋮ MENU (history + comments)
+       ================================================================== -->
+  <div id="subjectMenuModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+
+      <div class="p-5 border-b border-slate-800 flex items-center justify-between bg-slate-900/50">
+        <div>
+          <h3 id="modalSubjectTitle" class="text-base font-bold text-white">Subject Title</h3>
+          <p id="modalSubjectCount" class="text-xs text-indigo-400 font-semibold mt-0.5">Total Revisions: 0</p>
+        </div>
+        <button onclick="closeModal('subjectMenuModal')" class="text-slate-400 hover:text-white w-8 h-8 rounded-lg bg-slate-800/50 flex items-center justify-center">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <div class="p-5 space-y-6 overflow-y-auto custom-scrollbar flex-1">
+        <!-- History -->
+        <div class="space-y-3">
+          <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-clock-rotate-left text-indigo-400"></i> Subject History
+          </h4>
+          <div id="modalSubjectHistory" class="space-y-2 max-h-44 overflow-y-auto custom-scrollbar pr-1"></div>
+        </div>
+
+        <!-- Comments -->
+        <div class="space-y-3 border-t border-slate-800/80 pt-4">
+          <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-comments text-emerald-400"></i> Subject Notes &amp; Comments
+          </h4>
+
+          <div class="space-y-2">
+            <textarea id="newCommentText" rows="2" placeholder="Add a new comment or study note..."
+                      class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 custom-scrollbar"></textarea>
+            <div class="flex justify-end">
+              <button onclick="addComment()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs px-3.5 py-1.5 rounded-lg transition flex items-center gap-1.5">
+                <i class="fa-solid fa-plus text-[10px]"></i> Add Comment
+              </button>
+            </div>
+          </div>
+
+          <div id="modalCommentsList" class="space-y-2 mt-3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==================================================================
+       MODAL 2 — SETTINGS
+       ================================================================== -->
+  <div id="settingsModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+
+      <div class="p-5 border-b border-slate-800 flex items-center justify-between">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-gear text-indigo-400"></i> Application Settings
+        </h3>
+        <button onclick="closeModal('settingsModal')" class="text-slate-400 hover:text-white w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="p-5 space-y-6 overflow-y-auto custom-scrollbar flex-1 text-xs">
+
+        <!-- Appearance -->
+        <div class="space-y-2">
+          <h4 class="font-bold text-slate-400 uppercase tracking-wider text-[11px]">Appearance</h4>
+          <div class="bg-slate-950 p-3 rounded-xl border border-slate-800/80 flex items-center justify-between">
+            <span class="text-slate-200 font-medium">Theme Mode</span>
+            <button onclick="toggleTheme()" id="themeToggleBtn"
+                    class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold px-3 py-1.5 rounded-lg border border-slate-700/50 flex items-center gap-2">
+              <i class="fa-solid fa-moon text-indigo-400"></i> Dark Theme
+            </button>
+          </div>
+        </div>
+
+        <!-- Backup -->
+        <div class="space-y-2">
+          <h4 class="font-bold text-slate-400 uppercase tracking-wider text-[11px]">Data &amp; Backup</h4>
+          <div class="grid grid-cols-2 gap-3">
+            <button onclick="exportBackup()"
+                    class="bg-slate-950 hover:bg-slate-800 text-slate-200 font-semibold p-3 rounded-xl border border-slate-800/80 transition text-center flex flex-col items-center gap-1.5">
+              <i class="fa-solid fa-download text-emerald-400 text-sm"></i>
+              <span>Export Backup (JSON)</span>
+            </button>
+
+            <label class="bg-slate-950 hover:bg-slate-800 text-slate-200 font-semibold p-3 rounded-xl border border-slate-800/80 transition text-center flex flex-col items-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-upload text-indigo-400 text-sm"></i>
+              <span>Import Backup (JSON)</span>
+              <input type="file" id="importFileInput" accept=".json" onchange="importBackup(event)" class="hidden" />
+            </label>
+          </div>
+        </div>
+
+        <!-- Danger zone -->
+        <div class="space-y-2">
+          <h4 class="font-bold text-rose-400 uppercase tracking-wider text-[11px]">Danger Zone</h4>
+          <div class="bg-rose-950/20 border border-rose-900/40 p-3 rounded-xl space-y-2">
+            <div class="grid grid-cols-3 gap-2">
+              <button onclick="resetComments()" class="bg-rose-900/30 hover:bg-rose-900/50 text-rose-300 font-medium p-2 rounded-lg border border-rose-800/40 transition">Reset Comments</button>
+              <button onclick="resetCounts()"   class="bg-rose-900/30 hover:bg-rose-900/50 text-rose-300 font-medium p-2 rounded-lg border border-rose-800/40 transition">Reset Counts</button>
+              <button onclick="resetHistory()"  class="bg-rose-900/30 hover:bg-rose-900/50 text-rose-300 font-medium p-2 rounded-lg border border-rose-800/40 transition">Reset History</button>
+            </div>
+            <button onclick="masterReset()" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-bold p-2.5 rounded-lg shadow transition mt-2 flex items-center justify-center gap-2">
+              <i class="fa-solid fa-triangle-exclamation"></i> Master Reset Application
+            </button>
+          </div>
+        </div>
+
+        <!-- About -->
+        <div class="text-[11px] text-slate-500 space-y-1 pt-2 border-t border-slate-800/80">
+          <p><strong>Storage Method:</strong> Browser LocalStorage</p>
+          <p><strong>Architecture:</strong> Static Vanilla JavaScript (modular)</p>
+          <p><strong>Subjects defined in:</strong> <code>js/manifest.js</code></p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==================================================================
+       SCRIPTS — ORDER MATTERS:
+         manifest  →  storage  →  main  →  revision
+       (manifest declares REVISIONS, storage declares shared state/utils,
+        main and revision consume them. All are classic scripts, so their
+        top-level functions/lets share the global scope.)
+       ================================================================== -->
+  <script src="js/manifest.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/revision.js"></script>
+</body>
+</html>

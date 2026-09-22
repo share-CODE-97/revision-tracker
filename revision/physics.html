@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Physics — Revision</title>
+  <script>
+    (function () {
+      var m = location.hash.match(/theme=(light|dark)/);
+      document.documentElement.setAttribute('data-theme', m ? m[1] : 'dark');
+    })();
+  </script>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body style="background: transparent; margin: 0;">
+  <main class="rev-page">
+
+    <h1>Physics</h1>
+    <p class="rev-subtitle">Revision notes, constants &amp; formulas.</p>
+
+    <div class="rev-note">✏️ Placeholder content — replace with your own.</div>
+
+    <h2>Key Constants</h2>
+    <ul>
+      <li>Speed of light <code>c = 3.00 × 10⁸ m/s</code></li>
+      <li>Gravitational acceleration <code>g ≈ 9.81 m/s²</code></li>
+      <li>Planck constant <code>h = 6.63 × 10⁻³⁴ J·s</code></li>
+    </ul>
+
+    <h2>Core Equations</h2>
+    <ul>
+      <li>Newton's 2nd law: <code>F = ma</code></li>
+      <li>Kinetic energy: <code>KE = ½mv²</code></li>
+      <li>Ohm's law: <code>V = IR</code></li>
+      <li>Wave equation: <code>v = fλ</code></li>
+    </ul>
+
+    <h2>Worked Example</h2>
+    <p>A 2 kg block accelerates at 3 m/s². Find the net force.</p>
+    <pre>F = m·a = 2 kg × 3 m/s² = 6 N</pre>
+
+    <hr>
+    <p class="rev-subtitle">Last edited: —</p>
+
+  <!-- Report my true content height to the parent app.
+       We measure <main class="rev-page"> directly — NOT document.body — so
+       the height is independent of the iframe's current viewport size. -->
+  <script>
+    (function () {
+      function sendHeight() {
+        var el = document.querySelector('.rev-page') || document.body;
+        // getBoundingClientRect().height = true rendered height, regardless
+        // of how tall the iframe currently is.
+        var h = Math.ceil(el.getBoundingClientRect().height);
+
+        // Guard against the transient 0 that some browsers report mid-load.
+        if (!h) h = el.scrollHeight || 0;
+        if (!h) return;
+
+        try {
+          window.parent.postMessage({ type: 'revision-height', height: h }, '*');
+        } catch (e) { /* parent unreachable — ignore */ }
+      }
+
+      // Fire on load, and again after late-arriving fonts / images / tables.
+      window.addEventListener('load', sendHeight);
+      window.addEventListener('resize', sendHeight);
+      setTimeout(sendHeight, 0);
+      setTimeout(sendHeight, 50);
+      setTimeout(sendHeight, 300);
+      setTimeout(sendHeight, 1000);
+
+      // Re-measure whenever the content actually changes size.
+      if (window.ResizeObserver) {
+        new ResizeObserver(sendHeight).observe(document.body);
+      }
+    })();
+  </script>
+
+  </main>
+</body>
+</html>

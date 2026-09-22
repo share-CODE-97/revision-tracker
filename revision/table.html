@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Table — Revision</title>
+  <script>
+    (function () {
+      var m = location.hash.match(/theme=(light|dark)/);
+      document.documentElement.setAttribute('data-theme', m ? m[1] : 'dark');
+    })();
+  </script>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body style="background: transparent; margin: 0;">
+  <main class="rev-page">
+
+    <h1>Table</h1>
+    <p class="rev-subtitle">Multiplication / reference tables for quick recall.</p>
+
+    <div class="rev-note">✏️ Placeholder content — replace with your own.</div>
+
+    <h2>Multiplication Table (1–10)</h2>
+    <table>
+      <thead>
+        <tr><th>×</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>1</strong></td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td></tr>
+        <tr><td><strong>2</strong></td><td>2</td><td>4</td><td>6</td><td>8</td><td>10</td><td>12</td><td>14</td><td>16</td><td>18</td><td>20</td></tr>
+        <tr><td><strong>3</strong></td><td>3</td><td>6</td><td>9</td><td>12</td><td>15</td><td>18</td><td>21</td><td>24</td><td>27</td><td>30</td></tr>
+        <tr><td><strong>4</strong></td><td>4</td><td>8</td><td>12</td><td>16</td><td>20</td><td>24</td><td>28</td><td>32</td><td>36</td><td>40</td></tr>
+        <tr><td><strong>5</strong></td><td>5</td><td>10</td><td>15</td><td>20</td><td>25</td><td>30</td><td>35</td><td>40</td><td>45</td><td>50</td></tr>
+        <tr><td><strong>6</strong></td><td>6</td><td>12</td><td>18</td><td>24</td><td>30</td><td>36</td><td>42</td><td>48</td><td>54</td><td>60</td></tr>
+        <tr><td><strong>7</strong></td><td>7</td><td>14</td><td>21</td><td>28</td><td>35</td><td>42</td><td>49</td><td>56</td><td>63</td><td>70</td></tr>
+        <tr><td><strong>8</strong></td><td>8</td><td>16</td><td>24</td><td>32</td><td>40</td><td>48</td><td>56</td><td>64</td><td>72</td><td>80</td></tr>
+        <tr><td><strong>9</strong></td><td>9</td><td>18</td><td>27</td><td>36</td><td>45</td><td>54</td><td>63</td><td>72</td><td>81</td><td>90</td></tr>
+        <tr><td><strong>10</strong></td><td>10</td><td>20</td><td>30</td><td>40</td><td>50</td><td>60</td><td>70</td><td>80</td><td>90</td><td>100</td></tr>
+      </tbody>
+    </table>
+
+    <hr>
+    <p class="rev-subtitle">Last edited: —</p>
+
+  <!-- Report my true content height to the parent app.
+       We measure <main class="rev-page"> directly — NOT document.body — so
+       the height is independent of the iframe's current viewport size. -->
+  <script>
+    (function () {
+      function sendHeight() {
+        var el = document.querySelector('.rev-page') || document.body;
+        // getBoundingClientRect().height = true rendered height, regardless
+        // of how tall the iframe currently is.
+        var h = Math.ceil(el.getBoundingClientRect().height);
+
+        // Guard against the transient 0 that some browsers report mid-load.
+        if (!h) h = el.scrollHeight || 0;
+        if (!h) return;
+
+        try {
+          window.parent.postMessage({ type: 'revision-height', height: h }, '*');
+        } catch (e) { /* parent unreachable — ignore */ }
+      }
+
+      // Fire on load, and again after late-arriving fonts / images / tables.
+      window.addEventListener('load', sendHeight);
+      window.addEventListener('resize', sendHeight);
+      setTimeout(sendHeight, 0);
+      setTimeout(sendHeight, 50);
+      setTimeout(sendHeight, 300);
+      setTimeout(sendHeight, 1000);
+
+      // Re-measure whenever the content actually changes size.
+      if (window.ResizeObserver) {
+        new ResizeObserver(sendHeight).observe(document.body);
+      }
+    })();
+  </script>
+
+  </main>
+</body>
+</html>
