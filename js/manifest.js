@@ -34,10 +34,13 @@
  * ==========================================================================*/
 
 const REVISIONS = [
-  { id: "maths",   title: "Maths",           page: "revision/maths.html"           },
-  { id: "physics", title: "Physics",         page: "revision/physics.html"         },
-  { id: "history", title: "History",         page: "revision/history.html"         },
-  { id: "table",   title: "Table",           page: "revision/table.html"           },
-  { id: "cube",    title: "Cube",            page: "revision/cube.html"            },
-  { id: "medival", title: "Medival History", page: "revision/medival-history.html" }
+  { id: "squares-cubes_01", title: "SQUARES & CUBES (1–35)", page: "revision/squares-cubes_01.html" },
+  { id: "table_02",   title: "TABLE ( 1 - 30 )", page: "revision/table_02.html"         },
+  { id: "magadha-dynasties_03", title: "ANCIENT DYNASTIES (KING)",  page: "revision/magadha-dynasties_03.html"},
+  { id: "medival-history_04", title: "MEDIVAL HISTORY", page: "revision/medival-history_04.html" },
+  { id: "akbar-campaigns_05", title: "AKBAR MELETRY CAMPAIGNS", page: "revision/akbar-campaigns_05.html"},
+  { id: "anglo-wars_06", title: "ANGLO WAR  ( 18th AND 19th )", page: "revision/anglo-wars_06.html"},
+  { id: "foreign-crops_07", title: "FOREIGN CROPS IN INDIA",page: "revision/foreign-crops_07.html"}
+  
+  
 ];

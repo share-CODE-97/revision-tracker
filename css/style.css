@@ -237,3 +237,48 @@ html[data-theme="light"] .rev-page td { border-color: #cbd5e1; }
   margin: 24px 0;
 }
 html[data-theme="light"] .rev-page hr { border-top-color: #e2e8f0; }
+
+/* ==========================================================================
+ * 5. IMAGES  (used inside revision/*.html pages)
+ * --------------------------------------------------------------------------
+ * Drop any image into the /images/ folder, then reference it in a revision
+ * page with one of the classes below. They all auto-fit, respect both
+ * themes, and never overflow the iframe.
+ *
+ * Usage examples:
+ *   <img src="../images/india-map.png" class="rev-img rev-img-wide" alt="India map">
+ *   <figure class="rev-figure">
+ *     <img src="../images/akbar-campaign.jpg" class="rev-img" alt="Akbar's campaigns">
+ *     <figcaption>Akbar's military campaigns, 1556–1605</figcaption>
+ *   </figure>
+ * ==========================================================================*/
+
+.rev-img {
+  display: block;
+  max-width: 100%;      /* never overflow its container */
+  height: auto;
+  margin: 14px 0;
+  border-radius: 10px;
+  border: 1px solid #1e293b;
+  background: #020617;
+}
+html[data-theme="light"] .rev-img {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+}
+
+/* Width variants — pick whichever suits the image's purpose. */
+.rev-img-sm   { max-width: 320px; }   /* small inline icon / portrait */
+.rev-img-md   { max-width: 480px; }   /* medium — good for single diagrams */
+.rev-img-wide { width: 100%; }        /* full width — good for maps, timelines */
+
+/* Optional caption wrapper. */
+.rev-figure { margin: 14px 0; }
+.rev-figure figcaption {
+  font-size: .75rem;
+  color: #94a3b8;
+  text-align: center;
+  margin-top: 6px;
+  font-style: italic;
+}
+html[data-theme="light"] .rev-figure figcaption { color: #64748b; }

@@ -45,8 +45,8 @@ function trackRecentView(subjectId) {
   if (!subjectId) return;
   appData.recentViews = appData.recentViews.filter(id => id !== subjectId);
   appData.recentViews.unshift(subjectId);
-  if (appData.recentViews.length > 5) {
-    appData.recentViews = appData.recentViews.slice(0, 5);
+  if (appData.recentViews.length > 3) {
+    appData.recentViews = appData.recentViews.slice(0, 3);
   }
   saveStorage();
   renderRecentViews();

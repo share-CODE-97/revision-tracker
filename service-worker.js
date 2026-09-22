@@ -13,7 +13,7 @@
  * app just won't be available offline in that case.
  * ==========================================================================*/
 
-const CACHE_VERSION = 'revision-tracker-v3';
+const CACHE_VERSION = 'revision-tracker-v5';
 const CACHE_NAME    = CACHE_VERSION;
 
 /* ---------------------------------------------------------------------------
@@ -28,12 +28,16 @@ const PRECACHE_URLS = [
   './js/storage.js',
   './js/main.js',
   './js/revision.js',
-  './revision/maths.html',
-  './revision/physics.html',
-  './revision/history.html',
-  './revision/table.html',
-  './revision/cube.html',
-  './revision/medival-history.html',
+
+  './revision/squares-cubes_01.html',
+  './revision/table_02.html',
+  './revision/magadha-dynasties_03.html',
+  './revision/medival-history_04.html',
+  './revision/akbar-campaigns_05.html',
+  './revision/anglo-wars_06.html',
+  './revision/foreign-crops_07.html',
+  
+  
   './manifest.webmanifest',
   './icons/icon-192.png',
   './icons/icon-512.png'

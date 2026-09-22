@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anglo Wars &amp; Key Battles — Revision</title>
+
+  <!--
+    Revision page for "Anglo Wars & Key Battles".
+    Loaded inside the main app's iframe.
+    • Theme is passed via URL hash: #theme=dark or #theme=light
+    • Styles come from ../css/style.css
+  -->
+
+  <!-- Read theme from URL hash BEFORE paint (no flash). -->
+  <script>
+    (function () {
+      var m = location.hash.match(/theme=(light|dark)/);
+      document.documentElement.setAttribute('data-theme', m ? m[1] : 'dark');
+    })();
+  </script>
+
+  <!-- Shared app styles — this links the file to the MAIN stylesheet. -->
+  <link rel="stylesheet" href="../css/style.css">
+
+  <!-- Match the app's font stack. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Page-specific styles for Anglo Wars & Key Battles. -->
+  <style>
+    /* ── Campaign card (structured, not a plain table) ─────────── */
+    .anglo-card {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-left: 3px solid #818cf8;
+      border-radius: 10px;
+      padding: 0.85rem 1rem 0.7rem;
+      margin: 0 0 0.9rem;
+    }
+    html[data-theme="light"] .anglo-card {
+      background: #ffffff;
+      border-color: #e2e8f0;
+      border-left-color: #4f46e5;
+    }
+
+    /* Treaty / Treaty-like accent */
+    .anglo-card--treaty { border-left-color: #f59e0b; }
+    html[data-theme="light"] .anglo-card--treaty { border-left-color: #d97706; }
+
+    /* Defeat / setback accent */
+    .anglo-card--defeat { border-left-color: #ef4444; }
+    html[data-theme="light"] .anglo-card--defeat { border-left-color: #dc2626; }
+
+    .anglo-card-head {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 0 0 0.55rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px dashed #1e293b;
+    }
+    html[data-theme="light"] .anglo-card-head { border-bottom-color: #e2e8f0; }
+
+    .anglo-card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #e2e8f0;
+      margin: 0;
+    }
+    html[data-theme="light"] .anglo-card-title { color: #1e293b; }
+
+    .anglo-card-year {
+      margin-left: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: #94a3b8;
+      white-space: nowrap;
+    }
+    html[data-theme="light"] .anglo-card-year { color: #64748b; }
+
+    /* ── Fact rows (label + value) ──────────────────────────────── */
+    .anglo-fact {
+      display: grid;
+      grid-template-columns: 5.5rem minmax(0, 1fr);
+      gap: 0.35rem 0.75rem;
+      align-items: baseline;
+      padding: 0.22rem 0;
+      font-size: 0.84rem;
+    }
+
+    .anglo-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #64748b;
+    }
+    html[data-theme="light"] .anglo-label { color: #94a3b8; }
+
+    .anglo-value {
+      color: #cbd5e1;
+      line-height: 1.45;
+    }
+    html[data-theme="light"] .anglo-value { color: #334155; }
+
+    /* ── Result / treaty chips ─────────────────────────────────── */
+    .anglo-chips { display: flex; flex-wrap: wrap; gap: 0.25rem; margin-top: 0.35rem; }
+
+    .anglo-chip {
+      display: inline-block;
+      padding: 0.1rem 0.5rem;
+      border-radius: 999px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      line-height: 1.5;
+      white-space: nowrap;
+      background: rgba(129, 140, 248, 0.14);
+      color: #c7d2fe;
+      border: 1px solid rgba(129, 140, 248, 0.28);
+    }
+    html[data-theme="light"] .anglo-chip {
+      background: #eef2ff;
+      color: #4338ca;
+      border-color: #c7d2fe;
+    }
+
+    .anglo-chip--win {
+      background: rgba(34, 197, 94, 0.14);
+      color: #bbf7d0;
+      border-color: rgba(34, 197, 94, 0.3);
+    }
+    html[data-theme="light"] .anglo-chip--win {
+      background: #f0fdf4;
+      color: #166534;
+      border-color: #bbf7d0;
+    }
+
+    .anglo-chip--loss {
+      background: rgba(239, 68, 68, 0.14);
+      color: #fecaca;
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+    html[data-theme="light"] .anglo-chip--loss {
+      background: #fef2f2;
+      color: #991b1b;
+      border-color: #fecaca;
+    }
+
+    .anglo-chip--treaty {
+      background: rgba(245, 158, 11, 0.14);
+      color: #fde68a;
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+    html[data-theme="light"] .anglo-chip--treaty {
+      background: #fffbeb;
+      color: #92400e;
+      border-color: #fde68a;
+    }
+
+    /* ── Mobile: stack label above value ───────────────────────── */
+    @media (max-width: 520px) {
+      .anglo-fact { grid-template-columns: 1fr; gap: 0.1rem; }
+    }
+  </style>
+</head>
+
+<body style="background: transparent; margin: 0;">
+  <main class="rev-page">
+
+    <h1>Anglo Wars &amp; Key Battles</h1>
+    <p class="rev-subtitle">Carnatic → Plassey → Buxar → Mysore → Afghan → Burma → Nepal. Every entry: year, where, commanders, result, treaty. Read top-to-bottom as one continuous expansion timeline.</p>
+
+    <h2>At a Glance — War Sequence</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>War / Battle</th>
+          <th>Year</th>
+          <th>Who vs Who</th>
+          <th>Decisive Result</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>1st Carnatic War</td><td><code>1746–48</code></td><td>British vs French</td><td>Inconclusive; Treaty of Aix-la-Chapelle</td></tr>
+        <tr><td>2nd Carnatic War</td><td><code>1749–54</code></td><td>British vs French</td><td>British; Treaty of Pondicherry</td></tr>
+        <tr><td>3rd Carnatic War</td><td><code>1757–63</code></td><td>British vs French</td><td>British; Treaty of Paris</td></tr>
+        <tr><td><strong>Battle of Plassey</strong></td><td><code>1757</code></td><td>EIC vs Siraj-ud-Daulah</td><td>British; Bengal under EIC control</td></tr>
+        <tr><td><strong>Battle of Bedara</strong></td><td><code>1759</code></td><td>British vs Dutch</td><td>British; Dutch expelled from Bengal</td></tr>
+        <tr><td><strong>Battle of Buxar</strong></td><td><code>1764</code></td><td>EIC vs Mir Qasim + Shuja + Shah Alam</td><td>British; Treaty of Allahabad (Diwani)</td></tr>
+        <tr><td>1st Anglo-Mysore War</td><td><code>1767–69</code></td><td>EIC vs Hyder Ali</td><td>Hyder Ali wins; Treaty of Madras</td></tr>
+        <tr><td>2nd Anglo-Mysore War</td><td><code>1780–84</code></td><td>EIC vs Hyder Ali / Tipu</td><td>Stalemate; Treaty of Mangalore</td></tr>
+        <tr><td>3rd Anglo-Mysore War</td><td><code>1790–92</code></td><td>EIC vs Tipu Sultan</td><td>British; Treaty of Seringapatam</td></tr>
+        <tr><td>4th Anglo-Mysore War</td><td><code>1799</code></td><td>EIC vs Tipu Sultan</td><td>British; Tipu killed; Mysore partitioned</td></tr>
+        <tr><td>1st Anglo-Afghan War</td><td><code>1839–42</code></td><td>British vs Afghanistan</td><td>British disaster; retreat from Kabul</td></tr>
+        <tr><td>2nd Anglo-Afghan War</td><td><code>1878–80</code></td><td>British vs Afghanistan</td><td>British control of Afghan foreign affairs</td></tr>
+        <tr><td>1st Anglo-Sikh War</td><td><code>1845–46</code></td><td>EIC vs Sikh Empire</td><td>British; Treaty of Lahore</td></tr>
+        <tr><td>2nd Anglo-Sikh War</td><td><code>1848–49</code></td><td>EIC vs Sikh Empire</td><td>British; Punjab annexed</td></tr>
+        <tr><td>1st Anglo-Burmese War</td><td><code>1824–26</code></td><td>British vs Konbaung</td><td>British; Treaty of Yandabo</td></tr>
+        <tr><td>2nd Anglo-Burmese War</td><td><code>1852</code></td><td>British vs Konbaung</td><td>British; Lower Burma annexed</td></tr>
+        <tr><td>3rd Anglo-Burmese War</td><td><code>1885</code></td><td>British vs Konbaung</td><td>British; Upper Burma annexed</td></tr>
+        <tr><td>Anglo-Nepal War (Gorkha War)</td><td><code>1814–16</code></td><td>EIC vs Nepal</td><td>British; Treaty of Sugauli</td></tr>
+      </tbody>
+    </table>
+
+    <hr>
+
+    <h2>1. Carnatic Wars — The Anglo-French Struggle</h2>
+    <p class="rev-subtitle">Three wars, 1744–1763. Decided who would dominate South India — the British or the French.</p>
+
+    <!-- 1st Carnatic -->
+    <div class="anglo-card">
+      <div class="anglo-card-head">
+        <h3 class="anglo-card-title">First Carnatic War</h3>
+        <span class="anglo-card-year">1746 – 1748</span>
+      </div>
+      <div class="anglo-fact"><span class="anglo-label">Where</span><span class="anglo-value">Carnatic (Coromandel coast), chiefly <strong>St. Thome</strong> near Madras</span></div>
+      <div class="anglo-fact"><span class="anglo-label">British</span><span class="anglo-value">Commodore Curtis Bennett (navy); Anwar-ud-Din, Nawab of Carnatic (local ally)</span></div>
+      <div class="anglo-fact"><span class="anglo-label">French</span><span class="anglo-value">Marquis Joseph-François Dupleix (Governor-General); Admiral La Bourdonnais (navy); Captain Paradise (field)</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Result</span><span class="anglo-value">Inconclusive on land; French captured Madras (1746). Battle of St. Thome proved European troops could beat a much larger Indian army.</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Treaty</span><span class="anglo-value">Treaty of Aix-la-Chapelle (1748) — Madras returned to Britain; part of the wider War of Austrian Succession</span></div>
+      <div class="anglo-chips">
+        <span class="anglo-chip anglo-chip--treaty">Aix-la-Chapelle</span>
+        <span class="anglo-chip">St. Thome</span>
+      </div>
+    </div>
+
+    <!-- 2nd Carnatic -->
+    <div class="anglo-card">
+      <div class="anglo-card-head">
+        <h3 class="anglo-card-title">Second Carnatic War</h3>
+        <span class="anglo-card-year">1749 – 1754</span>
+      </div>
+      <div class="anglo-fact"><span class="anglo-label">Where</span><span class="anglo-value">Carnatic and Hyderabad — succession disputes for the Nawab of Carnatic and the Nizam</span></div>
+      <div class="anglo-fact"><span class="anglo-label">British</span><span class="anglo-value">Supported <strong>Muhammad Ali</strong> (Carnatic) and <strong>Nasir Jang</strong> (Hyderabad)</span></div>
+      <div class="anglo-fact"><span class="anglo-label">French</span><span class="anglo-value">Dupleix; supported <strong>Chanda Sahib</strong> (Carnatic) and <strong>Muzaffar Jang</strong> (Hyderabad)</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Result</span><span class="anglo-value">British victory; French influence in Hyderabad and Carnatic sharply reduced. Robert Clive emerged as a key commander.</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Treaty</span><span class="anglo-value">Treaty of Pondicherry (1754) — both companies renounced involvement in local disputes; Dupleix recalled</span></div>
+      <div class="anglo-chips">
+        <span class="anglo-chip anglo-chip--treaty">Treaty of Pondicherry</span>
+        <span class="anglo-chip anglo-chip--win">British ascendancy</span>
+      </div>
+    </div>
+
+    <!-- 3rd Carnatic -->
+    <div class="anglo-card">
+      <div class="anglo-card-head">
+        <h3 class="anglo-card-title">Third Carnatic War</h3>
+        <span class="anglo-card-year">1757 – 1763</span>
+      </div>
+      <div class="anglo-fact"><span class="anglo-label">Where</span><span class="anglo-value">Carnatic, Bengal, and the wider Seven Years' War theatre</span></div>
+      <div class="anglo-fact"><span class="anglo-label">British</span><span class="anglo-value">Sir Eyre Coote — key victory at <strong>Battle of Wandiwash (1760)</strong></span></div>
+      <div class="anglo-fact"><span class="anglo-label">French</span><span class="anglo-value">Count de Lally — defeated and captured at Wandiwash</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Result</span><span class="anglo-value"><strong>Decisive British victory.</strong> French political ambitions in India ended. Pondicherry and Chandernagore returned but could not be fortified or garrisoned.</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Treaty</span><span class="anglo-value">Treaty of Paris (1763) — ended the Seven Years' War; French confined to trading posts only</span></div>
+      <div class="anglo-chips">
+        <span class="anglo-chip anglo-chip--treaty">Treaty of Paris 1763</span>
+        <span class="anglo-chip anglo-chip--win">Wandiwash 1760</span>
+        <span class="anglo-chip anglo-chip--win">French threat ended</span>
+      </div>
+    </div>
+
+    <h2>2. Battle of Plassey &amp; Its Aftermath</h2>
+
+    <div class="anglo-card">
+      <div class="anglo-card-head">
+        <h3 class="anglo-card-title">Battle of Plassey</h3>
+        <span class="anglo-card-year">1757</span>
+      </div>
+      <div class="anglo-fact"><span class="anglo-label">Where</span><span class="anglo-value">Palashi (Plassey), on the banks of the Hooghly, about 150 km north of Calcutta</span></div>
+      <div class="anglo-fact"><span class="anglo-label">British</span><span class="anglo-value"><strong>Robert Clive</strong> — ~3,000 troops (European + sepoy). Key ally: <strong>Mir Jafar</strong> (conspired against the Nawab)</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Opposing</span><span class="anglo-value"><strong>Siraj-ud-Daulah</strong>, Nawab of Bengal — ~50,000 troops; supported by French artillery</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Result</span><span class="anglo-value"><strong>British victory in under 40 minutes</strong> — largely because Mir Jafar's large contingent refused to fight. Siraj fled and was killed. Mir Jafar was installed as puppet Nawab.</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Treaty</span><span class="anglo-value">No single formal treaty — Clive signed a secret pact with Mir Jafar <em>before</em> the battle; EIC gained huge financial concessions and the seeds of territorial control.</span></div>
+      <div class="anglo-chips">
+        <span class="anglo-chip anglo-chip--win">British</span>
+        <span class="anglo-chip">Mir Jafar's betrayal</span>
+        <span class="anglo-chip">Bengal under EIC influence</span>
+      </div>
+    </div>
+
+    <div class="anglo-card">
+      <div class="anglo-card-head">
+        <h3 class="anglo-card-title">Battle of Bedara (Chinsurah / Hooghly)</h3>
+        <span class="anglo-card-year">1759</span>
+      </div>
+      <div class="anglo-fact"><span class="anglo-label">Where</span><span class="anglo-value"><strong>Chinsurah</strong>, near Hooghly, Bengal — Dutch outpost</span></div>
+      <div class="anglo-fact"><span class="anglo-label">British</span><span class="anglo-value">Colonel <strong>Francis Forde</strong>; Charles Wilson; Mir Jafar (now allied with British)</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Opposing</span><span class="anglo-value"><strong>Dutch East India Company</strong> — Colonel Jean-Baptiste Roussel. Invited by Mir Jafar to expel the British.</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Result</span><span class="anglo-value"><strong>British victory</strong> — Dutch defeated and forced to withdraw from Bengal. Ended Dutch commercial rivalry in the region.</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Treaty</span><span class="anglo-value">No major formal treaty — Dutch agreed to peace after the defeat; they never again challenged British power in Bengal.</span></div>
+      <div class="anglo-chips">
+        <span class="anglo-chip anglo-chip--win">British</span>
+        <span class="anglo-chip">Dutch expelled</span>
+        <span class="anglo-chip">Seven Years' War spillover</span>
+      </div>
+    </div>
+
+    <div class="anglo-card anglo-card--treaty">
+      <div class="anglo-card-head">
+        <h3 class="anglo-card-title">Battle of Buxar</h3>
+        <span class="anglo-card-year">1764</span>
+      </div>
+      <div class="anglo-fact"><span class="anglo-label">Where</span><span class="anglo-value"><strong>Buxar</strong>, on the Ganges in Bihar (near the Caramnasa river)</span></div>
+      <div class="anglo-fact"><span class="anglo-label">British</span><span class="anglo-value">Major <strong>Hector Munro</strong> — ~7,000 troops (857 British, ~5,300 sepoys, ~918 cavalry)</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Opposing</span><span class="anglo-value">Combined forces of <strong>Mir Qasim</strong> (ex-Nawab of Bengal), <strong>Shuja-ud-Daulah</strong> (Nawab of Awadh), and <strong>Shah Alam II</strong> (Mughal Emperor)</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Result</span><span class="anglo-value"><strong>Decisive British victory.</strong> The confederacy was shattered. This battle is considered more decisive than Plassey — it confirmed British supremacy over Bengal and Bihar and broke the power of Awadh.</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Treaty</span><span class="anglo-value"><strong>Treaty of Allahabad (1765)</strong> — Shah Alam II granted the <strong>Diwani (revenue rights)</strong> of Bengal, Bihar, and Orissa to the EIC. This made the Company the real ruler of eastern India.</span></div>
+      <div class="anglo-chips">
+        <span class="anglo-chip anglo-chip--treaty">Treaty of Allahabad 1765</span>
+        <span class="anglo-chip anglo-chip--win">Diwani rights</span>
+        <span class="anglo-chip anglo-chip--win">British</span>
+      </div>
+    </div>
+
+    <h2>3. Anglo-Mysore Wars — The Southern Struggle</h2>
+    <p class="rev-subtitle">Four wars, 1767–1799. The most determined Indian resistance to British expansion in the South.</p>
+
+    <!-- 1st Mysore -->
+    <div class="anglo-card">
+      <div class="anglo-card-head">
+        <h3 class="anglo-card-title">First Anglo-Mysore War</h3>
+        <span class="anglo-card-year">1767 – 1769</span>
+      </div>
+      <div class="anglo-fact"><span class="anglo-label">Where</span><span class="anglo-value">Mysore, Carnatic, and Madras</span></div>
+      <div class="anglo-fact"><span class="anglo-label">British</span><span class="anglo-value">EIC, allied with the <strong>Nizam</strong> and the <strong>Marathas</strong></span></div>
+      <div class="anglo-fact"><span class="anglo-label">Opposing</span><span class="anglo-value"><strong>Hyder Ali</strong> — de-facto ruler of Mysore; skilled diplomat and commander</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Result</span><span class="anglo-value"><strong>Hyder Ali won.</strong> He used diplomacy to turn the Nizam and Marathas neutral, then appeared before Madras, forcing a humiliating peace on the British.</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Treaty</span><span class="anglo-value"><strong>Treaty of Madras (1769)</strong> — conquered territories restored to each side; mutual assistance against foreign attack</span></div>
+      <div class="anglo-chips">
+        <span class="anglo-chip anglo-chip--loss">British setback</span>
+        <span class="anglo-chip anglo-chip--treaty">Treaty of Madras</span>
+        <span class="anglo-chip">Hyder Ali wins</span>
+      </div>
+    </div>
+
+    <!-- 2nd Mysore -->
+    <div class="anglo-card">
+      <div class="anglo-card-head">
+        <h3 class="anglo-card-title">Second Anglo-Mysore War</h3>
+        <span class="anglo-card-year">1780 – 1784</span>
+      </div>
+      <div class="anglo-fact"><span class="anglo-label">Where</span><span class="anglo-value">Carnatic and Mysore — major engagements at <strong>Pollilur</strong> and <strong>Arcot</strong></span></div>
+      <div class="anglo-fact"><span class="anglo-label">British</span><span class="anglo-value">Sir Eyre Coote — won the <strong>Battle of Porto Novo (1781)</strong>, a key turning point</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Opposing</span><span class="anglo-value"><strong>Hyder Ali</strong> (died 1782); succeeded by his son <strong>Tipu Sultan</strong>, who continued the war</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Result</span><span class="anglo-value"><strong>Stalemate / mutual exhaustion.</strong> Neither side could achieve a decisive victory. Tipu fought the British to a standstill after his father's death.</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Treaty</span><span class="anglo-value"><strong>Treaty of Mangalore (1784)</strong> — both sides restored conquered territories; a return to the <em>status quo ante bellum</em></span></div>
+      <div class="anglo-chips">
+        <span class="anglo-chip anglo-chip--treaty">Treaty of Mangalore</span>
+        <span class="anglo-chip">Stalemate</span>
+        <span class="anglo-chip">Tipu's rise</span>
+      </div>
+    </div>
+
+    <!-- 3rd Mysore -->
+    <div class="anglo-card">
+      <div class="anglo-card-head">
+        <h3 class="anglo-card-title">Third Anglo-Mysore War</h3>
+        <span class="anglo-card-year">1790 – 1792</span>
+      </div>
+      <div class="anglo-fact"><span class="anglo-label">Where</span><span class="anglo-value">Mysore — culminating in the <strong>Siege of Seringapatam (1792)</strong></span></div>
+      <div class="anglo-fact"><span class="anglo-label">British</span><span class="anglo-value">Lord Cornwallis (Governor-General), commanding EIC forces; allied with the Nizam and the Marathas</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Opposing</span><span class="anglo-value"><strong>Tipu Sultan</strong></span></div>
+      <div class="anglo-fact"><span class="anglo-label">Result</span><span class="anglo-value"><strong>British victory.</strong> Tipu forced to cede <strong>half of Mysore</strong> to the British and their allies. This broke Mysore's power as a major independent state.</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Treaty</span><span class="anglo-value"><strong>Treaty of Seringapatam (1792)</strong> — Tipu surrendered Malabar, Coorg, Dindigul, Baramahal, and parts of Berar; also paid a huge indemnity</span></div>
+      <div class="anglo-chips">
+        <span class="anglo-chip anglo-chip--treaty">Treaty of Seringapatam</span>
+        <span class="anglo-chip anglo-chip--win">British</span>
+        <span class="anglo-chip">Mysore weakened</span>
+      </div>
+    </div>
+
+    <!-- 4th Mysore -->
+    <div class="anglo-card anglo-card--defeat">
+      <div class="anglo-card-head">
+        <h3 class="anglo-card-title">Fourth Anglo-Mysore War</h3>
+        <span class="anglo-card-year">1799</span>
+      </div>
+      <div class="anglo-fact"><span class="anglo-label">Where</span><span class="anglo-value"><strong>Seringapatam</strong> — the capital of Mysore</span></div>
+      <div class="anglo-fact"><span class="anglo-label">British</span><span class="anglo-value">Lord Wellesley (Governor-General); General Harris commanded the assault; Major-General Baird led the storming party</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Opposing</span><span class="anglo-value"><strong>Tipu Sultan</strong></span></div>
+      <div class="anglo-fact"><span class="anglo-label">Result</span><span class="anglo-value"><strong>Decisive British victory.</strong> Seringapatam stormed on <strong>4 May 1799</strong>; Tipu Sultan was killed in the fighting. Mysore partitioned; the Wodeyar dynasty restored under British control.</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Treaty</span><span class="anglo-value"><strong>Partition Treaty of Mysore (1799)</strong> — EIC took the southern portion and Seringapatam; Nizam got a share. Mysore became a subsidiary state.</span></div>
+      <div class="anglo-chips">
+        <span class="anglo-chip anglo-chip--loss">Tipu killed</span>
+        <span class="anglo-chip anglo-chip--win">British</span>
+        <span class="anglo-chip">Mysore partitioned</span>
+      </div>
+    </div>
+
+    <h2>4. Anglo-Afghan Wars — The North-West Frontier</h2>
+    <p class="rev-subtitle">1839–1919. The "Great Game" — Britain vs Russia, with Afghanistan in between.</p>
+
+    <!-- 1st Afghan -->
+    <div class="anglo-card anglo-card--defeat">
+      <div class="anglo-card-head">
+        <h3 class="anglo-card-title">First Anglo-Afghan War</h3>
+        <span class="anglo-card-year">1839 – 1842</span>
+      </div>
+      <div class="anglo-fact"><span class="anglo-label">Where</span><span class="anglo-value">Afghanistan — <strong>Kabul</strong>, and the disastrous retreat through the <strong>Khyber Pass</strong></span></div>
+      <div class="anglo-fact"><span class="anglo-label">British</span><span class="anglo-value">Lord Auckland (Governor-General); Sir William Macnaghten (envoy); General Elphinstone (commander)</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Opposing</span><span class="anglo-value">Afghan tribes and <strong>Dost Mohammad Khan</strong> (initially); later his son <strong>Akbar Khan</strong> led resistance</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Result</span><span class="anglo-value"><strong>Catastrophic British defeat.</strong> The British installed Shah Shuja but faced mass uprising. In January 1842, the retreating army of ~16,000 was annihilated in the Khyber Pass — only one survivor (Dr. Brydon) reached Jalalabad. A "Army of Retribution" later reoccupied Kabul but the war ended in British withdrawal.</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Treaty</span><span class="anglo-value">No formal treaty — British withdrew; Dost Mohammad Khan returned to the throne. This war shattered the myth of British invincibility.</span></div>
+      <div class="anglo-chips">
+        <span class="anglo-chip anglo-chip--loss">British disaster</span>
+        <span class="anglo-chip">Khyber Pass retreat</span>
+        <span class="anglo-chip">Myth broken</span>
+      </div>
+    </div>
+
+    <!-- 2nd Afghan -->
+    <div class="anglo-card">
+      <div class="anglo-card-head">
+        <h3 class="anglo-card-title">Second Anglo-Afghan War</h3>
+        <span class="anglo-card-year">1878 – 1880</span>
+      </div>
+      <div class="anglo-fact"><span class="anglo-label">Where</span><span class="anglo-value">Afghanistan — Kabul, Kandahar, and the Khyber Pass region</span></div>
+      <div class="anglo-fact"><span class="anglo-label">British</span><span class="anglo-value">Lord Lytton (Viceroy); General Roberts (later Lord Roberts) — famous march from Kabul to Kandahar</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Opposing</span><span class="anglo-value">Emir <strong>Sher Ali Khan</strong>; after his death, his son <strong>Yaqub Khan</strong>; later <strong>Ayub Khan</strong> (Sher Ali's son) led resistance</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Result</span><span class="anglo-value"><strong>British military victory but strategic limited.</strong> British occupied Kabul and much of Afghanistan. The murder of British envoy Cavagnari in 1879 led to renewed fighting. General Roberts' march to Kandahar (1880) was a decisive victory. Britain gained control of Afghan foreign affairs but could not permanently occupy the country.</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Treaty</span><span class="anglo-value"><strong>Treaty of Gandamak (1879)</strong> — Yaqub Khan agreed to conduct foreign relations per British advice; British got control of the Khyber Pass and other frontier areas. Later, <strong>Treaty of Rawalpindi (1919)</strong> ended the Third War and granted Afghanistan control of its foreign affairs.</span></div>
+      <div class="anglo-chips">
+        <span class="anglo-chip anglo-chip--treaty">Treaty of Gandamak 1879</span>
+        <span class="anglo-chip anglo-chip--win">British (limited)</span>
+        <span class="anglo-chip">"Great Game"</span>
+      </div>
+    </div>
+    
+    
+    <h2>4A. Anglo-Sikh Wars — The Punjab Campaign</h2>
+    <p class="rev-subtitle">1845–1849. The last major Indian power to fall to the British. Two short, brutal wars ended the Sikh Empire.</p>
+
+    <!-- 1st Anglo-Sikh War -->
+    <div class="anglo-card anglo-card--treaty">
+      <div class="anglo-card-head">
+        <h3 class="anglo-card-title">First Anglo-Sikh War</h3>
+        <span class="anglo-card-year">1845 – 1846</span>
+      </div>
+      <div class="anglo-fact"><span class="anglo-label">Where</span><span class="anglo-value">Punjab — <strong>Mudki</strong>, <strong>Ferozeshah</strong>, <strong>Aliwal</strong>, and <strong>Sobraon</strong> (near the Sutlej)</span></div>
+      <div class="anglo-fact"><span class="anglo-label">British</span><span class="anglo-value">Sir <strong>Hugh Gough</strong> (Commander-in-Chief); Sir <strong>Henry Hardinge</strong> (Governor-General); Sir Harry Smith (Aliwal)</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Opposing</span><span class="anglo-value">Sikh Empire — <strong>Lal Singh</strong> (Vizier) and <strong>Tej Singh</strong> (Commander). Both were suspected of treason and failed to press advantages.</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Result</span><span class="anglo-value"><strong>British victory.</strong> Despite fierce Sikh resistance at Ferozeshah and Sobraon, the British won decisively. The Sikh army was defeated and the young Maharaja <strong>Duleep Singh</strong> was placed under British protection.</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Treaty</span><span class="anglo-value"><strong>Treaty of Lahore (1846)</strong> — Sikhs ceded the Jullundur Doab and Kashmir (later sold to Gulab Singh). A British Resident was installed at Lahore. <strong>Treaty of Bhairowal (1846)</strong> — a British-controlled Regency Council was set up for Duleep Singh.</span></div>
+      <div class="anglo-chips">
+        <span class="anglo-chip anglo-chip--treaty">Treaty of Lahore 1846</span>
+        <span class="anglo-chip anglo-chip--treaty">Treaty of Bhairowal</span>
+        <span class="anglo-chip anglo-chip--win">British</span>
+        <span class="anglo-chip">Sobraon</span>
+      </div>
+    </div>
+
+    <!-- 2nd Anglo-Sikh War -->
+    <div class="anglo-card">
+      <div class="anglo-card-head">
+        <h3 class="anglo-card-title">Second Anglo-Sikh War</h3>
+        <span class="anglo-card-year">1848 – 1849</span>
+      </div>
+      <div class="anglo-fact"><span class="anglo-label">Where</span><span class="anglo-value">Punjab — <strong>Ramnagar</strong>, <strong>Chillianwala</strong>, and <strong>Gujrat</strong></span></div>
+      <div class="anglo-fact"><span class="anglo-label">British</span><span class="anglo-value">Sir <strong>Hugh Gough</strong>; Lord <strong>Dalhousie</strong> (Governor-General); Sir Charles Napier later took command</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Opposing</span><span class="anglo-value"><strong>Sher Singh Attariwala</strong> and <strong>Chattar Singh Attariwala</strong> — led a revolt against the British Resident</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Result</span><span class="anglo-value"><strong>British victory.</strong> The Battle of Chillianwala (1849) was a costly and confused British setback, but Gough won decisively at <strong>Gujrat</strong> (1849). The Sikh army surrendered, and the British annexed the Punjab.</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Treaty</span><span class="anglo-value"><strong>No treaty</strong> — Punjab was formally annexed by Lord Dalhousie on <strong>29 March 1849</strong>. Maharaja Duleep Singh was pensioned off and sent to England.</span></div>
+      <div class="anglo-chips">
+        <span class="anglo-chip anglo-chip--win">British</span>
+        <span class="anglo-chip">Punjab annexed 1849</span>
+        <span class="anglo-chip">Chillianwala</span>
+        <span class="anglo-chip">Gujrat</span>
+      </div>
+    </div>
+
+    <h2>5. Anglo-Burmese Wars — The Eastern Frontier</h2>
+    <p class="rev-subtitle">1824–1885. Three wars that ended the Konbaung dynasty and brought Burma into British India.</p>
+
+    <!-- 1st Burma -->
+    <div class="anglo-card anglo-card--treaty">
+      <div class="anglo-card-head">
+        <h3 class="anglo-card-title">First Anglo-Burmese War</h3>
+        <span class="anglo-card-year">1824 – 1826</span>
+      </div>
+      <div class="anglo-fact"><span class="anglo-label">Where</span><span class="anglo-value">Burma — <strong>Rangoon</strong>, Arakan, Assam, and Manipur</span></div>
+      <div class="anglo-fact"><span class="anglo-label">British</span><span class="anglo-value">Lord Amherst (Governor-General); Sir Archibald Campbell (commander); Sir Edward Paget (naval)</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Opposing</span><span class="anglo-value">King <strong>Bagyidaw</strong>; General <strong>Maha Bandula</strong> (killed in action)</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Result</span><span class="anglo-value"><strong>British victory.</strong> Burma ceded <strong>Assam, Manipur, Arakan, and Tenasserim</strong>. The war was extremely costly for both sides — the British suffered massive losses from disease.</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Treaty</span><span class="anglo-value"><strong>Treaty of Yandabo (1826)</strong> — Burma ceded the above territories and paid a large indemnity; British resident installed at Ava</span></div>
+      <div class="anglo-chips">
+        <span class="anglo-chip anglo-chip--treaty">Treaty of Yandabo</span>
+        <span class="anglo-chip anglo-chip--win">British</span>
+        <span class="anglo-chip">Assam, Arakan ceded</span>
+      </div>
+    </div>
+
+    <!-- 2nd Burma -->
+    <div class="anglo-card">
+      <div class="anglo-card-head">
+        <h3 class="anglo-card-title">Second Anglo-Burmese War</h3>
+        <span class="anglo-card-year">1852</span>
+      </div>
+      <div class="anglo-fact"><span class="anglo-label">Where</span><span class="anglo-value">Lower Burma — <strong>Rangoon</strong>, Martaban, Bassein, Pegu, Prome</span></div>
+      <div class="anglo-fact"><span class="anglo-label">British</span><span class="anglo-value">Lord Dalhousie (Governor-General); Commodore Lushington (naval)</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Opposing</span><span class="anglo-value">King <strong>Pagan Min</strong> — the Burmese governor of Rangoon had mistreated British subjects</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Result</span><span class="anglo-value"><strong>British victory.</strong> Lower Burma annexed. The war was brief and one-sided — Burmese forces were quickly driven out of key ports. This was the most blatantly commercial war of the three.</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Treaty</span><span class="anglo-value">No formal treaty — Dalhousie simply annexed the province of Pegu by proclamation. The war ended in December 1852.</span></div>
+      <div class="anglo-chips">
+        <span class="anglo-chip anglo-chip--win">British</span>
+        <span class="anglo-chip">Lower Burma annexed</span>
+        <span class="anglo-chip">Dalhousie</span>
+      </div>
+    </div>
+
+    <!-- 3rd Burma -->
+    <div class="anglo-card">
+      <div class="anglo-card-head">
+        <h3 class="anglo-card-title">Third Anglo-Burmese War</h3>
+        <span class="anglo-card-year">1885</span>
+      </div>
+      <div class="anglo-fact"><span class="anglo-label">Where</span><span class="anglo-value">Upper Burma — advance up the <strong>Irrawaddy River</strong> to <strong>Mandalay</strong></span></div>
+      <div class="anglo-fact"><span class="anglo-label">British</span><span class="anglo-value">Lord Dufferin (Viceroy); General <strong>Harry Prendergast</strong> (commander); General <strong>Garnet Wolseley</strong></span></div>
+      <div class="anglo-fact"><span class="anglo-label">Opposing</span><span class="anglo-value">King <strong>Thibaw Min</strong> — the last Konbaung king; the Burmese offered almost no resistance</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Result</span><span class="anglo-value"><strong>British victory in under a month.</strong> Mandalay occupied on <strong>28 November 1885</strong> without a battle. King Thibaw deposed and exiled to India. The entire country was annexed on <strong>1 January 1886</strong>.</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Treaty</span><span class="anglo-value">No treaty — unconditional annexation. Upper Burma became a province of British India.</span></div>
+      <div class="anglo-chips">
+        <span class="anglo-chip anglo-chip--win">British</span>
+        <span class="anglo-chip">Konbaung dynasty ends</span>
+        <span class="anglo-chip">Thibaw exiled</span>
+      </div>
+    </div>
+
+    <h2>6. Anglo-Nepal War (Gorkha War)</h2>
+
+    <div class="anglo-card anglo-card--treaty">
+      <div class="anglo-card-head">
+        <h3 class="anglo-card-title">Anglo-Nepal War (Gorkha War)</h3>
+        <span class="anglo-card-year">1814 – 1816</span>
+      </div>
+      <div class="anglo-fact"><span class="anglo-label">Where</span><span class="anglo-value">Nepal — the Himalayan foothills and the <strong>Terai</strong> region</span></div>
+      <div class="anglo-fact"><span class="anglo-label">British</span><span class="anglo-value">Lord Hastings (Governor-General); General <strong>David Ochterlony</strong> (key commander); General Rollo Gillespie (killed at <strong>Battle of Nalapani</strong>)</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Opposing</span><span class="anglo-value">Gorkhali army of Nepal — led by <strong>Amar Singh Thapa</strong> and other Thapa commanders</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Result</span><span class="anglo-value"><strong>British victory.</strong> The Gorkhas fought fiercely — the siege of Nalapani was one of the hardest battles. But Ochterlony's capture of the hill forts (especially Malaun) broke Nepalese resistance.</span></div>
+      <div class="anglo-fact"><span class="anglo-label">Treaty</span><span class="anglo-value"><strong>Treaty of Sugauli (1816)</strong> — Nepal renounced all claims to the Terai and ceded all conquests west of the <strong>Kali River</strong> up to the Sutlej. Britain gained strategic hill stations (including Shimla) and the <strong>Gorkha recruitment</strong> into the British Indian Army began.</span></div>
+      <div class="anglo-chips">
+        <span class="anglo-chip anglo-chip--treaty">Treaty of Sugauli 1816</span>
+        <span class="anglo-chip anglo-chip--win">British</span>
+        <span class="anglo-chip">Gorkha recruitment</span>
+      </div>
+    </div>
+
+    <h2>Anchor Years — Lock These</h2>
+
+    <ul>
+      <li><code>1746–48</code> — 1st Carnatic War &nbsp;·&nbsp; <code>1749–54</code> — 2nd &nbsp;·&nbsp; <code>1757–63</code> — 3rd.</li>
+      <li><code>1757</code> — Plassey (Clive vs Siraj) &nbsp;·&nbsp; <code>1759</code> — Bedara (Dutch defeated).</li>
+      <li><code>1764</code> — Buxar &nbsp;·&nbsp; <code>1765</code> — Treaty of Allahabad (Diwani).</li>
+      <li><code>1767–69</code> — 1st Mysore &nbsp;·&nbsp; <code>1780–84</code> — 2nd &nbsp;·&nbsp; <code>1790–92</code> — 3rd &nbsp;·&nbsp; <code>1799</code> — 4th (Tipu killed).</li>
+      <li><code>1814–16</code> — Anglo-Nepal War &nbsp;·&nbsp; Treaty of Sugauli.</li>
+      <li><code>1824–26</code> — 1st Burma (Yandabo) &nbsp;·&nbsp; <code>1852</code> — 2nd Burma &nbsp;·&nbsp; <code>1885</code> — 3rd Burma.</li>
+      <li><code>1839–42</code> — 1st Afghan (disaster) &nbsp;·&nbsp; <code>1878–80</code> — 2nd Afghan (Gandamak).</li>
+      
+      <li><code>1839–42</code> — 1st Afghan (disaster) &nbsp;·&nbsp; <code>1878–80</code> — 2nd Afghan (Gandamak).</li>
+      <li><code>1845–46</code> — 1st Anglo-Sikh War &nbsp;·&nbsp; <code>1848–49</code> — 2nd Anglo-Sikh War (Punjab annexed).</li>
+      
+    </ul>
+
+    <h2>BPSC / Exam Focus — High-Yield Facts</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Fact</th>
+          <th>Why it matters</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Plassey vs Buxar</strong></td>
+          <td>Plassey (1757) = conspiracy + Mir Jafar's betrayal. Buxar (1764) = real military victory. Buxar led to the <strong>Diwani of Bengal</strong> (Treaty of Allahabad, 1765) — the constitutional beginning of British rule in India.</td>
+        </tr>
+        <tr>
+          <td><strong>Battle of Bedara (1759)</strong></td>
+          <td>Frequently asked as "Battle of Chinsurah" or "Battle of Hooghly." It ended Dutch ambitions in Bengal. Part of the Seven Years' War spillover.</td>
+        </tr>
+        <tr>
+          <td><strong>Treaty of Allahabad (1765)</strong></td>
+          <td>Shah Alam II granted Diwani rights (Bengal, Bihar, Orissa) to the EIC. This is the single most important treaty for the "dual government" phase in Bengal.</td>
+        </tr>
+        <tr>
+          <td><strong>1st Mysore War — Treaty of Madras</strong></td>
+          <td>The only war Hyder Ali <em>won</em> against the British. Often asked as "Who defeated the British in the First Anglo-Mysore War?"</td>
+        </tr>
+        <tr>
+          <td><strong>4th Mysore War — Tipu's death</strong></td>
+          <td>Tipu Sultan died on <strong>4 May 1799</strong> defending Seringapatam. The Wodeyar dynasty was restored under British control. Mysore became a subsidiary state.</td>
+        </tr>
+        <tr>
+          <td><strong>Treaty of Seringapatam (1792)</strong></td>
+          <td>Tipu ceded half his kingdom — Malabar, Coorg, Dindigul, Baramahal. This is a classic MCQ on the Third Mysore War.</td>
+        </tr>
+        <tr>
+          <td><strong>1st Afghan War — Khyber Pass</strong></td>
+          <td>The retreat of 1842 is one of the most famous disasters in British military history. Only <strong>Dr. Brydon</strong> survived to reach Jalalabad. Frequently asked in BPSC.</td>
+        </tr>
+        <tr>
+          <td><strong>Treaty of Yandabo (1826)</strong></td>
+          <td>Ended the 1st Burma War. Burma ceded Assam, Manipur, Arakan, and Tenasserim. This is how Assam became part of British India.</td>
+        </tr>
+        <tr>
+          <td><strong>Treaty of Sugauli (1816)</strong></td>
+          <td>Ended the Anglo-Nepal War. Nepal ceded the Terai and territories west of the Kali River. Britain gained Shimla and hill stations. The Gorkha recruitment into the British Army began after this treaty.</td>
+        </tr>
+        <tr>
+          <td><strong>Battle of Nalapani (1814)</strong></td>
+          <td>Part of the Anglo-Nepal War. General Rollo Gillespie was killed. The Gorkhas fought so fiercely that the British later erected a monument to their bravery.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="rev-note">
+      <strong>Chain mnemonic for the "Anglo Wars":</strong>
+      <code>C → P → B → M → A → B → N</code> —
+      <em>Carnatic → Plassey → Buxar → Mysore → Afghan → Burma → Nepal.</em>
+      <br>
+      <strong>Three "decisive" battles:</strong> Plassey (political), Buxar (constitutional), Wandiwash (French eliminated).
+      <br>
+      <strong>Three "disaster / setback" moments:</strong> 1st Afghan War (Kabul retreat), 1st Mysore War (Treaty of Madras), and the early phase of the Anglo-Nepal War (Nalapani).
+      <br>
+      <strong>Three wars where a <em>treaty</em> created lasting territorial change:</strong> Allahabad (1765) → Diwani; Seringapatam (1792) → Mysore reduced; Sugauli (1816) → Nepal cedes Terai.
+    </div>
+
+    <hr>
+
+    <p class="rev-subtitle">Drill: cover the "Opposing" line and recall the enemy commander for each war, then reverse — cover the war name and identify the conflict from the year and result.</p>
+
+  </main>
+
+  <!-- Report true content height to the parent app.
+       Measures <main class="rev-page"> directly, NOT document.body. -->
+  <script>
+    (function () {
+      function sendHeight() {
+        var el = document.querySelector('.rev-page') || document.body;
+        var h = Math.ceil(el.getBoundingClientRect().height);
+        if (!h) h = el.scrollHeight || 0;
+        if (!h) return;
+        try {
+          window.parent.postMessage({ type: 'revision-height', height: h }, '*');
+        } catch (e) {}
+      }
+      window.addEventListener('load', sendHeight);
+      window.addEventListener('resize', sendHeight);
+      setTimeout(sendHeight, 0);
+      setTimeout(sendHeight, 50);
+      setTimeout(sendHeight, 300);
+      setTimeout(sendHeight, 1000);
+      if (window.ResizeObserver) {
+        new ResizeObserver(sendHeight).observe(document.body);
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delhi Sultanate &amp; Mughals — Revision</title>
+
+  <!--
+    Revision page for "Delhi Sultanate & Mughals".
+    Loaded inside the main app's iframe.
+    • Theme is passed via URL hash: #theme=dark or #theme=light
+    • Styles come from ../css/style.css
+  -->
+
+  <!-- Read theme from URL hash BEFORE paint (no flash). -->
+  <script>
+    (function () {
+      var m = location.hash.match(/theme=(light|dark)/);
+      document.documentElement.setAttribute('data-theme', m ? m[1] : 'dark');
+    })();
+  </script>
+
+  <!-- Shared app styles — this links the file to the MAIN stylesheet. -->
+  <link rel="stylesheet" href="../css/style.css">
+
+  <!-- Match the app's font stack. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Page-specific styles for Delhi Sultanate & Mughals. -->
+  <style>
+    /* ── Dynasty cards (timeline feed, no tables) ───────────────── */
+    .dsm-era {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-left: 3px solid #818cf8;
+      border-radius: 10px;
+      padding: 0.85rem 1rem 0.65rem;
+      margin: 0 0 0.9rem;
+    }
+    html[data-theme="light"] .dsm-era {
+      background: #ffffff;
+      border-color: #e2e8f0;
+      border-left-color: #4f46e5;
+    }
+
+    /* Interregnum variant — dashed accent */
+    .dsm-era--inter { border-left-style: dashed; border-left-color: #f59e0b; }
+    html[data-theme="light"] .dsm-era--inter { border-left-color: #d97706; }
+
+    .dsm-era-title {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 0 0 0.55rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px dashed #1e293b;
+      font-size: 1rem;
+    }
+    html[data-theme="light"] .dsm-era-title { border-bottom-color: #e2e8f0; }
+
+    .dsm-era-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.35rem;
+      height: 1.35rem;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: rgba(129, 140, 248, 0.16);
+      color: #c7d2fe;
+      font-size: 0.7rem;
+      font-weight: 800;
+    }
+    html[data-theme="light"] .dsm-era-num { background: #eef2ff; color: #4338ca; }
+
+    .dsm-era-span {
+      margin-left: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: #94a3b8;
+      white-space: nowrap;
+    }
+    html[data-theme="light"] .dsm-era-span { color: #64748b; }
+
+    /* ── Ruler rows ─────────────────────────────────────────────── */
+    .dsm-ruler {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) auto minmax(0, 1.4fr);
+      gap: 0.35rem 0.75rem;
+      align-items: center;
+      padding: 0.36rem 0;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+    }
+    .dsm-ruler:last-child { border-bottom: 0; }
+
+    .dsm-ruler-name {
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: #e2e8f0;
+    }
+    html[data-theme="light"] .dsm-ruler-name { color: #1e293b; }
+
+    .dsm-ruler-years {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.72rem;
+      color: #94a3b8;
+      white-space: nowrap;
+    }
+    html[data-theme="light"] .dsm-ruler-years { color: #64748b; }
+
+    .dsm-tags { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+
+    .dsm-chip {
+      display: inline-block;
+      padding: 0.1rem 0.45rem;
+      border-radius: 999px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      line-height: 1.5;
+      white-space: nowrap;
+      background: rgba(129, 140, 248, 0.14);
+      color: #c7d2fe;
+      border: 1px solid rgba(129, 140, 248, 0.28);
+    }
+    html[data-theme="light"] .dsm-chip {
+      background: #eef2ff;
+      color: #4338ca;
+      border-color: #c7d2fe;
+    }
+
+    /* ── Mobile: name + years on one row, chips below ───────────── */
+    @media (max-width: 620px) {
+      .dsm-ruler {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 0.15rem 0.6rem;
+      }
+      .dsm-tags { grid-column: 1 / -1; }
+    }
+  </style>
+</head>
+
+<body style="background: transparent; margin: 0;">
+  <main class="rev-page">
+
+    <h1>Delhi Sultanate &amp; Mughals</h1>
+    <p class="rev-subtitle">1206 – 1707 CE. Dynasty-wise skeleton: ruler, reign, titles worth remembering. Read it top-to-bottom as one continuous timeline.</p>
+
+    <h2>Delhi Sultanate <code>(1206 – 1526 CE)</code></h2>
+
+    <!-- 1. MAMLUK -->
+    <div class="dsm-era">
+      <h3 class="dsm-era-title">
+        <span class="dsm-era-num">1</span>
+        Mamluk (Slave) Dynasty
+        <span class="dsm-era-span">1206 – 1290 CE</span>
+      </h3>
+      <div class="dsm-rulers">
+        <div class="dsm-ruler">
+          <span class="dsm-ruler-name">Qutbuddin Aibak</span>
+          <span class="dsm-ruler-years">1206–1210</span>
+          <span class="dsm-tags"><span class="dsm-chip">Lakh Baksh</span></span>
+        </div>
+        <div class="dsm-ruler">
+          <span class="dsm-ruler-name">Aram Shah</span>
+          <span class="dsm-ruler-years">1210–1211</span>
+          <span class="dsm-tags"></span>
+        </div>
+        <div class="dsm-ruler">
+          <span class="dsm-ruler-name">Iltutmish</span>
+          <span class="dsm-ruler-years">1211–1236</span>
+          <span class="dsm-tags"><span class="dsm-chip">Sultan-e-Azam</span><span class="dsm-chip">Iqta system</span></span>
+        </div>
+        <div class="dsm-ruler">
+          <span class="dsm-ruler-name">Ruknuddin Firoz</span>
+          <span class="dsm-ruler-years">1236</span>
+          <span class="dsm-tags"></span>
+        </div>
+        <div class="dsm-ruler">
+          <span class="dsm-ruler-name">Razia Sultana</span>
+          <span class="dsm-ruler-years">1236–1240</span>
+          <span class="dsm-tags"><span class="dsm-chip">First female Sultan</span></span>
+        </div>
+        <div class="dsm-ruler">
+          <span class="dsm-ruler-name">Bahram Shah</span>
+          <span class="dsm-ruler-years">1240–1242</span>
+          <span class="dsm-tags"></span>
+        </div>
+        <div class="dsm-ruler">
+          <span class="dsm-ruler-name">Alauddin Masud Shah</span>
+          <span class="dsm-ruler-years">1242–1246</span>
+          <span class="dsm-tags"></span>
+        </div>
+        <div class="dsm-ruler">
+          <span class="dsm-ruler-name">Nasiruddin Mahmud</span>
+          <span class="dsm-ruler-years">1246–1266</span>
+          <span class="dsm-tags"></span>
+        </div>
+        <div class="dsm-ruler">
+          <span class="dsm-ruler-name">Ghiyasuddin Balban</span>
+          <span class="dsm-ruler-years">1266–1287</span>
+          <span class="dsm-tags"><span class="dsm-chip">Zil-e-Ilahi</span><span class="dsm-chip">Naib-e-Mamlakat</span></span>
+        </div>
+        <div class="dsm-ruler">
+          <span class="dsm-ruler-name">Kaiqubad</span>
+          <span class="dsm-ruler-years">1287–1290</span>
+          <span class="dsm-tags"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. KHILJI -->
+    <div class="dsm-era">
+      <h3 class="dsm-era-title">
+        <span class="dsm-era-num">2</span>
+        Khilji Dynasty
+        <span class="dsm-era-span">1290 – 1320 CE</span>
+      </h3>
+      <div class="dsm-rulers">
+        <div class="dsm-ruler">
+          <span class="dsm-ruler-name">Jalaluddin Khilji</span>
+          <span class="dsm-ruler-years">1290–1296</span>
+          <span class="dsm-tags"></span>
+        </div>
+        <div class="dsm-ruler">
+          <span class="dsm-ruler-name">Alauddin Khilji</span>
+          <span class="dsm-ruler-years">1296–1316</span>
+          <span class="dsm-tags"><span class="dsm-chip">Sikandar-i-Sani</span><span class="dsm-chip">Conqueror of Deccan</span></span>
+        </div>
+        <div class="dsm-ruler">
+          <span class="dsm-ruler-name">Qutbuddin Mubarak Shah</span>
+          <span class="dsm-ruler-years">1316–1320</span>
+          <span class="dsm-tags"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. TUGHLAQ -->
+    <div class="dsm-era">
+      <h3 class="dsm-era-title">
+        <span class="dsm-era-num">3</span>
+        Tughlaq Dynasty
+        <span class="dsm-era-span">1320 – 1414 CE</span>
+      </h3>
+      <div class="dsm-rulers">
+        <div class="dsm-ruler">
+          <span class="dsm-ruler-name">Ghiyasuddin Tughlaq</span>
+          <span class="dsm-ruler-years">1320–1325</span>
+          <span class="dsm-tags"></span>
+        </div>
+        <div class="dsm-ruler">
+          <span class="dsm-ruler-name">Muhammad bin Tughlaq</span>
+          <span class="dsm-ruler-years">1325–1351</span>
+          <span class="dsm-tags"><span class="dsm-chip">Wisest Fool</span><span class="dsm-chip">Token Currency</span></span>
+        </div>
+        <div class="dsm-ruler">
+          <span class="dsm-ruler-name">Firoz Shah Tughlaq</span>
+          <span class="dsm-ruler-years">1351–1388</span>
+          <span class="dsm-tags"><span class="dsm-chip">Father of Irrigation</span><span class="dsm-chip">Tax reforms</span></span>
+        </div>
+        <div class="dsm-ruler">
+          <span class="dsm-ruler-name">Successors (weak rulers)</span>
+          <span class="dsm-ruler-years">1388–1414</span>
+          <span class="dsm-tags"><span class="dsm-chip">Till Khizr Khan takeover</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. SAYYID -->
+    <div class="dsm-era">
+      <h3 class="dsm-era-title">
+        <span class="dsm-era-num">4</span>
+        Sayyid Dynasty
+        <span class="dsm-era-span">1414 – 1451 CE</span>
+      </h3>
+      <div class="dsm-rulers">
+        <div class="dsm-ruler">
+          <span class="dsm-ruler-name">Khizr Khan</span>
+          <span class="dsm-ruler-years">1414–1421</span>
+          <span class="dsm-tags"></span>
+        </div>
+        <div class="dsm-ruler">
+          <span class="dsm-ruler-name">Mubarak Shah</span>
+          <span class="dsm-ruler-years">1421–1434</span>
+          <span class="dsm-tags"></span>
+        </div>
+        <div class="dsm-ruler">
+          <span class="dsm-ruler-name">Muhammad Shah</span>
+          <span class="dsm-ruler-years">1434–1445</span>
+          <span class="dsm-tags"></span>
+        </div>
+        <div class="dsm-ruler">
+          <span class="dsm-ruler-name">Alauddin Alam Shah</span>
+          <span class="dsm-ruler-years">1445–1451</span>
+          <span class="dsm-tags"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. LODI -->
+    <div class="dsm-era">
+      <h3 class="dsm-era-title">
+        <span class="dsm-era-num">5</span>
+        Lodi Dynasty
+        <span class="dsm-era-span">1451 – 1526 CE</span>
+      </h3>
+      <div class="dsm-rulers">
+        <div class="dsm-ruler">
+          <span class="dsm-ruler-name">Bahlol Lodi</span>
+          <span class="dsm-ruler-years">1451–1489</span>
+          <span class="dsm-tags"></span>
+        </div>
+        <div class="dsm-ruler">
+          <span class="dsm-ruler-name">Sikandar Lodi</span>
+          <span class="dsm-ruler-years">1489–1517</span>
+          <span class="dsm-tags"><span class="dsm-chip">Founder of Agra</span></span>
+        </div>
+        <div class="dsm-ruler">
+          <span class="dsm-ruler-name">Ibrahim Lodi</span>
+          <span class="dsm-ruler-years">1517–1526</span>
+          <span class="dsm-tags"><span class="dsm-chip">Defeated by Babur — 1st Panipat</span></span>
+        </div>
+      </div>
+    </div>
+
+    <h2>Mughal Era <code>(1526 – 1707 CE)</code></h2>
+
+    <!-- 6. MUGHAL — PART 1 -->
+    <div class="dsm-era">
+      <h3 class="dsm-era-title">
+        <span class="dsm-era-num">6</span>
+        Mughal Dynasty — Part 1
+        <span class="dsm-era-span">1526 – 1556 CE</span>
+      </h3>
+      <div class="dsm-rulers">
+        <div class="dsm-ruler">
+          <span class="dsm-ruler-name">Babur</span>
+          <span class="dsm-ruler-years">1526–1530</span>
+          <span class="dsm-tags"><span class="dsm-chip">Founder</span><span class="dsm-chip">Zahir-ud-din Muhammad</span><span class="dsm-chip">Conqueror of Panipat</span></span>
+        </div>
+        <div class="dsm-ruler">
+          <span class="dsm-ruler-name">Humayun</span>
+          <span class="dsm-ruler-years">1530–1540</span>
+          <span class="dsm-tags"><span class="dsm-chip">Lost to Sher Shah</span><span class="dsm-chip">Restored 1555–1556</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. SUR INTERREGNUM -->
+    <div class="dsm-era dsm-era--inter">
+      <h3 class="dsm-era-title">
+        <span class="dsm-era-num">7</span>
+        Sur Dynasty — Interregnum
+        <span class="dsm-era-span">1540 – 1555 CE</span>
+      </h3>
+      <div class="dsm-rulers">
+        <div class="dsm-ruler">
+          <span class="dsm-ruler-name">Sher Shah Suri</span>
+          <span class="dsm-ruler-years">1540–1545</span>
+          <span class="dsm-tags"><span class="dsm-chip">"Second Ashoka"</span><span class="dsm-chip">Rupiya</span><span class="dsm-chip">GT Road</span></span>
+        </div>
+        <div class="dsm-ruler">
+          <span class="dsm-ruler-name">Islam Shah Suri</span>
+          <span class="dsm-ruler-years">1545–1553</span>
+          <span class="dsm-tags"></span>
+        </div>
+        <div class="dsm-ruler">
+          <span class="dsm-ruler-name">Successors (weak Sur rulers)</span>
+          <span class="dsm-ruler-years">1553–1555</span>
+          <span class="dsm-tags"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. MUGHAL — PART 2 -->
+    <div class="dsm-era">
+      <h3 class="dsm-era-title">
+        <span class="dsm-era-num">8</span>
+        Mughal Dynasty — Part 2
+        <span class="dsm-era-span">1556 – 1707 CE</span>
+      </h3>
+      <div class="dsm-rulers">
+        <div class="dsm-ruler">
+          <span class="dsm-ruler-name">Akbar</span>
+          <span class="dsm-ruler-years">1556–1605</span>
+          <span class="dsm-tags"><span class="dsm-chip">Shahenshah</span><span class="dsm-chip">Akbar the Great</span><span class="dsm-chip">Din-i-Ilahi</span></span>
+        </div>
+        <div class="dsm-ruler">
+          <span class="dsm-ruler-name">Jahangir</span>
+          <span class="dsm-ruler-years">1605–1627</span>
+          <span class="dsm-tags"><span class="dsm-chip">Nur-ud-din Muhammad</span><span class="dsm-chip">Patron of arts</span></span>
+        </div>
+        <div class="dsm-ruler">
+          <span class="dsm-ruler-name">Shah Jahan</span>
+          <span class="dsm-ruler-years">1628–1658</span>
+          <span class="dsm-tags"><span class="dsm-chip">Prince of Builders</span></span>
+        </div>
+        <div class="dsm-ruler">
+          <span class="dsm-ruler-name">Aurangzeb Alamgir</span>
+          <span class="dsm-ruler-years">1658–1707</span>
+          <span class="dsm-tags"><span class="dsm-chip">Zinda Pir</span></span>
+        </div>
+      </div>
+    </div>
+
+    <h2>Anchor Years</h2>
+
+    <ul>
+      <li><code>1206</code> — Qutbuddin Aibak founds the Slave Dynasty (Delhi Sultanate begins).</li>
+      <li><code>1290</code> — Khilji takeover &nbsp;·&nbsp; <code>1320</code> — Tughlaq takeover.</li>
+      <li><code>1398</code> — Timur's invasion; Tughlaq power collapses.</li>
+      <li><code>1414</code> — Sayyid &nbsp;·&nbsp; <code>1451</code> — Lodi.</li>
+      <li><code>1526</code> — 1st Battle of Panipat: Babur ends the Sultanate, starts the Mughals.</li>
+      <li><code>1540</code> — Sher Shah defeats Humayun &nbsp;·&nbsp; <code>1555</code> — Humayun returns.</li>
+      <li><code>1556</code> — 2nd Battle of Panipat: Akbar's reign effectively begins.</li>
+      <li><code>1600</code> — English East India Company chartered (Akbar's reign).</li>
+      <li><code>1707</code> — Aurangzeb dies; Mughal decline sets in.</li>
+    </ul>
+
+    <div class="rev-note">
+      <strong>Chain mnemonic for the five Sultanate dynasties:</strong>
+      <code>M-K-T-S-L</code> — <em>Mamluk → Khilji → Tughlaq → Sayyid → Lodi</em>
+      ("<strong>M</strong>y <strong>K</strong>ing <strong>T</strong>ook <strong>S</strong>even <strong>L</strong>ands").
+      <br>
+      <strong>Mughal six:</strong> <code>B-H-(Sur)-A-J-S-A</code> — <em>Babur, Humayun, Akbar, Jahangir, Shah Jahan, Aurangzeb</em>.
+      <br>
+      <strong>Only woman on the throne:</strong> Razia Sultana. &nbsp;
+      <strong>Only dynasty that is an interregnum:</strong> Sur.
+    </div>
+
+    <hr>
+
+    <p class="rev-subtitle">Drill: cover the chip column and say each ruler's title aloud, then cover the ruler name and identify who held each title. Reverse the timeline for the years.</p>
+
+  </main>
+
+  <!-- Report true content height to the parent app.
+       Measures <main class="rev-page"> directly, NOT document.body. -->
+  <script>
+    (function () {
+      function sendHeight() {
+        var el = document.querySelector('.rev-page') || document.body;
+        var h = Math.ceil(el.getBoundingClientRect().height);
+        if (!h) h = el.scrollHeight || 0;
+        if (!h) return;
+        try {
+          window.parent.postMessage({ type: 'revision-height', height: h }, '*');
+        } catch (e) {}
+      }
+      window.addEventListener('load', sendHeight);
+      window.addEventListener('resize', sendHeight);
+      setTimeout(sendHeight, 0);
+      setTimeout(sendHeight, 50);
+      setTimeout(sendHeight, 300);
+      setTimeout(sendHeight, 1000);
+      if (window.ResizeObserver) {
+        new ResizeObserver(sendHeight).observe(document.body);
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crops Introduced by Foreigners — Revision</title>
+
+  <!--
+    Revision page for "Crops Introduced by Foreigners".
+    Loaded inside the main app's iframe.
+    • Theme is passed via URL hash: #theme=dark or #theme=light
+    • Styles come from ../css/style.css
+  -->
+
+  <!-- Read theme from URL hash BEFORE paint (no flash). -->
+  <script>
+    (function () {
+      var m = location.hash.match(/theme=(light|dark)/);
+      document.documentElement.setAttribute('data-theme', m ? m[1] : 'dark');
+    })();
+  </script>
+
+  <!-- Shared app styles — this links the file to the MAIN stylesheet. -->
+  <link rel="stylesheet" href="../css/style.css">
+
+  <!-- Match the app's font stack. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Page-specific styles for Crops Introduced by Foreigners. -->
+  <style>
+    /* ── Crop card grid ─────────────────────────────────────────── */
+    .crop-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 0.85rem;
+      margin: 1rem 0 1.5rem;
+    }
+
+    .crop-card {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      padding: 0.85rem 0.9rem;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+    .crop-card:hover {
+      transform: translateY(-2px);
+      border-color: #818cf8;
+    }
+    html[data-theme="light"] .crop-card {
+      background: #ffffff;
+      border-color: #e2e8f0;
+    }
+    html[data-theme="light"] .crop-card:hover {
+      border-color: #4f46e5;
+    }
+
+    .crop-head {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      margin-bottom: 0.45rem;
+    }
+
+    .crop-emoji {
+      font-size: 1.4rem;
+      line-height: 1;
+      flex: 0 0 auto;
+    }
+
+    .crop-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #e2e8f0;
+      line-height: 1.2;
+    }
+    html[data-theme="light"] .crop-name { color: #1e293b; }
+
+    .crop-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .crop-chip {
+      display: inline-block;
+      padding: 0.1rem 0.45rem;
+      border-radius: 999px;
+      font-size: 0.66rem;
+      font-weight: 700;
+      line-height: 1.5;
+      white-space: nowrap;
+      background: rgba(129, 140, 248, 0.14);
+      color: #c7d2fe;
+      border: 1px solid rgba(129, 140, 248, 0.28);
+    }
+    html[data-theme="light"] .crop-chip {
+      background: #eef2ff;
+      color: #4338ca;
+      border-color: #c7d2fe;
+    }
+
+    .crop-chip--portuguese {
+      background: rgba(239, 68, 68, 0.14);
+      color: #fecaca;
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+    html[data-theme="light"] .crop-chip--portuguese {
+      background: #fef2f2;
+      color: #991b1b;
+      border-color: #fecaca;
+    }
+
+    .crop-chip--british {
+      background: rgba(59, 130, 246, 0.14);
+      color: #bfdbfe;
+      border-color: rgba(59, 130, 246, 0.3);
+    }
+    html[data-theme="light"] .crop-chip--british {
+      background: #eff6ff;
+      color: #1e40af;
+      border-color: #bfdbfe;
+    }
+
+    .crop-chip--arab {
+      background: rgba(245, 158, 11, 0.14);
+      color: #fde68a;
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+    html[data-theme="light"] .crop-chip--arab {
+      background: #fffbeb;
+      color: #92400e;
+      border-color: #fde68a;
+    }
+
+    .crop-chip--mughal {
+      background: rgba(168, 85, 247, 0.14);
+      color: #e9d5ff;
+      border-color: rgba(168, 85, 247, 0.3);
+    }
+    html[data-theme="light"] .crop-chip--mughal {
+      background: #faf5ff;
+      color: #6b21a8;
+      border-color: #e9d5ff;
+    }
+
+    .crop-origin {
+      font-size: 0.76rem;
+      color: #94a3b8;
+      margin-bottom: 0.3rem;
+      font-style: italic;
+    }
+    html[data-theme="light"] .crop-origin { color: #64748b; }
+
+    .crop-fact {
+      font-size: 0.78rem;
+      color: #cbd5e1;
+      line-height: 1.4;
+    }
+    html[data-theme="light"] .crop-fact { color: #334155; }
+
+    /* ── Two-column fact box ────────────────────────────────────── */
+    .fact-box {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      margin: 0.75rem 0 1rem;
+    }
+    html[data-theme="light"] .fact-box {
+      background: #ffffff;
+      border-color: #e2e8f0;
+    }
+
+    .fact-box h3 {
+      margin: 0 0 0.5rem;
+      font-size: 0.9rem;
+      color: #818cf8;
+    }
+    html[data-theme="light"] .fact-box h3 { color: #4f46e5; }
+
+    .fact-box ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .fact-box li {
+      font-size: 0.82rem;
+      margin-bottom: 0.3rem;
+      color: #cbd5e1;
+      line-height: 1.4;
+    }
+    html[data-theme="light"] .fact-box li { color: #334155; }
+
+    /* ── Region chip list ───────────────────────────────────────── */
+    .region-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.4rem;
+    }
+
+    .region-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: rgba(34, 197, 94, 0.12);
+      color: #bbf7d0;
+      border: 1px solid rgba(34, 197, 94, 0.25);
+    }
+    html[data-theme="light"] .region-chip {
+      background: #f0fdf4;
+      color: #166534;
+      border-color: #bbf7d0;
+    }
+  </style>
+</head>
+
+<body style="background: transparent; margin: 0;">
+  <main class="rev-page">
+
+    <h1>Crops Introduced by Foreigners</h1>
+    <p class="rev-subtitle">Portuguese, British, Arabs &amp; Mughals — who brought what, and where it came from. High-yield for UPSC Prelims &amp; BPSC.</p>
+
+    <h2>Quick Origin Map</h2>
+
+    <div class="fact-box">
+      <h3>Who Introduced What</h3>
+      <ul>
+        <li><strong>Portuguese</strong> — Potato, Tomato, Chili, Tobacco, Maize, Pineapple, Papaya, Cashew, Guava, Custard Apple, Tapioca, Groundnut, Cocoa <em>(maximum New World crops)</em></li>
+        <li><strong>British</strong> — Rubber, Tea, Cinchona, Apple (temperate varieties)</li>
+        <li><strong>Arabs</strong> — Coffee <em>(via Baba Budan to Karnataka)</em></li>
+        <li><strong>Persians &amp; Mughals</strong> — Grapes (improved varieties)</li>
+        <li><strong>Europeans</strong> — Sunflower</li>
+      </ul>
+    </div>
+
+    <h2>The 20 Crops</h2>
+
+    <div class="crop-grid">
+
+      <div class="crop-card">
+        <div class="crop-head"><span class="crop-emoji">🥔</span><span class="crop-name">Potato</span></div>
+        <div class="crop-meta"><span class="crop-chip crop-chip--portuguese">Portuguese</span></div>
+        <div class="crop-origin">South America (Peru)</div>
+        <div class="crop-fact">Major food crop today; introduced in the 17th century.</div>
+      </div>
+
+      <div class="crop-card">
+        <div class="crop-head"><span class="crop-emoji">🍅</span><span class="crop-name">Tomato</span></div>
+        <div class="crop-meta"><span class="crop-chip crop-chip--portuguese">Portuguese</span></div>
+        <div class="crop-origin">South America</div>
+        <div class="crop-fact">Initially grown as an ornamental plant.</div>
+      </div>
+
+      <div class="crop-card">
+        <div class="crop-head"><span class="crop-emoji">🌶️</span><span class="crop-name">Chili / Capsicum</span></div>
+        <div class="crop-meta"><span class="crop-chip crop-chip--portuguese">Portuguese</span></div>
+        <div class="crop-origin">Mexico &amp; Central America</div>
+        <div class="crop-fact">Replaced traditional Indian spices like long pepper in many cuisines.</div>
+      </div>
+
+      <div class="crop-card">
+        <div class="crop-head"><span class="crop-emoji">🍂</span><span class="crop-name">Tobacco</span></div>
+        <div class="crop-meta"><span class="crop-chip crop-chip--portuguese">Portuguese</span></div>
+        <div class="crop-origin">Americas</div>
+        <div class="crop-fact">Introduced during the Mughal period.</div>
+      </div>
+
+      <div class="crop-card">
+        <div class="crop-head"><span class="crop-emoji">🌽</span><span class="crop-name">Maize (Corn)</span></div>
+        <div class="crop-meta"><span class="crop-chip crop-chip--portuguese">Portuguese</span></div>
+        <div class="crop-origin">Central America</div>
+        <div class="crop-fact">Important kharif crop today.</div>
+      </div>
+
+      <div class="crop-card">
+        <div class="crop-head"><span class="crop-emoji">🍍</span><span class="crop-name">Pineapple</span></div>
+        <div class="crop-meta"><span class="crop-chip crop-chip--portuguese">Portuguese</span></div>
+        <div class="crop-origin">Brazil / Paraguay region</div>
+        <div class="crop-fact">Tropical fruit crop.</div>
+      </div>
+
+      <div class="crop-card">
+        <div class="crop-head"><span class="crop-emoji">🥭</span><span class="crop-name">Papaya</span></div>
+        <div class="crop-meta"><span class="crop-chip crop-chip--portuguese">Portuguese</span></div>
+        <div class="crop-origin">Central America</div>
+        <div class="crop-fact">Rich source of papain enzyme.</div>
+      </div>
+
+      <div class="crop-card">
+        <div class="crop-head"><span class="crop-emoji">🥜</span><span class="crop-name">Cashew</span></div>
+        <div class="crop-meta"><span class="crop-chip crop-chip--portuguese">Portuguese</span></div>
+        <div class="crop-origin">Brazil</div>
+        <div class="crop-fact">Introduced mainly on the west coast.</div>
+      </div>
+
+      <div class="crop-card">
+        <div class="crop-head"><span class="crop-emoji">🍈</span><span class="crop-name">Guava</span></div>
+        <div class="crop-meta"><span class="crop-chip crop-chip--portuguese">Portuguese</span></div>
+        <div class="crop-origin">Tropical America</div>
+        <div class="crop-fact">Very rich in Vitamin C.</div>
+      </div>
+
+      <div class="crop-card">
+        <div class="crop-head"><span class="crop-emoji">🍏</span><span class="crop-name">Custard Apple (Sitaphal)</span></div>
+        <div class="crop-meta"><span class="crop-chip crop-chip--portuguese">Portuguese</span></div>
+        <div class="crop-origin">Tropical America</div>
+        <div class="crop-fact">Common dryland fruit crop.</div>
+      </div>
+
+      <div class="crop-card">
+        <div class="crop-head"><span class="crop-emoji">🥔</span><span class="crop-name">Tapioca / Cassava</span></div>
+        <div class="crop-meta"><span class="crop-chip crop-chip--portuguese">Portuguese</span></div>
+        <div class="crop-origin">Brazil</div>
+        <div class="crop-fact">Important in Kerala.</div>
+      </div>
+
+      <div class="crop-card">
+        <div class="crop-head"><span class="crop-emoji">🥜</span><span class="crop-name">Groundnut (Peanut)</span></div>
+        <div class="crop-meta"><span class="crop-chip crop-chip--portuguese">Portuguese</span></div>
+        <div class="crop-origin">South America</div>
+        <div class="crop-fact">Oilseed crop.</div>
+      </div>
+
+      <div class="crop-card">
+        <div class="crop-head"><span class="crop-emoji">🍫</span><span class="crop-name">Cocoa</span></div>
+        <div class="crop-meta"><span class="crop-chip crop-chip--portuguese">Portuguese</span></div>
+        <div class="crop-origin">South America</div>
+        <div class="crop-fact">Used for chocolate production.</div>
+      </div>
+
+      <div class="crop-card">
+        <div class="crop-head"><span class="crop-emoji">☕</span><span class="crop-name">Coffee</span></div>
+        <div class="crop-meta"><span class="crop-chip crop-chip--arab">Arabs (via Baba Budan)</span></div>
+        <div class="crop-origin">Ethiopia</div>
+        <div class="crop-fact">Baba Budan brought seeds to Karnataka.</div>
+      </div>
+
+      <div class="crop-card">
+        <div class="crop-head"><span class="crop-emoji">🌳</span><span class="crop-name">Rubber</span></div>
+        <div class="crop-meta"><span class="crop-chip crop-chip--british">British</span></div>
+        <div class="crop-origin">Amazon Basin (Brazil)</div>
+        <div class="crop-fact">Plantation crop in Kerala.</div>
+      </div>
+
+      <div class="crop-card">
+        <div class="crop-head"><span class="crop-emoji">🍵</span><span class="crop-name">Tea</span></div>
+        <div class="crop-meta"><span class="crop-chip crop-chip--british">British</span></div>
+        <div class="crop-origin">China</div>
+        <div class="crop-fact">Commercial cultivation started in Assam.</div>
+      </div>
+
+      <div class="crop-card">
+        <div class="crop-head"><span class="crop-emoji">🌿</span><span class="crop-name">Cinchona</span></div>
+        <div class="crop-meta"><span class="crop-chip crop-chip--british">British</span></div>
+        <div class="crop-origin">South America (Andes)</div>
+        <div class="crop-fact">Source of quinine medicine.</div>
+      </div>
+
+      <div class="crop-card">
+        <div class="crop-head"><span class="crop-emoji">🌻</span><span class="crop-name">Sunflower</span></div>
+        <div class="crop-meta"><span class="crop-chip">Europeans</span></div>
+        <div class="crop-origin">North America</div>
+        <div class="crop-fact">Oilseed crop.</div>
+      </div>
+
+      <div class="crop-card">
+        <div class="crop-head"><span class="crop-emoji">🍇</span><span class="crop-name">Grapes (improved varieties)</span></div>
+        <div class="crop-meta"><span class="crop-chip crop-chip--mughal">Persians &amp; Mughals</span></div>
+        <div class="crop-origin">Mediterranean region</div>
+        <div class="crop-fact">Mughal gardens popularized cultivation.</div>
+      </div>
+
+      <div class="crop-card">
+        <div class="crop-head"><span class="crop-emoji">🍎</span><span class="crop-name">Apple (temperate varieties)</span></div>
+        <div class="crop-meta"><span class="crop-chip crop-chip--british">British</span></div>
+        <div class="crop-origin">Central Asia / Europe</div>
+        <div class="crop-fact">Himachal &amp; Kashmir important today.</div>
+      </div>
+
+    </div>
+
+    <h2>One-Liners You Must Know</h2>
+
+    <div class="fact-box">
+      <ul>
+        <li>Portuguese introduced the <strong>maximum number of New World crops</strong> into India.</li>
+        <li>Chili replaced traditional Indian spices like <strong>long pepper</strong> in many regions.</li>
+        <li><strong>Baba Budan</strong> is associated with the introduction of coffee in India.</li>
+        <li>British commercialized <strong>tea and rubber</strong> plantations.</li>
+        <li>Cashew was initially introduced to prevent <strong>soil erosion</strong> on coastal slopes.</li>
+      </ul>
+    </div>
+
+    <h2>Regions to Remember</h2>
+
+    <div class="fact-box">
+      <div class="region-list">
+        <span class="region-chip">🍵 Tea: Assam, Darjeeling, Nilgiris</span>
+        <span class="region-chip">☕ Coffee: Karnataka, Kerala</span>
+        <span class="region-chip">🌳 Rubber: Kerala</span>
+        <span class="region-chip">🥜 Cashew: Goa, Kerala, Karnataka</span>
+        <span class="region-chip">🥔 Tapioca: Kerala</span>
+        <span class="region-chip">🍎 Apple: Himachal Pradesh, J&amp;K</span>
+      </div>
+    </div>
+
+    <h2>BPSC / UPSC High-Yield Focus</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Theme</th>
+          <th>What to Remember</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Columbian Exchange</strong></td>
+          <td>The exchange of plants, animals, culture, and technology between the Old World (Asia, Africa, Europe) and the New World (Americas) after the Voyages of Discovery. <strong>Portuguese</strong> were the primary conduits for this into India.</td>
+        </tr>
+        <tr>
+          <td><strong>Portuguese vs British</strong></td>
+          <td>Portuguese introduced <strong>food crops</strong> (potato, tomato, chili, maize). British introduced <strong>commercial/plantation crops</strong> (tea, rubber, cinchona).</td>
+        </tr>
+        <tr>
+          <td><strong>Baba Budan</strong></td>
+          <td>A Sufi saint who smuggled seven coffee beans from Yemen to Karnataka (Chikmagalur) in the 17th century. The birthplace of Indian coffee.</td>
+        </tr>
+        <tr>
+          <td><strong>Cinchona &amp; Quinine</strong></td>
+          <td>Cinchona (source of quinine) was introduced by the British to combat malaria. Cultivated in the Nilgiris and Darjeeling hills.</td>
+        </tr>
+        <tr>
+          <td><strong>Kharif vs Rabi</strong></td>
+          <td>Maize is a major <strong>kharif</strong> crop. Potato and wheat are <strong>rabi</strong> crops. This is a frequent classification question.</td>
+        </tr>
+        <tr>
+          <td><strong>Plantation Agriculture</strong></td>
+          <td>Tea, coffee, rubber, and cinchona are plantation crops — characterized by large estates, capital investment, and processing on-site.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="rev-note">
+      <strong>Memory hook for Portuguese crops:</strong> <em>"P-T-C-T-M-P-P-C-G-C-T-G-C"</em> —
+      <strong>P</strong>otato, <strong>T</strong>omato, <strong>C</strong>hili, <strong>T</strong>obacco, <strong>M</strong>aize, <strong>P</strong>ineapple, <strong>P</strong>apaya, <strong>C</strong>ashew, <strong>G</strong>uava, <strong>C</strong>ustard Apple, <strong>T</strong>apioca, <strong>G</strong>roundnut, <strong>C</strong>ocoa.
+      <br>
+      <strong>British crops:</strong> <em>"R-T-C-A"</em> — <strong>R</strong>ubber, <strong>T</strong>ea, <strong>C</strong>inchona, <strong>A</strong>pple.
+      <br>
+      <strong>Remember:</strong> Portuguese came first (16th century), British came later (18th–19th century). Portuguese gave us <em>food</em>; British gave us <em>cash crops</em>.
+    </div>
+
+    <hr>
+
+    <p class="rev-subtitle">Drill: cover the "Introduced By" chip and recall who brought each crop, then reverse — cover the crop name and identify it from the origin and fact.</p>
+
+  </main>
+
+  <!-- Report true content height to the parent app.
+       Measures <main class="rev-page"> directly, NOT document.body. -->
+  <script>
+    (function () {
+      function sendHeight() {
+        var el = document.querySelector('.rev-page') || document.body;
+        var h = Math.ceil(el.getBoundingClientRect().height);
+        if (!h) h = el.scrollHeight || 0;
+        if (!h) return;
+        try {
+          window.parent.postMessage({ type: 'revision-height', height: h }, '*');
+        } catch (e) {}
+      }
+      window.addEventListener('load', sendHeight);
+      window.addEventListener('resize', sendHeight);
+      setTimeout(sendHeight, 0);
+      setTimeout(sendHeight, 50);
+      setTimeout(sendHeight, 300);
+      setTimeout(sendHeight, 1000);
+      if (window.ResizeObserver) {
+        new ResizeObserver(sendHeight).observe(document.body);
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multiplication Tables (1–30) — Revision</title>
+
+  <!--
+    Revision page for "Multiplication Tables (1–30)".
+    Loaded inside the main app's iframe.
+    • Theme is passed via URL hash: #theme=dark or #theme=light
+    • Styles come from ../css/style.css
+  -->
+
+  <!-- Read theme from URL hash BEFORE paint (no flash). -->
+  <script>
+    (function () {
+      var m = location.hash.match(/theme=(light|dark)/);
+      document.documentElement.setAttribute('data-theme', m ? m[1] : 'dark');
+    })();
+  </script>
+
+  <!-- Shared app styles — this links the file to the MAIN stylesheet. -->
+  <link rel="stylesheet" href="../css/style.css">
+
+  <!-- Match the app's font stack. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Page-specific styles for Multiplication Tables. -->
+  <style>
+    /* 8 tables per row on wide screens; collapses gracefully. */
+    .tbl-grid {
+      display: grid;
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+    .tbl-grid table {
+      margin: 0;
+      font-size: 0.78rem;
+    }
+    .tbl-grid th,
+    .tbl-grid td {
+      padding: 0.22rem 0.4rem;
+      white-space: nowrap;
+    }
+    @media (max-width: 1100px) {
+      .tbl-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
+    @media (max-width: 640px) {
+      .tbl-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 380px) {
+      .tbl-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body style="background: transparent; margin: 0;">
+  <main class="rev-page">
+
+    <h1>Multiplication Tables (1–30)</h1>
+    <p class="rev-subtitle">Tables 1 to 30, each up to ×10. Four blocks of eight — cover the right column and recite.</p>
+
+    <!-- ═══════════ TABLES 1–8 ═══════════ -->
+    <h2>Tables 1 – 8</h2>
+    <div class="tbl-grid">
+
+      <table>
+        <thead><tr><th colspan="2">1</th></tr></thead>
+        <tbody>
+          <tr><td>1 × 1</td><td>1</td></tr>
+          <tr><td>1 × 2</td><td>2</td></tr>
+          <tr><td>1 × 3</td><td>3</td></tr>
+          <tr><td>1 × 4</td><td>4</td></tr>
+          <tr><td>1 × 5</td><td>5</td></tr>
+          <tr><td>1 × 6</td><td>6</td></tr>
+          <tr><td>1 × 7</td><td>7</td></tr>
+          <tr><td>1 × 8</td><td>8</td></tr>
+          <tr><td>1 × 9</td><td>9</td></tr>
+          <tr><td>1 × 10</td><td>10</td></tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead><tr><th colspan="2">2</th></tr></thead>
+        <tbody>
+          <tr><td>2 × 1</td><td>2</td></tr>
+          <tr><td>2 × 2</td><td>4</td></tr>
+          <tr><td>2 × 3</td><td>6</td></tr>
+          <tr><td>2 × 4</td><td>8</td></tr>
+          <tr><td>2 × 5</td><td>10</td></tr>
+          <tr><td>2 × 6</td><td>12</td></tr>
+          <tr><td>2 × 7</td><td>14</td></tr>
+          <tr><td>2 × 8</td><td>16</td></tr>
+          <tr><td>2 × 9</td><td>18</td></tr>
+          <tr><td>2 × 10</td><td>20</td></tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead><tr><th colspan="2">3</th></tr></thead>
+        <tbody>
+          <tr><td>3 × 1</td><td>3</td></tr>
+          <tr><td>3 × 2</td><td>6</td></tr>
+          <tr><td>3 × 3</td><td>9</td></tr>
+          <tr><td>3 × 4</td><td>12</td></tr>
+          <tr><td>3 × 5</td><td>15</td></tr>
+          <tr><td>3 × 6</td><td>18</td></tr>
+          <tr><td>3 × 7</td><td>21</td></tr>
+          <tr><td>3 × 8</td><td>24</td></tr>
+          <tr><td>3 × 9</td><td>27</td></tr>
+          <tr><td>3 × 10</td><td>30</td></tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead><tr><th colspan="2">4</th></tr></thead>
+        <tbody>
+          <tr><td>4 × 1</td><td>4</td></tr>
+          <tr><td>4 × 2</td><td>8</td></tr>
+          <tr><td>4 × 3</td><td>12</td></tr>
+          <tr><td>4 × 4</td><td>16</td></tr>
+          <tr><td>4 × 5</td><td>20</td></tr>
+          <tr><td>4 × 6</td><td>24</td></tr>
+          <tr><td>4 × 7</td><td>28</td></tr>
+          <tr><td>4 × 8</td><td>32</td></tr>
+          <tr><td>4 × 9</td><td>36</td></tr>
+          <tr><td>4 × 10</td><td>40</td></tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead><tr><th colspan="2">5</th></tr></thead>
+        <tbody>
+          <tr><td>5 × 1</td><td>5</td></tr>
+          <tr><td>5 × 2</td><td>10</td></tr>
+          <tr><td>5 × 3</td><td>15</td></tr>
+          <tr><td>5 × 4</td><td>20</td></tr>
+          <tr><td>5 × 5</td><td>25</td></tr>
+          <tr><td>5 × 6</td><td>30</td></tr>
+          <tr><td>5 × 7</td><td>35</td></tr>
+          <tr><td>5 × 8</td><td>40</td></tr>
+          <tr><td>5 × 9</td><td>45</td></tr>
+          <tr><td>5 × 10</td><td>50</td></tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead><tr><th colspan="2">6</th></tr></thead>
+        <tbody>
+          <tr><td>6 × 1</td><td>6</td></tr>
+          <tr><td>6 × 2</td><td>12</td></tr>
+          <tr><td>6 × 3</td><td>18</td></tr>
+          <tr><td>6 × 4</td><td>24</td></tr>
+          <tr><td>6 × 5</td><td>30</td></tr>
+          <tr><td>6 × 6</td><td>36</td></tr>
+          <tr><td>6 × 7</td><td>42</td></tr>
+          <tr><td>6 × 8</td><td>48</td></tr>
+          <tr><td>6 × 9</td><td>54</td></tr>
+          <tr><td>6 × 10</td><td>60</td></tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead><tr><th colspan="2">7</th></tr></thead>
+        <tbody>
+          <tr><td>7 × 1</td><td>7</td></tr>
+          <tr><td>7 × 2</td><td>14</td></tr>
+          <tr><td>7 × 3</td><td>21</td></tr>
+          <tr><td>7 × 4</td><td>28</td></tr>
+          <tr><td>7 × 5</td><td>35</td></tr>
+          <tr><td>7 × 6</td><td>42</td></tr>
+          <tr><td>7 × 7</td><td>49</td></tr>
+          <tr><td>7 × 8</td><td>56</td></tr>
+          <tr><td>7 × 9</td><td>63</td></tr>
+          <tr><td>7 × 10</td><td>70</td></tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead><tr><th colspan="2">8</th></tr></thead>
+        <tbody>
+          <tr><td>8 × 1</td><td>8</td></tr>
+          <tr><td>8 × 2</td><td>16</td></tr>
+          <tr><td>8 × 3</td><td>24</td></tr>
+          <tr><td>8 × 4</td><td>32</td></tr>
+          <tr><td>8 × 5</td><td>40</td></tr>
+          <tr><td>8 × 6</td><td>48</td></tr>
+          <tr><td>8 × 7</td><td>56</td></tr>
+          <tr><td>8 × 8</td><td>64</td></tr>
+          <tr><td>8 × 9</td><td>72</td></tr>
+          <tr><td>8 × 10</td><td>80</td></tr>
+        </tbody>
+      </table>
+
+    </div>
+
+    <!-- ═══════════ TABLES 9–16 ═══════════ -->
+    <h2>Tables 9 – 16</h2>
+    <div class="tbl-grid">
+
+      <table>
+        <thead><tr><th colspan="2">9</th></tr></thead>
+        <tbody>
+          <tr><td>9 × 1</td><td>9</td></tr>
+          <tr><td>9 × 2</td><td>18</td></tr>
+          <tr><td>9 × 3</td><td>27</td></tr>
+          <tr><td>9 × 4</td><td>36</td></tr>
+          <tr><td>9 × 5</td><td>45</td></tr>
+          <tr><td>9 × 6</td><td>54</td></tr>
+          <tr><td>9 × 7</td><td>63</td></tr>
+          <tr><td>9 × 8</td><td>72</td></tr>
+          <tr><td>9 × 9</td><td>81</td></tr>
+          <tr><td>9 × 10</td><td>90</td></tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead><tr><th colspan="2">10</th></tr></thead>
+        <tbody>
+          <tr><td>10 × 1</td><td>10</td></tr>
+          <tr><td>10 × 2</td><td>20</td></tr>
+          <tr><td>10 × 3</td><td>30</td></tr>
+          <tr><td>10 × 4</td><td>40</td></tr>
+          <tr><td>10 × 5</td><td>50</td></tr>
+          <tr><td>10 × 6</td><td>60</td></tr>
+          <tr><td>10 × 7</td><td>70</td></tr>
+          <tr><td>10 × 8</td><td>80</td></tr>
+          <tr><td>10 × 9</td><td>90</td></tr>
+          <tr><td>10 × 10</td><td>100</td></tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead><tr><th colspan="2">11</th></tr></thead>
+        <tbody>
+          <tr><td>11 × 1</td><td>11</td></tr>
+          <tr><td>11 × 2</td><td>22</td></tr>
+          <tr><td>11 × 3</td><td>33</td></tr>
+          <tr><td>11 × 4</td><td>44</td></tr>
+          <tr><td>11 × 5</td><td>55</td></tr>
+          <tr><td>11 × 6</td><td>66</td></tr>
+          <tr><td>11 × 7</td><td>77</td></tr>
+          <tr><td>11 × 8</td><td>88</td></tr>
+          <tr><td>11 × 9</td><td>99</td></tr>
+          <tr><td>11 × 10</td><td>110</td></tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead><tr><th colspan="2">12</th></tr></thead>
+        <tbody>
+          <tr><td>12 × 1</td><td>12</td></tr>
+          <tr><td>12 × 2</td><td>24</td></tr>
+          <tr><td>12 × 3</td><td>36</td></tr>
+          <tr><td>12 × 4</td><td>48</td></tr>
+          <tr><td>12 × 5</td><td>60</td></tr>
+          <tr><td>12 × 6</td><td>72</td></tr>
+          <tr><td>12 × 7</td><td>84</td></tr>
+          <tr><td>12 × 8</td><td>96</td></tr>
+          <tr><td>12 × 9</td><td>108</td></tr>
+          <tr><td>12 × 10</td><td>120</td></tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead><tr><th colspan="2">13</th></tr></thead>
+        <tbody>
+          <tr><td>13 × 1</td><td>13</td></tr>
+          <tr><td>13 × 2</td><td>26</td></tr>
+          <tr><td>13 × 3</td><td>39</td></tr>
+          <tr><td>13 × 4</td><td>52</td></tr>
+          <tr><td>13 × 5</td><td>65</td></tr>
+          <tr><td>13 × 6</td><td>78</td></tr>
+          <tr><td>13 × 7</td><td>91</td></tr>
+          <tr><td>13 × 8</td><td>104</td></tr>
+          <tr><td>13 × 9</td><td>117</td></tr>
+          <tr><td>13 × 10</td><td>130</td></tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead><tr><th colspan="2">14</th></tr></thead>
+        <tbody>
+          <tr><td>14 × 1</td><td>14</td></tr>
+          <tr><td>14 × 2</td><td>28</td></tr>
+          <tr><td>14 × 3</td><td>42</td></tr>
+          <tr><td>14 × 4</td><td>56</td></tr>
+          <tr><td>14 × 5</td><td>70</td></tr>
+          <tr><td>14 × 6</td><td>84</td></tr>
+          <tr><td>14 × 7</td><td>98</td></tr>
+          <tr><td>14 × 8</td><td>112</td></tr>
+          <tr><td>14 × 9</td><td>126</td></tr>
+          <tr><td>14 × 10</td><td>140</td></tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead><tr><th colspan="2">15</th></tr></thead>
+        <tbody>
+          <tr><td>15 × 1</td><td>15</td></tr>
+          <tr><td>15 × 2</td><td>30</td></tr>
+          <tr><td>15 × 3</td><td>45</td></tr>
+          <tr><td>15 × 4</td><td>60</td></tr>
+          <tr><td>15 × 5</td><td>75</td></tr>
+          <tr><td>15 × 6</td><td>90</td></tr>
+          <tr><td>15 × 7</td><td>105</td></tr>
+          <tr><td>15 × 8</td><td>120</td></tr>
+          <tr><td>15 × 9</td><td>135</td></tr>
+          <tr><td>15 × 10</td><td>150</td></tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead><tr><th colspan="2">16</th></tr></thead>
+        <tbody>
+          <tr><td>16 × 1</td><td>16</td></tr>
+          <tr><td>16 × 2</td><td>32</td></tr>
+          <tr><td>16 × 3</td><td>48</td></tr>
+          <tr><td>16 × 4</td><td>64</td></tr>
+          <tr><td>16 × 5</td><td>80</td></tr>
+          <tr><td>16 × 6</td><td>96</td></tr>
+          <tr><td>16 × 7</td><td>112</td></tr>
+          <tr><td>16 × 8</td><td>128</td></tr>
+          <tr><td>16 × 9</td><td>144</td></tr>
+          <tr><td>16 × 10</td><td>160</td></tr>
+        </tbody>
+      </table>
+
+    </div>
+
+    <!-- ═══════════ TABLES 17–24 ═══════════ -->
+    <h2>Tables 17 – 24</h2>
+    <div class="tbl-grid">
+
+      <table>
+        <thead><tr><th colspan="2">17</th></tr></thead>
+        <tbody>
+          <tr><td>17 × 1</td><td>17</td></tr>
+          <tr><td>17 × 2</td><td>34</td></tr>
+          <tr><td>17 × 3</td><td>51</td></tr>
+          <tr><td>17 × 4</td><td>68</td></tr>
+          <tr><td>17 × 5</td><td>85</td></tr>
+          <tr><td>17 × 6</td><td>102</td></tr>
+          <tr><td>17 × 7</td><td>119</td></tr>
+          <tr><td>17 × 8</td><td>136</td></tr>
+          <tr><td>17 × 9</td><td>153</td></tr>
+          <tr><td>17 × 10</td><td>170</td></tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead><tr><th colspan="2">18</th></tr></thead>
+        <tbody>
+          <tr><td>18 × 1</td><td>18</td></tr>
+          <tr><td>18 × 2</td><td>36</td></tr>
+          <tr><td>18 × 3</td><td>54</td></tr>
+          <tr><td>18 × 4</td><td>72</td></tr>
+          <tr><td>18 × 5</td><td>90</td></tr>
+          <tr><td>18 × 6</td><td>108</td></tr>
+          <tr><td>18 × 7</td><td>126</td></tr>
+          <tr><td>18 × 8</td><td>144</td></tr>
+          <tr><td>18 × 9</td><td>162</td></tr>
+          <tr><td>18 × 10</td><td>180</td></tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead><tr><th colspan="2">19</th></tr></thead>
+        <tbody>
+          <tr><td>19 × 1</td><td>19</td></tr>
+          <tr><td>19 × 2</td><td>38</td></tr>
+          <tr><td>19 × 3</td><td>57</td></tr>
+          <tr><td>19 × 4</td><td>76</td></tr>
+          <tr><td>19 × 5</td><td>95</td></tr>
+          <tr><td>19 × 6</td><td>114</td></tr>
+          <tr><td>19 × 7</td><td>133</td></tr>
+          <tr><td>19 × 8</td><td>152</td></tr>
+          <tr><td>19 × 9</td><td>171</td></tr>
+          <tr><td>19 × 10</td><td>190</td></tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead><tr><th colspan="2">20</th></tr></thead>
+        <tbody>
+          <tr><td>20 × 1</td><td>20</td></tr>
+          <tr><td>20 × 2</td><td>40</td></tr>
+          <tr><td>20 × 3</td><td>60</td></tr>
+          <tr><td>20 × 4</td><td>80</td></tr>
+          <tr><td>20 × 5</td><td>100</td></tr>
+          <tr><td>20 × 6</td><td>120</td></tr>
+          <tr><td>20 × 7</td><td>140</td></tr>
+          <tr><td>20 × 8</td><td>160</td></tr>
+          <tr><td>20 × 9</td><td>180</td></tr>
+          <tr><td>20 × 10</td><td>200</td></tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead><tr><th colspan="2">21</th></tr></thead>
+        <tbody>
+          <tr><td>21 × 1</td><td>21</td></tr>
+          <tr><td>21 × 2</td><td>42</td></tr>
+          <tr><td>21 × 3</td><td>63</td></tr>
+          <tr><td>21 × 4</td><td>84</td></tr>
+          <tr><td>21 × 5</td><td>105</td></tr>
+          <tr><td>21 × 6</td><td>126</td></tr>
+          <tr><td>21 × 7</td><td>147</td></tr>
+          <tr><td>21 × 8</td><td>168</td></tr>
+          <tr><td>21 × 9</td><td>189</td></tr>
+          <tr><td>21 × 10</td><td>210</td></tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead><tr><th colspan="2">22</th></tr></thead>
+        <tbody>
+          <tr><td>22 × 1</td><td>22</td></tr>
+          <tr><td>22 × 2</td><td>44</td></tr>
+          <tr><td>22 × 3</td><td>66</td></tr>
+          <tr><td>22 × 4</td><td>88</td></tr>
+          <tr><td>22 × 5</td><td>110</td></tr>
+          <tr><td>22 × 6</td><td>132</td></tr>
+          <tr><td>22 × 7</td><td>154</td></tr>
+          <tr><td>22 × 8</td><td>176</td></tr>
+          <tr><td>22 × 9</td><td>198</td></tr>
+          <tr><td>22 × 10</td><td>220</td></tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead><tr><th colspan="2">23</th></tr></thead>
+        <tbody>
+          <tr><td>23 × 1</td><td>23</td></tr>
+          <tr><td>23 × 2</td><td>46</td></tr>
+          <tr><td>23 × 3</td><td>69</td></tr>
+          <tr><td>23 × 4</td><td>92</td></tr>
+          <tr><td>23 × 5</td><td>115</td></tr>
+          <tr><td>23 × 6</td><td>138</td></tr>
+          <tr><td>23 × 7</td><td>161</td></tr>
+          <tr><td>23 × 8</td><td>184</td></tr>
+          <tr><td>23 × 9</td><td>207</td></tr>
+          <tr><td>23 × 10</td><td>230</td></tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead><tr><th colspan="2">24</th></tr></thead>
+        <tbody>
+          <tr><td>24 × 1</td><td>24</td></tr>
+          <tr><td>24 × 2</td><td>48</td></tr>
+          <tr><td>24 × 3</td><td>72</td></tr>
+          <tr><td>24 × 4</td><td>96</td></tr>
+          <tr><td>24 × 5</td><td>120</td></tr>
+          <tr><td>24 × 6</td><td>144</td></tr>
+          <tr><td>24 × 7</td><td>168</td></tr>
+          <tr><td>24 × 8</td><td>192</td></tr>
+          <tr><td>24 × 9</td><td>216</td></tr>
+          <tr><td>24 × 10</td><td>240</td></tr>
+        </tbody>
+      </table>
+
+    </div>
+
+    <!-- ═══════════ TABLES 25–30 ═══════════ -->
+    <h2>Tables 25 – 30</h2>
+    <div class="tbl-grid">
+
+      <table>
+        <thead><tr><th colspan="2">25</th></tr></thead>
+        <tbody>
+          <tr><td>25 × 1</td><td>25</td></tr>
+          <tr><td>25 × 2</td><td>50</td></tr>
+          <tr><td>25 × 3</td><td>75</td></tr>
+          <tr><td>25 × 4</td><td>100</td></tr>
+          <tr><td>25 × 5</td><td>125</td></tr>
+          <tr><td>25 × 6</td><td>150</td></tr>
+          <tr><td>25 × 7</td><td>175</td></tr>
+          <tr><td>25 × 8</td><td>200</td></tr>
+          <tr><td>25 × 9</td><td>225</td></tr>
+          <tr><td>25 × 10</td><td>250</td></tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead><tr><th colspan="2">26</th></tr></thead>
+        <tbody>
+          <tr><td>26 × 1</td><td>26</td></tr>
+          <tr><td>26 × 2</td><td>52</td></tr>
+          <tr><td>26 × 3</td><td>78</td></tr>
+          <tr><td>26 × 4</td><td>104</td></tr>
+          <tr><td>26 × 5</td><td>130</td></tr>
+          <tr><td>26 × 6</td><td>156</td></tr>
+          <tr><td>26 × 7</td><td>182</td></tr>
+          <tr><td>26 × 8</td><td>208</td></tr>
+          <tr><td>26 × 9</td><td>234</td></tr>
+          <tr><td>26 × 10</td><td>260</td></tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead><tr><th colspan="2">27</th></tr></thead>
+        <tbody>
+          <tr><td>27 × 1</td><td>27</td></tr>
+          <tr><td>27 × 2</td><td>54</td></tr>
+          <tr><td>27 × 3</td><td>81</td></tr>
+          <tr><td>27 × 4</td><td>108</td></tr>
+          <tr><td>27 × 5</td><td>135</td></tr>
+          <tr><td>27 × 6</td><td>162</td></tr>
+          <tr><td>27 × 7</td><td>189</td></tr>
+          <tr><td>27 × 8</td><td>216</td></tr>
+          <tr><td>27 × 9</td><td>243</td></tr>
+          <tr><td>27 × 10</td><td>270</td></tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead><tr><th colspan="2">28</th></tr></thead>
+        <tbody>
+          <tr><td>28 × 1</td><td>28</td></tr>
+          <tr><td>28 × 2</td><td>56</td></tr>
+          <tr><td>28 × 3</td><td>84</td></tr>
+          <tr><td>28 × 4</td><td>112</td></tr>
+          <tr><td>28 × 5</td><td>140</td></tr>
+          <tr><td>28 × 6</td><td>168</td></tr>
+          <tr><td>28 × 7</td><td>196</td></tr>
+          <tr><td>28 × 8</td><td>224</td></tr>
+          <tr><td>28 × 9</td><td>252</td></tr>
+          <tr><td>28 × 10</td><td>280</td></tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead><tr><th colspan="2">29</th></tr></thead>
+        <tbody>
+          <tr><td>29 × 1</td><td>29</td></tr>
+          <tr><td>29 × 2</td><td>58</td></tr>
+          <tr><td>29 × 3</td><td>87</td></tr>
+          <tr><td>29 × 4</td><td>116</td></tr>
+          <tr><td>29 × 5</td><td>145</td></tr>
+          <tr><td>29 × 6</td><td>174</td></tr>
+          <tr><td>29 × 7</td><td>203</td></tr>
+          <tr><td>29 × 8</td><td>232</td></tr>
+          <tr><td>29 × 9</td><td>261</td></tr>
+          <tr><td>29 × 10</td><td>290</td></tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead><tr><th colspan="2">30</th></tr></thead>
+        <tbody>
+          <tr><td>30 × 1</td><td>30</td></tr>
+          <tr><td>30 × 2</td><td>60</td></tr>
+          <tr><td>30 × 3</td><td>90</td></tr>
+          <tr><td>30 × 4</td><td>120</td></tr>
+          <tr><td>30 × 5</td><td>150</td></tr>
+          <tr><td>30 × 6</td><td>180</td></tr>
+          <tr><td>30 × 7</td><td>210</td></tr>
+          <tr><td>30 × 8</td><td>240</td></tr>
+          <tr><td>30 × 9</td><td>270</td></tr>
+          <tr><td>30 × 10</td><td>300</td></tr>
+        </tbody>
+      </table>
+
+    </div>
+
+    <h2>Tricks That Kill the Hard Ones</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Table</th>
+          <th>Trick</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>× 9</code></td>
+          <td><code>9n = 10n − n</code>. Also: digits of the answer always add to 9 (<code>9 × 7 = 63 → 6 + 3 = 9</code>).</td>
+        </tr>
+        <tr>
+          <td><code>× 11</code></td>
+          <td>Up to 9: repeat the digit (<code>11 × 7 = 77</code>). For 10–99: split the digits and insert their sum (<code>11 × 23 = 2 (2+3) 3 = 253</code>).</td>
+        </tr>
+        <tr>
+          <td><code>× 5</code></td>
+          <td><code>5n = 10n ÷ 2</code>. Always ends in <code>0</code> or <code>5</code>.</td>
+        </tr>
+        <tr>
+          <td><code>× 15</code></td>
+          <td><code>15n = 10n + 5n</code>, or <code>= 30n ÷ 2</code>. <code>15 × 8 = 240 ÷ 2 = 120</code>.</td>
+        </tr>
+        <tr>
+          <td><code>× 25</code></td>
+          <td><code>25n = 100n ÷ 4</code>. <code>25 × 7 = 700 ÷ 4 = 175</code>.</td>
+        </tr>
+        <tr>
+          <td><code>× 19</code></td>
+          <td><code>19n = 20n − n</code>. <code>19 × 6 = 120 − 6 = 114</code>.</td>
+        </tr>
+        <tr>
+          <td><code>× 21</code></td>
+          <td><code>21n = 20n + n</code>. <code>21 × 7 = 140 + 7 = 147</code>.</td>
+        </tr>
+        <tr>
+          <td><code>× 29</code></td>
+          <td><code>29n = 30n − n</code>. <code>29 × 8 = 240 − 8 = 232</code>.</td>
+        </tr>
+        <tr>
+          <td>Teens <code>13–19</code></td>
+          <td><code>n × 1m = n × (10 + m) = 10n + nm</code>. Break into a <code>×10</code> plus a small table.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="rev-note">
+      <strong>Study order:</strong> Tables 1–10 must be instant (they are the building blocks). Then learn 11, 12, 15, 20, 25 —
+      they have easy patterns. The rest (13, 14, 16, 17, 18, 19, 21–24, 26–29) fall out of the two rules
+      <code>(n+1) = n + 1×</code> and <code>(n−1) = n − 1×</code>. Never memorise blindly what you can derive in one step.
+    </div>
+
+    <hr>
+
+    <p class="rev-subtitle">Drill method: read a full column aloud, cover the right column, write answers on paper, check, mark the misses. Repeat only the misses.</p>
+
+  </main>
+
+  <!-- Report true content height to the parent app.
+       Measures <main class="rev-page"> directly, NOT document.body. -->
+  <script>
+    (function () {
+      function sendHeight() {
+        var el = document.querySelector('.rev-page') || document.body;
+        var h = Math.ceil(el.getBoundingClientRect().height);
+        if (!h) h = el.scrollHeight || 0;
+        if (!h) return;
+        try {
+          window.parent.postMessage({ type: 'revision-height', height: h }, '*');
+        } catch (e) {}
+      }
+      window.addEventListener('load', sendHeight);
+      window.addEventListener('resize', sendHeight);
+      setTimeout(sendHeight, 0);
+      setTimeout(sendHeight, 50);
+      setTimeout(sendHeight, 300);
+      setTimeout(sendHeight, 1000);
+      if (window.ResizeObserver) {
+        new ResizeObserver(sendHeight).observe(document.body);
+      }
+    })();
+  </script>
+</body>
+</html>
