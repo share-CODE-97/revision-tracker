@@ -198,6 +198,24 @@ html[data-theme="light"] .rev-page .rev-note {
   font-size: .8rem;
   margin: 12px 0 18px;
 }
+
+/* --------------------------------------------------------------------------
+ * MOBILE: make wide tables horizontally scrollable instead of clipped.
+ * Without this, a table with many columns (e.g. the 1–10 multiplication
+ * table) gets cut off on narrow screens with no way to see the rest.
+ * ------------------------------------------------------------------------*/
+@media (max-width: 640px) {
+  .rev-page table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;   /* smooth momentum scroll on iOS */
+    white-space: nowrap;                  /* keep cell content readable */
+  }
+}
+
+
+
 .rev-page th,
 .rev-page td {
   border: 1px solid #1e293b;
