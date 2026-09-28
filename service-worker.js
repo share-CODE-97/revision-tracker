@@ -13,7 +13,7 @@
  * app just won't be available offline in that case.
  * ==========================================================================*/
 
-const CACHE_VERSION = 'revision-tracker-v7';
+const CACHE_VERSION = 'revision-tracker-v8';
 const CACHE_NAME    = CACHE_VERSION;
 
 /* ---------------------------------------------------------------------------
