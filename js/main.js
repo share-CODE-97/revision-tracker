@@ -482,14 +482,35 @@ function setupQuickSearch() {
  * ==========================================================================*/
 
 /**
- * Register the service worker for offline use.
+ * Register the service worker for offline use, and keep it auto-updating.
  * Silently no-ops on file:// or insecure origins where SW is unavailable.
  */
 function registerServiceWorker() {
   if (!('serviceWorker' in navigator)) return;
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('service-worker.js')
-      .catch(err => console.warn('Service worker registration skipped:', err.message));
+
+  window.addEventListener('load', async () => {
+    try {
+      const reg = await navigator.serviceWorker.register('service-worker.js');
+
+      // ① Re-check service-worker.js every 2 minutes
+      setInterval(() => reg.update(), 2 * 60 * 1000);
+
+      // ② Also re-check whenever the user returns to the tab / PWA
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') reg.update();
+      });
+
+      // ③ When a new SW takes over, reload once so the user sees it
+      let reloaded = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (reloaded) return;
+        reloaded = true;
+        window.location.reload();
+      });
+
+    } catch (err) {
+      console.warn('Service worker registration skipped:', err.message);
+    }
   });
 }
 
