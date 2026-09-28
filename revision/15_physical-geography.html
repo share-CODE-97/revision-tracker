@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Physical Geography: Earth, Atmosphere &amp; Weather — Revision</title>
+
+  <!--
+    Revision page for "Physical Geography: Earth, Atmosphere & Weather".
+    Loaded inside the main app's iframe.
+    • Theme is passed via URL hash: #theme=dark or #theme=light
+    • Styles come from ../css/style.css
+  -->
+
+  <!-- Read theme from URL hash BEFORE paint (no flash). -->
+  <script>
+    (function () {
+      var m = location.hash.match(/theme=(light|dark)/);
+      document.documentElement.setAttribute('data-theme', m ? m[1] : 'dark');
+    })();
+  </script>
+
+  <!-- Shared app styles — this links the file to the MAIN stylesheet. -->
+  <link rel="stylesheet" href="../css/style.css">
+
+  <!-- Match the app's font stack. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Page-specific styles for Physical Geography (namespace: .gphy-) -->
+  <style>
+    .gphy-tools{ display:flex; gap:10px; flex-wrap:wrap; margin:14px 0 6px; }
+    .gphy-btn{
+      font:inherit; font-size:.78rem; font-weight:700; letter-spacing:.02em;
+      padding:7px 14px; border-radius:999px; cursor:pointer;
+      border:1px solid #475569; background:transparent; color:#cbd5e1;
+      transition:border-color .15s, color .15s;
+    }
+    .gphy-btn:hover{ border-color:#6366f1; color:#a5b4fc; }
+
+    /* Tap-to-reveal cards */
+    .gphy-card{
+      border:1px solid #334155; border-radius:12px; background:#0f172a;
+      padding:12px 15px; margin:10px 0; cursor:pointer;
+      transition:border-color .15s, background .15s;
+    }
+    .gphy-card:hover{ border-color:#6366f1; }
+    .gphy-card.is-open{ border-color:#6366f1; background:#131c33; }
+    .gphy-card__head{
+      display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;
+      font-weight:700; font-size:.95rem; color:#e2e8f0;
+    }
+    .gphy-card__head::after{ content:'+'; color:#6366f1; font-weight:800; margin-left:auto; }
+    .gphy-card.is-open .gphy-card__head::after{ content:'–'; }
+    .gphy-card__body{ display:none; margin-top:10px; font-size:.88rem; line-height:1.6; color:#cbd5e1; }
+    .gphy-card.is-open .gphy-card__body{ display:block; }
+
+    /* Badges */
+    .gphy-badge{
+      display:inline-block; font-size:.66rem; font-weight:700; letter-spacing:.04em;
+      text-transform:uppercase; padding:2px 8px; border-radius:999px;
+      background:#1e293b; color:#a5b4fc; margin-left:6px; vertical-align:middle;
+    }
+    .gphy-badge--india{ background:#831843; color:#fbcfe8; }
+    .gphy-badge--world{ background:#065f46; color:#a7f3d0; }
+    .gphy-badge--layer{ background:#4c1d95; color:#ddd6fe; }
+
+    /* Grids */
+    .gphy-grid{
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:12px; margin:16px 0 8px;
+    }
+    .gphy-grid-item{
+      border:1px solid #334155; border-radius:14px; padding:14px 16px;
+      background:#0f172a; border-left-width:4px;
+    }
+    .gphy-grid-item h3{ margin:0 0 6px; font-size:1rem; color:#e2e8f0; }
+    .gphy-grid-item p{ margin:0; font-size:.85rem; line-height:1.55; color:#94a3b8; }
+    .gphy-grid-item--crust{ border-left-color:#f87171; }
+    .gphy-grid-item--mantle{ border-left-color:#fb923c; }
+    .gphy-grid-item--core{ border-left-color:#facc15; }
+    html[data-theme="light"] .gphy-grid-item{ background:#ffffff; border-color:#e2e8f0; }
+    html[data-theme="light"] .gphy-grid-item h3{ color:#1e293b; }
+    html[data-theme="light"] .gphy-grid-item p{ color:#475569; }
+
+    /* Mnemonic */
+    .gphy-mnem{
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      font-weight:700; color:#a5b4fc; letter-spacing:.03em;
+    }
+
+    /* Quiz */
+    .gphy-q{
+      border-left:3px solid #6366f1; border-radius:0 10px 10px 0;
+      background:#0f172a; padding:11px 15px; margin:12px 0; cursor:pointer;
+    }
+    .gphy-q p{ margin:0; font-weight:600; font-size:.92rem; color:#e2e8f0; }
+    .gphy-q .gphy-ans{ display:none; margin-top:8px; font-size:.88rem; color:#a5b4fc; font-weight:600; }
+    .gphy-q.is-open .gphy-ans{ display:block; }
+
+    /* Table */
+    .gphy-table-wrap{ overflow-x:auto; margin:14px 0; }
+    .gphy-table{
+      width:100%; border-collapse:collapse; font-size:.85rem;
+    }
+    .gphy-table th{ background:#1e293b; color:#e2e8f0; padding:8px 10px; text-align:left; border:1px solid #334155; }
+    .gphy-table td{ padding:8px 10px; border:1px solid #334155; color:#cbd5e1; }
+    .gphy-table tr:nth-child(even) td{ background:#0f172a; }
+    html[data-theme="light"] .gphy-table th{ background:#e2e8f0; color:#1e293b; }
+    html[data-theme="light"] .gphy-table td{ border-color:#e2e8f0; color:#475569; }
+    html[data-theme="light"] .gphy-table tr:nth-child(even) td{ background:#f8fafc; }
+
+    /* Atmosphere composition list */
+    .gphy-comp-list{ list-style:none; padding:0; margin:10px 0; display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:8px; }
+    .gphy-comp-list li{ background:#0f172a; border:1px solid #334155; border-radius:8px; padding:8px 12px; font-size:.85rem; color:#cbd5e1; display:flex; justify-content:space-between; }
+    .gphy-comp-list li strong{ color:#a5b4fc; }
+    html[data-theme="light"] .gphy-comp-list li{ background:#ffffff; border-color:#e2e8f0; color:#475569; }
+    html[data-theme="light"] .gphy-comp-list li strong{ color:#4338ca; }
+
+    html[data-theme="light"] .gphy-btn{ border-color:#cbd5e1; color:#334155; }
+    html[data-theme="light"] .gphy-btn:hover{ border-color:#6366f1; color:#4338ca; }
+    html[data-theme="light"] .gphy-card{ background:#ffffff; border-color:#e2e8f0; }
+    html[data-theme="light"] .gphy-card.is-open{ background:#eef2ff; border-color:#6366f1; }
+    html[data-theme="light"] .gphy-card__head{ color:#1e293b; }
+    html[data-theme="light"] .gphy-card__body{ color:#475569; }
+    html[data-theme="light"] .gphy-badge{ background:#e0e7ff; color:#4338ca; }
+    html[data-theme="light"] .gphy-badge--india{ background:#fce7f3; color:#9d174d; }
+    html[data-theme="light"] .gphy-badge--world{ background:#d1fae5; color:#065f46; }
+    html[data-theme="light"] .gphy-badge--layer{ background:#ede9fe; color:#5b21b6; }
+    html[data-theme="light"] .gphy-q{ background:#f8fafc; }
+    html[data-theme="light"] .gphy-q p{ color:#1e293b; }
+    html[data-theme="light"] .gphy-q .gphy-ans{ color:#4338ca; }
+    html[data-theme="light"] .gphy-mnem{ color:#4338ca; }
+  </style>
+</head>
+
+<body style="background: transparent; margin: 0;">
+  <main class="rev-page">
+
+    <h1>Physical Geography: Earth, Atmosphere &amp; Weather</h1>
+    <p class="rev-subtitle">Interior of the Earth · Atmosphere composition &amp; layers · Atmospheric cells · Clouds · Cyclones · Slash &amp; Burn — tap to reveal.</p>
+
+    <div class="rev-note">
+      <strong>How to use this page:</strong> The topics are arranged from the <em>inside out</em> — Earth's interior → atmosphere → weather systems → human activity.
+      Read the question or heading, say the answer out loud, then tap to check. Use "Hide all" before a session and "Reveal all" at the end.
+    </div>
+
+    <h2>1 · Interior of the Earth — Layers &amp; Discontinuities</h2>
+    <p>Tap each layer to reveal its discontinuity and key facts.</p>
+
+    <div class="gphy-tools">
+      <button class="gphy-btn" data-gphy-all="open">Reveal all</button>
+      <button class="gphy-btn" data-gphy-all="close">Hide all</button>
+    </div>
+
+    <div class="gphy-grid">
+      <div class="gphy-grid-item gphy-grid-item--crust">
+        <h3>Crust <span class="gphy-badge gphy-badge--layer">Layer</span></h3>
+        <p>Outermost solid layer. Two types: <strong>Continental</strong> (granite, thicker) and <strong>Oceanic</strong> (basalt, thinner).</p>
+      </div>
+      <div class="gphy-grid-item gphy-grid-item--mantle">
+        <h3>Mantle <span class="gphy-badge gphy-badge--layer">Layer</span></h3>
+        <p>Thickest layer (2900 km). Divided into Upper and Lower Mantle. The Asthenosphere lies here.</p>
+      </div>
+      <div class="gphy-grid-item gphy-grid-item--core">
+        <h3>Core <span class="gphy-badge gphy-badge--layer">Layer</span></h3>
+        <p>Divided into <strong>Outer Core</strong> (liquid, iron-nickel) and <strong>Inner Core</strong> (solid, iron-nickel).</p>
+      </div>
+    </div>
+
+    <div class="gphy-card">
+      <div class="gphy-card__head">Conorod Discontinuity</div>
+      <div class="gphy-card__body">Between the <strong>Upper Crust</strong> and <strong>Lower Crust</strong>. Separates the upper (granitic) and lower (basaltic) parts of the continental crust.</div>
+    </div>
+
+    <div class="gphy-card">
+      <div class="gphy-card__head">Mohorovicic Discontinuity <span class="gphy-badge">Moho</span></div>
+      <div class="gphy-card__body">Between the <strong>Crust</strong> and the <strong>Mantle</strong>. The boundary where seismic waves change speed.</div>
+    </div>
+
+    <div class="gphy-card">
+      <div class="gphy-card__head">Repiti Discontinuity</div>
+      <div class="gphy-card__body">Between the <strong>Upper Mantle</strong> and <strong>Lower Mantle</strong>. Also known as the transition zone.</div>
+    </div>
+
+    <div class="gphy-card">
+      <div class="gphy-card__head">Gutenberg Discontinuity</div>
+      <div class="gphy-card__body">Between the <strong>Lower Mantle</strong> and <strong>Outer Core</strong>. Marks the boundary where S-waves (shear waves) stop travelling — proving the outer core is liquid.</div>
+    </div>
+
+    <div class="gphy-card">
+      <div class="gphy-card__head">Lehmann Discontinuity</div>
+      <div class="gphy-card__body">Between the <strong>Outer Core</strong> and <strong>Inner Core</strong>. Named after seismologist Inge Lehmann.</div>
+    </div>
+
+    <div class="rev-note">
+      <strong>Mnemonic for discontinuities (top to bottom):</strong><br>
+      <span class="gphy-mnem">"Conorod → Moho → Repiti → Gutenberg → Lehmann"</span><br>
+      <em>"Crust-Moho-Mantle-Repiti-Mantle-Gutenberg-Core-Lehmann-Core"</em>
+    </div>
+    <hr>
+
+    <div>
+      <!--
+  IMAGE SNIPPET — paste inside <main class="rev-page"> at the spot you want it.
+  • src   : ../images/<lowercase-hyphenated-filename>.<png|jpg|svg|webp>
+  • class : rev-img-sm    (≤320px — icon, portrait, small symbol)
+            rev-img-md    (≤480px — single diagram, illustration)
+            rev-img-wide  (full width — map, timeline, comparison, chart)
+  • alt   : short description, required for accessibility
+-->
+
+
+
+<figure class="rev-figure">
+  <img src="../images/15_01_physical-geography.JPG"
+       class="rev-img rev-img-wide"
+       alt="major interior layers of the Earth, with discontinuities labelled">
+  <figcaption>Major Interior Layers of the Earth and Their Discontinuities</figcaption>
+</figure>
+
+</div>
+
+
+    <hr>
+
+    <h2>2 · Composition of the Atmosphere</h2>
+    <p>Tap the list to reveal the exact percentages.</p>
+
+    <ul class="gphy-comp-list">
+      <li><strong>Nitrogen (N₂)</strong> <span>78.08%</span></li>
+      <li><strong>Oxygen (O₂)</strong> <span>20.95%</span></li>
+      <li><strong>Argon (Ar)</strong> <span>0.93%</span></li>
+      <li><strong>Carbon Dioxide (CO₂)</strong> <span>0.038%</span></li>
+      <li><strong>Neon (Ne)</strong> <span>0.0018%</span></li>
+      <li><strong>Helium (He)</strong> <span>0.0005%</span></li>
+      <li><strong>Krypton (Kr)</strong> <span>0.0001%</span></li>
+      <li><strong>Xenon (Xe)</strong> <span>0.000009%</span></li>
+      <li><strong>Hydrogen (H₂)</strong> <span>0.00005%</span></li>
+    </ul>
+
+    <div class="rev-note">
+      <strong>Quick recall:</strong> Nitrogen ~78%, Oxygen ~21%, Argon ~1%, CO₂ ~0.04%. Everything else is a trace gas. Remember <em>"78-21-1"</em>.
+    </div>
+
+    <h2>3 · Layers of the Atmosphere — Temperature Gradient</h2>
+    <p>Tap each layer to reveal its height, temperature trend, and key features.</p>
+
+    <div class="gphy-card">
+      <div class="gphy-card__head">Troposphere <span class="gphy-badge gphy-badge--layer">0 – 18 km</span></div>
+      <div class="gphy-card__body">
+        <p><strong>Temperature:</strong> Decreases with height (approx. -6.5°C per km).</p>
+        <p><strong>Key features:</strong> Weather phenomena (clouds, rain, storms) occur here. Contains ~75% of atmospheric mass. Called the "weather layer".</p>
+      </div>
+    </div>
+
+    <div class="gphy-card">
+      <div class="gphy-card__head">Stratosphere <span class="gphy-badge gphy-badge--layer">18 – 50 km</span></div>
+      <div class="gphy-card__body">
+        <p><strong>Temperature:</strong> Increases with height (due to ozone layer absorbing UV).</p>
+        <p><strong>Key features:</strong> Contains the <strong>Ozone Layer</strong>. Ideal for jet aircraft flying (smooth, no weather).</p>
+      </div>
+    </div>
+
+    <div class="gphy-card">
+      <div class="gphy-card__head">Mesosphere <span class="gphy-badge gphy-badge--layer">50 – 85 km</span></div>
+      <div class="gphy-card__body">
+        <p><strong>Temperature:</strong> Decreases with height (coldest layer, down to -90°C).</p>
+        <p><strong>Key features:</strong> Meteors burn up here. Called the "meteor layer".</p>
+      </div>
+    </div>
+
+    <div class="gphy-card">
+      <div class="gphy-card__head">Thermosphere <span class="gphy-badge gphy-badge--layer">85 km +</span></div>
+      <div class="gphy-card__body">
+        <p><strong>Temperature:</strong> Increases sharply with height (up to 1500°C).</p>
+        <p><strong>Key features:</strong> Contains the <strong>Ionosphere</strong> (radio communication) and the <strong>Exosphere</strong> (satellites orbit here). Auroras occur here.</p>
+      </div>
+    </div>
+
+    <div class="rev-note">
+      <strong>Temperature trend mnemonic:</strong><br>
+      <span class="gphy-mnem">"Troposphere (down), Stratosphere (up), Mesosphere (down), Thermosphere (up)"</span><br>
+      <em>"T-S-M-T = Down-Up-Down-Up"</em>
+    </div>
+    <hr>
+
+    <div>
+      <!--
+  IMAGE SNIPPET — paste inside <main class="rev-page"> at the spot you want it.
+  • src   : ../images/<lowercase-hyphenated-filename>.<png|jpg|svg|webp>
+  • class : rev-img-sm    (≤320px — icon, portrait, small symbol)
+            rev-img-md    (≤480px — single diagram, illustration)
+            rev-img-wide  (full width — map, timeline, comparison, chart)
+  • alt   : short description, required for accessibility
+-->
+
+
+
+<figure class="rev-figure">
+  <img src="../images/15_02_physical-geography.JPG"
+       class="rev-img rev-img-wide"
+       alt="Major Atmospheric Layers of the Earth with Temperature Gradient and Key Features">
+  <figcaption>Major Atmospheric Layers of the Earth with Height and Temperature Gradient and Key Features</figcaption>
+</figure>
+
+    </div>
+
+    <hr>
+
+    <h2>4 · Atmospheric Cells — Global Wind Circulation</h2>
+    <p>Tap each cell to reveal its location, mechanism, and resulting winds.</p>
+
+    <div class="gphy-card">
+      <div class="gphy-card__head">Hadley Cell <span class="gphy-badge gphy-badge--layer">0° – 30°</span></div>
+      <div class="gphy-card__body">
+        <p><strong>Location:</strong> Tropical region (Equator to 30° latitude).</p>
+        <p><strong>Mechanism:</strong> Thermally direct — driven by intense solar heating at the equator. Air rises at the equator (ITCZ) and sinks at the subtropics (30°).</p>
+        <p><strong>Surface Winds:</strong> Generates the <strong>Trade Winds</strong> (Easterlies) — blowing from 30° towards the equator.</p>
+      </div>
+    </div>
+
+    <div class="gphy-card">
+      <div class="gphy-card__head">Ferrel Cell <span class="gphy-badge gphy-badge--layer">30° – 60°</span></div>
+      <div class="gphy-card__body">
+        <p><strong>Location:</strong> Mid-latitude region (30° to 60° latitude).</p>
+        <p><strong>Mechanism:</strong> Thermally indirect (dynamic) — driven by the neighbouring Hadley and Polar cells. Air sinks at 30° and rises at 60°.</p>
+        <p><strong>Surface Winds:</strong> Generates the prevailing <strong>Westerlies</strong> — blowing from 30° towards 60°.</p>
+      </div>
+    </div>
+
+    <div class="gphy-card">
+      <div class="gphy-card__head">Polar Cell <span class="gphy-badge gphy-badge--layer">60° – 90°</span></div>
+      <div class="gphy-card__body">
+        <p><strong>Location:</strong> High-latitude region (60° to 90° latitude).</p>
+        <p><strong>Mechanism:</strong> Thermally direct — driven by extreme cold at the poles. Cold air sinks at the poles and flows equatorward.</p>
+        <p><strong>Surface Winds:</strong> Generates the <strong>Polar Easterlies</strong> — blowing from 90° towards 60°.</p>
+      </div>
+    </div>
+
+    <div class="rev-note">
+      <strong>Global wind belts mnemonic:</strong><br>
+      <span class="gphy-mnem">"Trade Winds (0-30) · Westerlies (30-60) · Polar Easterlies (60-90)"</span><br>
+      <em>"Trade, West, Polar — T-W-P"</em>
+    </div>
+    <hr>
+
+    <div>
+      <!--
+  IMAGE SNIPPET — paste inside <main class="rev-page"> at the spot you want it.
+  • src   : ../images/<lowercase-hyphenated-filename>.<png|jpg|svg|webp>
+  • class : rev-img-sm    (≤320px — icon, portrait, small symbol)
+            rev-img-md    (≤480px — single diagram, illustration)
+            rev-img-wide  (full width — map, timeline, comparison, chart)
+  • alt   : short description, required for accessibility
+-->
+
+
+
+<figure class="rev-figure">
+  <img src="../images/15_03_physical-geography.JPG"
+       class="rev-img rev-img-wide"
+       alt="Major Atmospheric Cells of the Earth with Global Wind Circulation and Resulting Winds">
+  <figcaption>Major Atmospheric Cells of the Earth with Global Wind Circulation and Resulting Winds</figcaption>
+</figure>
+
+</div>
+
+
+<hr>
+
+    <h2>5 · Types of Clouds — Classification &amp; Characteristics</h2>
+    <p>Clouds are classified by height and appearance. Tap each group to reveal details.</p>
+
+    <div class="gphy-table-wrap">
+      <table class="gphy-table">
+        <thead>
+          <tr>
+            <th>Group</th>
+            <th>Height</th>
+            <th>Types</th>
+            <th>Characteristics</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>High Clouds</strong></td>
+            <td>Above 6 km</td>
+            <td>Cirrus (Ci), Cirrostratus (Cs), Cirrocumulus (Cc)</td>
+            <td>Thin, wispy, made of ice crystals. Indicate fair weather.</td>
+          </tr>
+          <tr>
+            <td><strong>Middle Clouds</strong></td>
+            <td>2 – 6 km</td>
+            <td>Altostratus (As), Altocumulus (Ac)</td>
+            <td>Grey/bluish sheets or patches. Usually indicate fair weather (Ac) or approaching rain (As).</td>
+          </tr>
+          <tr>
+            <td><strong>Low Clouds</strong></td>
+            <td>Below 2 km</td>
+            <td>Stratus (St), Stratocumulus (Sc), Nimbostratus (Ns), Cumulus (Cu), Cumulonimbus (Cb)</td>
+            <td>Grey, flat, or puffy. Ns brings continuous rain. Cb causes thunderstorms, heavy rain, hail.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <hr>
+
+    <div>
+
+      <!--
+  IMAGE SNIPPET — paste inside <main class="rev-page"> at the spot you want it.
+  • src   : ../images/<lowercase-hyphenated-filename>.<png|jpg|svg|webp>
+  • class : rev-img-sm    (≤320px — icon, portrait, small symbol)
+            rev-img-md    (≤480px — single diagram, illustration)
+            rev-img-wide  (full width — map, timeline, comparison, chart)
+  • alt   : short description, required for accessibility
+-->
+
+
+
+<figure class="rev-figure">
+  <img src="../images/15_04_physical-geography.JPG"
+       class="rev-img rev-img-wide"
+       alt="Major Types of Clouds Classified by Height and Appearance with Characteristics">
+  <figcaption>Major types of Clouds in India</figcaption>
+</figure>
+
+
+
+    </div>
+
+
+
+
+
+    <hr>
+
+    <div class="rev-note">
+      <strong>Cloud mnemonic:</strong><br>
+      <span class="gphy-mnem">"High Circles, Middle Sheets, Low Meets"</span><br>
+      • High: Cirrus family (Ci, Cs, Cc)<br>
+      • Middle: Altostratus &amp; Altocumulus (As, Ac)<br>
+      • Low: Stratus family (St, Sc, Ns, Cu, Cb)
+    </div>
+
+    <h2>6 · Cyclones — Regional Names Around the World</h2>
+    <p>Tap each region to reveal its local name for a cyclone.</p>
+
+    <div class="gphy-tools">
+      <button class="gphy-btn" data-gphy-all="open">Reveal all</button>
+      <button class="gphy-btn" data-gphy-all="close">Hide all</button>
+    </div>
+
+    <div class="gphy-card">
+      <div class="gphy-card__head">Caribbean Sea &amp; North Atlantic</div>
+      <div class="gphy-card__body"><strong>Hurricanes</strong></div>
+    </div>
+    <div class="gphy-card">
+      <div class="gphy-card__head">China Sea</div>
+      <div class="gphy-card__body"><strong>Typhoon</strong></div>
+    </div>
+    <div class="gphy-card">
+      <div class="gphy-card__head">Indian Ocean</div>
+      <div class="gphy-card__body"><strong>Tropical Cyclones</strong></div>
+    </div>
+    <div class="gphy-card">
+      <div class="gphy-card__head">Japan</div>
+      <div class="gphy-card__body"><strong>Taifu</strong></div>
+    </div>
+    <div class="gphy-card">
+      <div class="gphy-card__head">Northern Australia</div>
+      <div class="gphy-card__body"><strong>Wily Willies</strong></div>
+    </div>
+    <div class="gphy-card">
+      <div class="gphy-card__head">Philippines</div>
+      <div class="gphy-card__body"><strong>Baguio</strong></div>
+    </div>
+    <div class="gphy-card">
+      <div class="gphy-card__head">USA</div>
+      <div class="gphy-card__body"><strong>Tornados</strong> (technically a different phenomenon — tornadoes are over land, cyclones over sea)</div>
+    </div>
+
+    <h2>7 · Slash &amp; Burn Cultivation — Names in India &amp; the World</h2>
+    <p>Tap each state/country to reveal its local name.</p>
+
+    <div class="gphy-tools">
+      <button class="gphy-btn" data-gphy-all="open">Reveal all</button>
+      <button class="gphy-btn" data-gphy-all="close">Hide all</button>
+    </div>
+
+    <div class="gphy-card">
+      <div class="gphy-card__head">North-Eastern States <span class="gphy-badge gphy-badge--india">India</span></div>
+      <div class="gphy-card__body"><strong>Jhumming</strong></div>
+    </div>
+    <div class="gphy-card">
+      <div class="gphy-card__head">Manipur <span class="gphy-badge gphy-badge--india">India</span></div>
+      <div class="gphy-card__body"><strong>Pamlou</strong></div>
+    </div>
+    <div class="gphy-card">
+      <div class="gphy-card__head">Chhattisgarh <span class="gphy-badge gphy-badge--india">India</span></div>
+      <div class="gphy-card__body"><strong>Dipa</strong></div>
+    </div>
+    <div class="gphy-card">
+      <div class="gphy-card__head">Andaman &amp; Nicobar <span class="gphy-badge gphy-badge--india">India</span></div>
+      <div class="gphy-card__body"><strong>Dipa</strong></div>
+    </div>
+    <div class="gphy-card">
+      <div class="gphy-card__head">Madhya Pradesh <span class="gphy-badge gphy-badge--india">India</span></div>
+      <div class="gphy-card__body"><strong>Bewar / Dahiya</strong></div>
+    </div>
+    <div class="gphy-card">
+      <div class="gphy-card__head">Andhra Pradesh <span class="gphy-badge gphy-badge--india">India</span></div>
+      <div class="gphy-card__body"><strong>Podu / Penda</strong></div>
+    </div>
+    <div class="gphy-card">
+      <div class="gphy-card__head">Odisha <span class="gphy-badge gphy-badge--india">India</span></div>
+      <div class="gphy-card__body"><strong>Koman / Brinnga</strong></div>
+    </div>
+    <div class="gphy-card">
+      <div class="gphy-card__head">Western Ghats <span class="gphy-badge gphy-badge--india">India</span></div>
+      <div class="gphy-card__body"><strong>Kumari</strong></div>
+    </div>
+    <div class="gphy-card">
+      <div class="gphy-card__head">Rajasthan <span class="gphy-badge gphy-badge--india">India</span></div>
+      <div class="gphy-card__body"><strong>Valre / Waltre</strong></div>
+    </div>
+    <div class="gphy-card">
+      <div class="gphy-card__head">Himalayan Belt <span class="gphy-badge gphy-badge--india">India</span></div>
+      <div class="gphy-card__body"><strong>Khii</strong></div>
+    </div>
+    <div class="gphy-card">
+      <div class="gphy-card__head">Jharkhand <span class="gphy-badge gphy-badge--india">India</span></div>
+      <div class="gphy-card__body"><strong>Kuruwa</strong></div>
+    </div>
+
+    <hr>
+
+    <h3>Slash &amp; Burn — World Names</h3>
+    <div class="gphy-card">
+      <div class="gphy-card__head">Mexico &amp; Central America <span class="gphy-badge gphy-badge--world">World</span></div>
+      <div class="gphy-card__body"><strong>Milpa</strong></div>
+    </div>
+    <div class="gphy-card">
+      <div class="gphy-card__head">Venezuela <span class="gphy-badge gphy-badge--world">World</span></div>
+      <div class="gphy-card__body"><strong>Conuco</strong></div>
+    </div>
+    <div class="gphy-card">
+      <div class="gphy-card__head">Brazil <span class="gphy-badge gphy-badge--world">World</span></div>
+      <div class="gphy-card__body"><strong>Roca</strong></div>
+    </div>
+    <div class="gphy-card">
+      <div class="gphy-card__head">Central Africa <span class="gphy-badge gphy-badge--world">World</span></div>
+      <div class="gphy-card__body"><strong>Masole</strong></div>
+    </div>
+    <div class="gphy-card">
+      <div class="gphy-card__head">Indonesia <span class="gphy-badge gphy-badge--world">World</span></div>
+      <div class="gphy-card__body"><strong>Ladang</strong></div>
+    </div>
+    <div class="gphy-card">
+      <div class="gphy-card__head">Vietnam <span class="gphy-badge gphy-badge--world">World</span></div>
+      <div class="gphy-card__body"><strong>Ray</strong></div>
+    </div>
+
+    <h2>8 · Rapid Fire</h2>
+    <p>Answer out loud, then tap to check.</p>
+
+    <div class="gphy-q">
+      <p>Which discontinuity separates the crust and the mantle?</p>
+      <div class="gphy-ans">Mohorovicic Discontinuity (Moho)</div>
+    </div>
+
+    <div class="gphy-q">
+      <p>Which discontinuity separates the mantle and the outer core?</p>
+      <div class="gphy-ans">Gutenberg Discontinuity</div>
+    </div>
+
+    <div class="gphy-q">
+      <p>Which discontinuity separates the outer core and the inner core?</p>
+      <div class="gphy-ans">Lehmann Discontinuity</div>
+    </div>
+
+    <div class="gphy-q">
+      <p>Which gas is most abundant in the Earth's atmosphere?</p>
+      <div class="gphy-ans">Nitrogen (78.08%)</div>
+    </div>
+
+    <div class="gphy-q">
+      <p>In which layer of the atmosphere does weather occur?</p>
+      <div class="gphy-ans">Troposphere</div>
+    </div>
+
+    <div class="gphy-q">
+      <p>Which layer contains the ozone layer?</p>
+      <div class="gphy-ans">Stratosphere</div>
+    </div>
+
+    <div class="gphy-q">
+      <p>In which layer do meteors burn up?</p>
+      <div class="gphy-ans">Mesosphere</div>
+    </div>
+
+    <div class="gphy-q">
+      <p>Which atmospheric cell generates the Trade Winds?</p>
+      <div class="gphy-ans">Hadley Cell (0° – 30°)</div>
+    </div>
+
+    <div class="gphy-q">
+      <p>Which atmospheric cell generates the Westerlies?</p>
+      <div class="gphy-ans">Ferrel Cell (30° – 60°)</div>
+    </div>
+
+    <div class="gphy-q">
+      <p>Which atmospheric cell generates the Polar Easterlies?</p>
+      <div class="gphy-ans">Polar Cell (60° – 90°)</div>
+    </div>
+
+    <div class="gphy-q">
+      <p>What are the three high clouds?</p>
+      <div class="gphy-ans">Cirrus, Cirrostratus, Cirrocumulus</div>
+    </div>
+
+    <div class="gphy-q">
+      <p>Which cloud brings continuous rain?</p>
+      <div class="gphy-ans">Nimbostratus</div>
+    </div>
+
+    <div class="gphy-q">
+      <p>Which cloud causes thunderstorms and hail?</p>
+      <div class="gphy-ans">Cumulonimbus</div>
+    </div>
+
+    <div class="gphy-q">
+      <p>What is a cyclone called in the Caribbean Sea?</p>
+      <div class="gphy-ans">Hurricane</div>
+    </div>
+
+    <div class="gphy-q">
+      <p>What is a cyclone called in the China Sea?</p>
+      <div class="gphy-ans">Typhoon</div>
+    </div>
+
+    <div class="gphy-q">
+      <p>What is a cyclone called in Northern Australia?</p>
+      <div class="gphy-ans">Wily Willies</div>
+    </div>
+
+    <div class="gphy-q">
+      <p>What is slash-and-burn cultivation called in North-Eastern India?</p>
+      <div class="gphy-ans">Jhumming</div>
+    </div>
+
+    <div class="gphy-q">
+      <p>What is slash-and-burn cultivation called in Mexico?</p>
+      <div class="gphy-ans">Milpa</div>
+    </div>
+
+    <hr>
+
+    <p class="rev-subtitle">Tip: Use "Hide all" before a session, then "Reveal all" to check. The discontinuities and atmospheric cells are the most heavily tested — go through the rapid-fire twice.</p>
+
+  </main>
+
+  <!-- Tap-to-reveal behaviour for this page. -->
+  <script>
+    (function () {
+      document.addEventListener('click', function (e) {
+        if (e.target.closest('.gphy-btn')) return;
+        var el = e.target.closest('.gphy-card, .gphy-q');
+        if (!el) return;
+        el.classList.toggle('is-open');
+      });
+
+      document.querySelectorAll('.gphy-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var open = btn.getAttribute('data-gphy-all') === 'open';
+          document.querySelectorAll('.gphy-card, .gphy-q').forEach(function (el) {
+            el.classList.toggle('is-open', open);
+          });
+        });
+      });
+    })();
+  </script>
+
+  <!-- Report true content height to the parent app.
+       Measures <main class="rev-page"> directly, NOT document.body. -->
+  <script>
+    (function () {
+      function sendHeight() {
+        var el = document.querySelector('.rev-page') || document.body;
+        var h = Math.ceil(el.getBoundingClientRect().height);
+        if (!h) h = el.scrollHeight || 0;
+        if (!h) return;
+        try {
+          window.parent.postMessage({ type: 'revision-height', height: h }, '*');
+        } catch (e) {}
+      }
+      window.addEventListener('load', sendHeight);
+      window.addEventListener('resize', sendHeight);
+      setTimeout(sendHeight, 0);
+      setTimeout(sendHeight, 50);
+      setTimeout(sendHeight, 300);
+      setTimeout(sendHeight, 1000);
+      if (window.ResizeObserver) {
+        new ResizeObserver(sendHeight).observe(document.body);
+      }
+    })();
+  </script>
+</body>
+</html>

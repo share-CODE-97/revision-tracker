@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alloys &amp; Ores — Revision</title>
+
+  <!--
+    Revision page for "Alloys & Ores".
+    Loaded inside the main app's iframe.
+    • Theme is passed via URL hash: #theme=dark or #theme=light
+    • Styles come from ../css/style.css
+  -->
+
+  <!-- Read theme from URL hash BEFORE paint (no flash). -->
+  <script>
+    (function () {
+      var m = location.hash.match(/theme=(light|dark)/);
+      document.documentElement.setAttribute('data-theme', m ? m[1] : 'dark');
+    })();
+  </script>
+
+  <!-- Shared app styles — this links the file to the MAIN stylesheet. -->
+  <link rel="stylesheet" href="../css/style.css">
+
+  <!-- Match the app's font stack. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Page-specific styles for Alloys & Ores (namespace: .ao-) -->
+  <style>
+    .ao-tools{ display:flex; gap:10px; flex-wrap:wrap; margin:14px 0 6px; }
+    .ao-btn{
+      font:inherit; font-size:.78rem; font-weight:700; letter-spacing:.02em;
+      padding:7px 14px; border-radius:999px; cursor:pointer;
+      border:1px solid #475569; background:transparent; color:#cbd5e1;
+      transition:border-color .15s, color .15s;
+    }
+    .ao-btn:hover{ border-color:#6366f1; color:#a5b4fc; }
+
+    .ao-grid{
+      display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+      gap:12px; margin:18px 0 26px;
+    }
+    .ao-card{
+      border:1px solid #334155; border-radius:12px; background:#0f172a;
+      padding:12px 14px; cursor:pointer;
+      transition:border-color .15s, background .15s, transform .15s;
+    }
+    .ao-card:hover{ transform:translateY(-2px); border-color:#6366f1; }
+    .ao-card.is-open{ border-color:#6366f1; background:#131c33; }
+    .ao-card__name{
+      display:flex; justify-content:space-between; align-items:center; gap:8px;
+      font-weight:700; font-size:.95rem; color:#e2e8f0;
+    }
+    .ao-card__name::after{ content:'+'; color:#6366f1; font-weight:800; }
+    .ao-card.is-open .ao-card__name::after{ content:'–'; }
+    .ao-card__body{ display:none; margin-top:10px; font-size:.88rem; line-height:1.55; }
+    .ao-card.is-open .ao-card__body{ display:block; }
+    .ao-formula{
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      font-weight:600; color:#a5b4fc; font-size:.85rem;
+    }
+    .ao-use{ display:block; margin-top:5px; color:#94a3b8; font-size:.82rem; }
+
+    .ao-oregrid{
+      display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+      gap:12px; margin:18px 0 26px;
+    }
+    .ao-ore{
+      border:1px solid #334155; border-radius:12px; background:#0f172a;
+      padding:12px 14px; cursor:pointer;
+      transition:border-color .15s, background .15s;
+    }
+    .ao-ore:hover{ border-color:#6366f1; }
+    .ao-ore.is-open{ border-color:#6366f1; background:#131c33; }
+    .ao-ore h3{
+      display:flex; justify-content:space-between; align-items:center; gap:8px;
+      margin:0; font-size:.95rem; color:#e2e8f0;
+    }
+    .ao-sym{
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      font-size:.72rem; font-weight:700; color:#a5b4fc;
+      background:#1e293b; border-radius:6px; padding:2px 8px;
+    }
+    .ao-ore-list{ display:none; margin:10px 0 0; padding-left:18px; }
+    .ao-ore.is-open .ao-ore-list{ display:block; }
+    .ao-ore-list li{ font-size:.85rem; color:#cbd5e1; margin:5px 0; line-height:1.5; }
+
+    .ao-q{
+      border-left:3px solid #6366f1; border-radius:0 10px 10px 0;
+      background:#0f172a; padding:11px 15px; margin:12px 0; cursor:pointer;
+    }
+    .ao-q p{ margin:0; font-weight:600; font-size:.92rem; color:#e2e8f0; }
+    .ao-q .ao-ans{ display:none; margin-top:8px; font-size:.88rem; color:#a5b4fc; font-weight:600; }
+    .ao-q.is-open .ao-ans{ display:block; }
+
+    html[data-theme="light"] .ao-btn{ border-color:#cbd5e1; color:#334155; }
+    html[data-theme="light"] .ao-btn:hover{ border-color:#6366f1; color:#4338ca; }
+    html[data-theme="light"] .ao-card,
+    html[data-theme="light"] .ao-ore{ background:#ffffff; border-color:#e2e8f0; }
+    html[data-theme="light"] .ao-card.is-open,
+    html[data-theme="light"] .ao-ore.is-open{ background:#eef2ff; border-color:#6366f1; }
+    html[data-theme="light"] .ao-card__name,
+    html[data-theme="light"] .ao-ore h3{ color:#1e293b; }
+    html[data-theme="light"] .ao-formula,
+    html[data-theme="light"] .ao-q .ao-ans{ color:#4338ca; }
+    html[data-theme="light"] .ao-use{ color:#64748b; }
+    html[data-theme="light"] .ao-sym{ background:#e0e7ff; color:#4338ca; }
+    html[data-theme="light"] .ao-ore-list li{ color:#475569; }
+    html[data-theme="light"] .ao-q{ background:#f8fafc; }
+    html[data-theme="light"] .ao-q p{ color:#1e293b; }
+  </style>
+</head>
+
+<body style="background: transparent; margin: 0;">
+  <main class="rev-page">
+
+    <h1>Alloys &amp; Ores</h1>
+    <p class="rev-subtitle">Metals · compositions · uses — tap any card to test yourself.</p>
+
+    <div class="rev-note">
+      <strong>Two ideas, one page.</strong> An <em>alloy</em> is a man-made mixture of a metal with other metals
+      (or a non-metal). An <em>ore</em> is a natural mineral from which a metal can be extracted profitably.
+      Everything below is <strong>tap-to-reveal</strong> — say the answer out loud first, then check.
+    </div>
+
+    <h2>1 · Alloys — tap to reveal</h2>
+    <p>Read the alloy name → say the composition and one use → tap to check.</p>
+
+    <div class="ao-tools">
+      <button class="ao-btn" data-ao-all="open">Reveal all</button>
+      <button class="ao-btn" data-ao-all="close">Hide all</button>
+    </div>
+
+    <div class="ao-grid">
+
+      <div class="ao-card">
+        <div class="ao-card__name">Brass</div>
+        <div class="ao-card__body">
+          <span class="ao-formula">Cu 70% + Zn 30%</span>
+          <span class="ao-use">Utensils and vessels.</span>
+        </div>
+      </div>
+
+      <div class="ao-card">
+        <div class="ao-card__name">Bronze</div>
+        <div class="ao-card__body">
+          <span class="ao-formula">Cu 90% + Sn 10%</span>
+          <span class="ao-use">Coins, bells and utensils.</span>
+        </div>
+      </div>
+
+      <div class="ao-card">
+        <div class="ao-card__name">German Silver <span style="font-weight:400;font-size:.75rem;color:#94a3b8">(Nickel Silver)</span></div>
+        <div class="ao-card__body">
+          <span class="ao-formula">Cu 60% + Zn 20% + Ni 20%</span>
+          <span class="ao-use">Utensils. (Contains no silver!)</span>
+        </div>
+      </div>
+
+      <div class="ao-card">
+        <div class="ao-card__name">Rolled Gold</div>
+        <div class="ao-card__body">
+          <span class="ao-formula">Cu 90% + Al 10%</span>
+          <span class="ao-use">Cheap / imitation jewellery.</span>
+        </div>
+      </div>
+
+      <div class="ao-card">
+        <div class="ao-card__name">Gunmetal</div>
+        <div class="ao-card__body">
+          <span class="ao-formula">Cu 88% + Sn 10% + Zn 1% + Pb 1%</span>
+          <span class="ao-use">Guns, barrels, gears and bearings.</span>
+        </div>
+      </div>
+
+      <div class="ao-card">
+        <div class="ao-card__name">Delta Metal</div>
+        <div class="ao-card__body">
+          <span class="ao-formula">Cu 60% + Zn 38% + Fe 2%</span>
+          <span class="ao-use">Aircraft propellers.</span>
+        </div>
+      </div>
+
+      <div class="ao-card">
+        <div class="ao-card__name">Muntz Metal</div>
+        <div class="ao-card__body">
+          <span class="ao-formula">Cu 60% + Zn 40%</span>
+          <span class="ao-use">Coins.</span>
+        </div>
+      </div>
+
+      <div class="ao-card">
+        <div class="ao-card__name">Dutch Metal</div>
+        <div class="ao-card__body">
+          <span class="ao-formula">Cu 80% + Zn 20%</span>
+          <span class="ao-use">Artificial / imitation jewellery.</span>
+        </div>
+      </div>
+
+      <div class="ao-card">
+        <div class="ao-card__name">Monel Metal</div>
+        <div class="ao-card__body">
+          <span class="ao-formula">Cu 70% + Ni 30%</span>
+          <span class="ao-use">Bases of containers (corrosion-resistant).</span>
+        </div>
+      </div>
+
+      <div class="ao-card">
+        <div class="ao-card__name">Rose Metal</div>
+        <div class="ao-card__body">
+          <span class="ao-formula">Bi 50% + Pb 28% + Sn 22%</span>
+          <span class="ao-use">Automatic fuses (very low melting point).</span>
+        </div>
+      </div>
+
+      <div class="ao-card">
+        <div class="ao-card__name">Solder</div>
+        <div class="ao-card__body">
+          <span class="ao-formula">Pb 50% + Sn 50%</span>
+          <span class="ao-use">Soldering / joining metals.</span>
+        </div>
+      </div>
+
+      <div class="ao-card">
+        <div class="ao-card__name">Magnalium</div>
+        <div class="ao-card__body">
+          <span class="ao-formula">Al 95% + Mg 5%</span>
+          <span class="ao-use">Aircraft bodies.</span>
+        </div>
+      </div>
+
+      <div class="ao-card">
+        <div class="ao-card__name">Duralumin</div>
+        <div class="ao-card__body">
+          <span class="ao-formula">Al 94% + Cu 3% + Mg 2% + Mn 1%</span>
+          <span class="ao-use">Utensils, aircraft parts.</span>
+        </div>
+      </div>
+
+      <div class="ao-card">
+        <div class="ao-card__name">Type Metal</div>
+        <div class="ao-card__body">
+          <span class="ao-formula">Pb 80% + Sb 15% + Sn 5%</span>
+          <span class="ao-use">Printing industry (type / fonts).</span>
+        </div>
+      </div>
+
+      <div class="ao-card">
+        <div class="ao-card__name">Bell Metal</div>
+        <div class="ao-card__body">
+          <span class="ao-formula">Cu 80% + Sn 20%</span>
+          <span class="ao-use">Bells and statues.</span>
+        </div>
+      </div>
+
+      <div class="ao-card">
+        <div class="ao-card__name">Stainless Steel</div>
+        <div class="ao-card__body">
+          <span class="ao-formula">Fe 75% + Cr 15% + Ni 9.5% + C 0.05%</span>
+          <span class="ao-use">Utensils, surgical instruments.</span>
+        </div>
+      </div>
+
+      <div class="ao-card">
+        <div class="ao-card__name">Nickel Steel</div>
+        <div class="ao-card__body">
+          <span class="ao-formula">Fe 95% + Ni 5%</span>
+          <span class="ao-use">Electrical wires, vehicle parts.</span>
+        </div>
+      </div>
+
+    </div>
+
+    <h2>2 · Alloy patterns that save you</h2>
+
+    <div class="rev-note">
+      <strong>Brass vs Bronze — never mix these up again.</strong><br>
+      <strong>B</strong>ronze has <strong>T</strong>in → <code>Cu 90 + Sn 10</code><br>
+      <strong>B</strong>rass has <strong>Z</strong>inc → <code>Cu 70 + Zn 30</code>
+    </div>
+
+    <ul>
+      <li><strong>Copper family.</strong> If the biggest share is Cu, it's a copper alloy — Brass, Bronze, Gunmetal, Delta, Muntz, Dutch, Monel, German Silver, Bell Metal, Rolled Gold.</li>
+      <li><strong>Bell Metal is a tin-heavy Bronze.</strong> Bronze is <code>90:10</code>, Bell Metal is <code>80:20</code> — "more tin, more ring".</li>
+      <li><strong>Delta Metal</strong> is the only copper alloy containing <strong>iron</strong> → aircraft propeller.</li>
+      <li><strong>Monel Metal</strong> = Cu + Ni → strong, corrosion-resistant → container bases.</li>
+      <li><strong>German Silver contains no silver.</strong> It's Cu + Zn + Ni.</li>
+      <li><strong>Solder</strong> = <code>Pb 50 + Sn 50</code> → soldering. Equal halves, easy to remember.</li>
+      <li><strong>Rose Metal</strong> is the only alloy with <strong>bismuth</strong> → lowest melting point → automatic fuses.</li>
+      <li><strong>Type Metal</strong> is mostly <strong>lead</strong> (<code>80%</code>) → printing type.</li>
+      <li><strong>The two Al alloys:</strong> Magnalium (<code>Al 95 + Mg 5</code>, aircraft body) and Duralumin (<code>Al 94 + Cu 3 + Mg 2 + Mn 1</code>, utensils + aircraft).</li>
+      <li><strong>Stainless Steel = Fe 75 / Cr 15 / Ni 9.5 / C 0.05.</strong> Remember <em>"75-15-9.5"</em>.</li>
+      <li><strong>Nickel Steel = Fe 95 + Ni 5</strong> → wires and vehicle parts.</li>
+    </ul>
+
+    <h2>3 · Ores — tap a metal to reveal its ores</h2>
+    <p>Name the metal first, list every ore you can, <em>then</em> tap the card.</p>
+
+    <div class="ao-tools">
+      <button class="ao-btn" data-ao-all="open">Reveal all</button>
+      <button class="ao-btn" data-ao-all="close">Hide all</button>
+    </div>
+
+    <div class="ao-oregrid">
+
+      <div class="ao-ore">
+        <h3>Sodium <span class="ao-sym">Na</span></h3>
+        <ul class="ao-ore-list">
+          <li>Rock salt / Sodium chloride — <code>NaCl</code></li>
+          <li>Soda ash — <code>Na₂CO₃</code></li>
+          <li>Washing soda — <code>Na₂CO₃·10H₂O</code></li>
+          <li>Sodium nitrate — <code>NaNO₃</code></li>
+          <li>Sodium sulphate — <code>Na₂SO₄</code></li>
+          <li>Borax — <code>Na₂B₄O₇·10H₂O</code></li>
+        </ul>
+      </div>
+
+      <div class="ao-ore">
+        <h3>Potassium <span class="ao-sym">K</span></h3>
+        <ul class="ao-ore-list">
+          <li>Potassium chloride — <code>KCl</code></li>
+          <li>Potassium carbonate — <code>K₂CO₃</code></li>
+          <li>Nitre / Niter — <code>KNO₃</code></li>
+          <li>Carnallite — <code>KCl·MgCl₂·6H₂O</code></li>
+        </ul>
+      </div>
+
+      <div class="ao-ore">
+        <h3>Magnesium <span class="ao-sym">Mg</span></h3>
+        <ul class="ao-ore-list">
+          <li>Magnesite — <code>MgCO₃</code></li>
+          <li>Dolomite — <code>CaMg(CO₃)₂</code></li>
+          <li>Carnallite — <code>KCl·MgCl₂·6H₂O</code></li>
+          <li>Epsomite — <code>MgSO₄·7H₂O</code></li>
+        </ul>
+      </div>
+
+      <div class="ao-ore">
+        <h3>Aluminium <span class="ao-sym">Al</span></h3>
+        <ul class="ao-ore-list">
+          <li>Bauxite — <code>Al₂O₃·2H₂O</code></li>
+          <li>Cryolite — <code>Na₃AlF₆</code></li>
+          <li>Corundum — <code>Al₂O₃</code></li>
+          <li>Diaspore — <code>AlO(OH)</code></li>
+        </ul>
+      </div>
+
+      <div class="ao-ore">
+        <h3>Calcium <span class="ao-sym">Ca</span></h3>
+        <ul class="ao-ore-list">
+          <li>Calcium carbonate — <code>CaCO₃</code></li>
+          <li>Gypsum — <code>CaSO₄·2H₂O</code></li>
+          <li>Fluorspar — <code>CaF₂</code></li>
+          <li>Phosphorite — <code>Ca₃(PO₄)₂</code></li>
+          <li>Dolomite — <code>CaCO₃·MgCO₃</code></li>
+        </ul>
+      </div>
+
+      <div class="ao-ore">
+        <h3>Gold <span class="ao-sym">Au</span></h3>
+        <ul class="ao-ore-list">
+          <li>Calaverite — <code>AuTe₂</code></li>
+          <li>Sylvanite — <code>(AgAu)Te₂</code></li>
+          <li>Petzite — <code>(AgAu)₂Te</code></li>
+        </ul>
+      </div>
+
+      <div class="ao-ore">
+        <h3>Copper <span class="ao-sym">Cu</span></h3>
+        <ul class="ao-ore-list">
+          <li>Cuprite — <code>Cu₂O</code></li>
+          <li>Azurite — <code>2CuCO₃·Cu(OH)₂</code></li>
+          <li>Malachite — <code>Cu₂CO₃(OH)₂</code></li>
+          <li>Chalcocite — <code>Cu₂S</code></li>
+          <li>Copper pyrite — <code>CuFeS₂</code></li>
+        </ul>
+      </div>
+
+      <div class="ao-ore">
+        <h3>Tin <span class="ao-sym">Sn</span></h3>
+        <ul class="ao-ore-list">
+          <li>Cassiterite — <code>SnO₂</code></li>
+          <li>Tin pyrite — <code>Cu₂FeSnS₄</code></li>
+        </ul>
+      </div>
+
+      <div class="ao-ore">
+        <h3>Silver <span class="ao-sym">Ag</span></h3>
+        <ul class="ao-ore-list">
+          <li>Argentite / silver glance — <code>Ag₂S</code></li>
+          <li>Chlorargyrite / horn silver — <code>AgCl</code></li>
+        </ul>
+      </div>
+
+      <div class="ao-ore">
+        <h3>Lead <span class="ao-sym">Pb</span></h3>
+        <ul class="ao-ore-list">
+          <li>Galena — <code>PbS</code></li>
+          <li>Cerussite — <code>PbCO₃</code></li>
+          <li>Cotunnite — <code>PbCl₂</code></li>
+        </ul>
+      </div>
+
+      <div class="ao-ore">
+        <h3>Zinc <span class="ao-sym">Zn</span></h3>
+        <ul class="ao-ore-list">
+          <li>Zinc blende — <code>ZnS</code></li>
+          <li>Franklinite — <code>ZnFe₂O₄</code></li>
+          <li>Calamine — <code>ZnCO₃</code></li>
+          <li>Zincite — <code>ZnO</code></li>
+        </ul>
+      </div>
+
+      <div class="ao-ore">
+        <h3>Mercury <span class="ao-sym">Hg</span></h3>
+        <ul class="ao-ore-list">
+          <li>Cinnabar — <code>HgS</code></li>
+          <li>Calomel — <code>Hg₂Cl₂</code></li>
+        </ul>
+      </div>
+
+      <div class="ao-ore">
+        <h3>Manganese <span class="ao-sym">Mn</span></h3>
+        <ul class="ao-ore-list">
+          <li>Pyrolusite — <code>MnO₂</code></li>
+          <li>Manganite — <code>Mn₂O₃·2H₂O</code></li>
+        </ul>
+      </div>
+
+      <div class="ao-ore">
+        <h3>Iron <span class="ao-sym">Fe</span></h3>
+        <ul class="ao-ore-list">
+          <li>Hematite — <code>Fe₂O₃</code></li>
+          <li>Magnetite — <code>Fe₃O₄</code></li>
+          <li>Siderite — <code>FeCO₃</code></li>
+          <li>Iron pyrite — <code>FeS₂</code></li>
+        </ul>
+      </div>
+
+      <div class="ao-ore">
+        <h3>Barium <span class="ao-sym">Ba</span></h3>
+        <ul class="ao-ore-list">
+          <li>Barium sulphate — <code>BaSO₄</code></li>
+          <li>Barium carbonate — <code>BaCO₃</code></li>
+        </ul>
+      </div>
+
+      <div class="ao-ore">
+        <h3>Cadmium <span class="ao-sym">Cd</span></h3>
+        <ul class="ao-ore-list">
+          <li>Greenockite — <code>CdS</code></li>
+        </ul>
+      </div>
+
+      <div class="ao-ore">
+        <h3>Chromium <span class="ao-sym">Cr</span></h3>
+        <ul class="ao-ore-list">
+          <li>Chromite / iron chromite — <code>FeCr₂O₄</code></li>
+        </ul>
+      </div>
+
+      <div class="ao-ore">
+        <h3>Antimony <span class="ao-sym">Sb</span></h3>
+        <ul class="ao-ore-list">
+          <li>Stibnite — <code>Sb₂S₃</code></li>
+        </ul>
+      </div>
+
+      <div class="ao-ore">
+        <h3>Arsenic <span class="ao-sym">As</span></h3>
+        <ul class="ao-ore-list">
+          <li>Arsenopyrite / arsenical pyrite — <code>FeAsS</code></li>
+        </ul>
+      </div>
+
+      <div class="ao-ore">
+        <h3>Cobalt <span class="ao-sym">Co</span></h3>
+        <ul class="ao-ore-list">
+          <li>Cobaltite — <code>CoAsS</code></li>
+        </ul>
+      </div>
+
+      <div class="ao-ore">
+        <h3>Strontium <span class="ao-sym">Sr</span></h3>
+        <ul class="ao-ore-list">
+          <li>Strontianite — <code>SrCO₃</code></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <h2>4 · Ore patterns — read the formula, name the ore</h2>
+
+    <ul>
+      <li><strong>Pyrite = sulphur.</strong> Every ore ending in <em>-pyrite</em> has an S in it: Iron pyrite <code>FeS₂</code>, Copper pyrite <code>CuFeS₂</code>, Arsenopyrite <code>FeAsS</code>.</li>
+      <li><strong>Sulphide ores</strong> (look for <code>S</code> alone): Galena <code>PbS</code>, Cinnabar <code>HgS</code>, Zinc blende <code>ZnS</code>, Argentite <code>Ag₂S</code>, Greenockite <code>CdS</code>, Stibnite <code>Sb₂S₃</code>, Chalcocite <code>Cu₂S</code>.</li>
+      <li><strong>Carbonate ores</strong> (look for <code>CO₃</code>): Magnesite, Siderite, Calamine, Cerussite, Strontianite, Calcite, Malachite, Azurite.</li>
+      <li><strong>Sulphate ores</strong> (look for <code>SO₄</code>): Gypsum, Epsomite, Barium sulphate, Sodium sulphate.</li>
+      <li><strong>All-aluminium club:</strong> Bauxite, Cryolite, Corundum, Diaspore.</li>
+      <li><strong>Magnesium club:</strong> Magnesite, Dolomite, Carnallite, Epsomite.</li>
+      <li><strong>Shared ores:</strong> <em>Carnallite</em> belongs to both K and Mg; <em>Dolomite</em> belongs to both Ca and Mg.</li>
+      <li><strong>Zinc quartet:</strong> Blende (S), Franklinite (Fe), Calamine (CO₃), Zincite (O).</li>
+      <li><strong>Iron quartet:</strong> Hematite <code>Fe₂O₃</code>, Magnetite <code>Fe₃O₄</code>, Siderite <code>FeCO₃</code>, Iron pyrite <code>FeS₂</code> — "H-M-S-P".</li>
+      <li><strong>Lead trio in order:</strong> Galena (sulphide) → Cerussite (carbonate) → Cotunnite (chloride).</li>
+      <li><strong>Horn silver</strong> is the nickname of <code>AgCl</code>; <strong>silver glance</strong> is <code>Ag₂S</code>.</li>
+    </ul>
+
+    <h2>5 · Rapid fire</h2>
+    <p>Answer in your head, then tap the question to check.</p>
+
+    <div class="ao-q">
+      <p>Which alloy is used for bells and statues?</p>
+      <div class="ao-ans">Bell Metal — <code>Cu 80% + Sn 20%</code></div>
+    </div>
+
+    <div class="ao-q">
+      <p>Brass is made of which two metals, and in what ratio?</p>
+      <div class="ao-ans"><code>Cu 70% + Zn 30%</code></div>
+    </div>
+
+    <div class="ao-q">
+      <p>Which aluminium alloy is used for aircraft bodies?</p>
+      <div class="ao-ans">Magnalium — <code>Al 95% + Mg 5%</code> (Duralumin is also used in aircraft).</div>
+    </div>
+
+    <div class="ao-q">
+      <p>Which low-melting alloy is used in automatic fuses?</p>
+      <div class="ao-ans">Rose Metal — <code>Bi 50% + Pb 28% + Sn 22%</code></div>
+    </div>
+
+    <div class="ao-q">
+      <p>Which alloy is used in the printing industry, and what is its main metal?</p>
+      <div class="ao-ans">Type Metal — <code>Pb 80% + Sb 15% + Sn 5%</code> (lead).</div>
+    </div>
+
+    <div class="ao-q">
+      <p>Which alloy is used to join metals together?</p>
+      <div class="ao-ans">Solder — <code>Pb 50% + Sn 50%</code></div>
+    </div>
+
+    <div class="ao-q">
+      <p>Name the sulphide ore of mercury.</p>
+      <div class="ao-ans">Cinnabar — <code>HgS</code></div>
+    </div>
+
+    <div class="ao-q">
+      <p>Which iron ore has the formula <code>Fe₃O₄</code>?</p>
+      <div class="ao-ans">Magnetite</div>
+    </div>
+
+    <div class="ao-q">
+      <p>What is the main ore of aluminium?</p>
+      <div class="ao-ans">Bauxite — <code>Al₂O₃·2H₂O</code></div>
+    </div>
+
+    <div class="ao-q">
+      <p>Galena is the ore of which metal, and what is its formula?</p>
+      <div class="ao-ans">Lead — <code>PbS</code></div>
+    </div>
+
+    <hr>
+
+    <p class="rev-subtitle">Tip: use "Hide all" before a revision session, then "Reveal all" to check your answers at the end.</p>
+
+  </main>
+
+  <!-- Tap-to-reveal behaviour for this page. -->
+  <script>
+    (function () {
+      document.addEventListener('click', function (e) {
+        if (e.target.closest('.ao-btn')) return;
+        var el = e.target.closest('.ao-card, .ao-ore, .ao-q');
+        if (!el) return;
+        el.classList.toggle('is-open');
+      });
+
+      document.querySelectorAll('.ao-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var open = btn.getAttribute('data-ao-all') === 'open';
+          document.querySelectorAll('.ao-card, .ao-ore, .ao-q').forEach(function (el) {
+            el.classList.toggle('is-open', open);
+          });
+        });
+      });
+    })();
+  </script>
+
+  <!-- Report true content height to the parent app.
+       Measures <main class="rev-page"> directly, NOT document.body. -->
+  <script>
+    (function () {
+      function sendHeight() {
+        var el = document.querySelector('.rev-page') || document.body;
+        var h = Math.ceil(el.getBoundingClientRect().height);
+        if (!h) h = el.scrollHeight || 0;
+        if (!h) return;
+        try {
+          window.parent.postMessage({ type: 'revision-height', height: h }, '*');
+        } catch (e) {}
+      }
+      window.addEventListener('load', sendHeight);
+      window.addEventListener('resize', sendHeight);
+      setTimeout(sendHeight, 0);
+      setTimeout(sendHeight, 50);
+      setTimeout(sendHeight, 300);
+      setTimeout(sendHeight, 1000);
+      if (window.ResizeObserver) {
+        new ResizeObserver(sendHeight).observe(document.body);
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>World Geography: Deserts, Winds, Currents &amp; Straits — Revision</title>
+
+  <!--
+    Revision page for "World Geography: Deserts, Winds, Currents & Straits".
+    Loaded inside the main app's iframe.
+    • Theme is passed via URL hash: #theme=dark or #theme=light
+    • Styles come from ../css/style.css
+  -->
+
+  <!-- Read theme from URL hash BEFORE paint (no flash). -->
+  <script>
+    (function () {
+      var m = location.hash.match(/theme=(light|dark)/);
+      document.documentElement.setAttribute('data-theme', m ? m[1] : 'dark');
+    })();
+  </script>
+
+  <!-- Shared app styles — this links the file to the MAIN stylesheet. -->
+  <link rel="stylesheet" href="../css/style.css">
+
+  <!-- Match the app's font stack. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Page-specific styles for World Geography (namespace: .wg-) -->
+  <style>
+    .wg-tools{ display:flex; gap:10px; flex-wrap:wrap; margin:14px 0 6px; }
+    .wg-btn{
+      font:inherit; font-size:.78rem; font-weight:700; letter-spacing:.02em;
+      padding:7px 14px; border-radius:999px; cursor:pointer;
+      border:1px solid #475569; background:transparent; color:#cbd5e1;
+      transition:border-color .15s, color .15s;
+    }
+    .wg-btn:hover{ border-color:#6366f1; color:#a5b4fc; }
+
+    /* Tap-to-reveal cards */
+    .wg-card{
+      border:1px solid #334155; border-radius:12px; background:#0f172a;
+      padding:12px 15px; margin:10px 0; cursor:pointer;
+      transition:border-color .15s, background .15s;
+    }
+    .wg-card:hover{ border-color:#6366f1; }
+    .wg-card.is-open{ border-color:#6366f1; background:#131c33; }
+    .wg-card__head{
+      display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;
+      font-weight:700; font-size:.95rem; color:#e2e8f0;
+    }
+    .wg-card__head::after{ content:'+'; color:#6366f1; font-weight:800; margin-left:auto; }
+    .wg-card.is-open .wg-card__head::after{ content:'–'; }
+    .wg-card__body{ display:none; margin-top:10px; font-size:.88rem; line-height:1.6; color:#cbd5e1; }
+    .wg-card.is-open .wg-card__body{ display:block; }
+
+    /* Badges */
+    .wg-badge{
+      display:inline-block; font-size:.66rem; font-weight:700; letter-spacing:.04em;
+      text-transform:uppercase; padding:2px 8px; border-radius:999px;
+      background:#1e293b; color:#a5b4fc; margin-left:6px; vertical-align:middle;
+    }
+    .wg-badge--af{ background:#7c2d12; color:#fed7aa; }
+    .wg-badge--as{ background:#831843; color:#fbcfe8; }
+    .wg-badge--na{ background:#0c4a6e; color:#bae6fd; }
+    .wg-badge--sa{ background:#713f12; color:#fde68a; }
+    .wg-badge--au{ background:#065f46; color:#a7f3d0; }
+    .wg-badge--an{ background:#155e75; color:#a5f3fc; }
+    .wg-badge--hot{ background:#7f1d1d; color:#fecaca; }
+    .wg-badge--cold{ background:#1e3a8a; color:#bfdbfe; }
+    .wg-badge--warm{ background:#9a3412; color:#fed7aa; }
+    .wg-badge--strait{ background:#4c1d95; color:#ddd6fe; }
+
+    /* Continental banner cards */
+    .wg-cont{
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:12px; margin:16px 0 8px;
+    }
+    .wg-cont-card{
+      border:1px solid #334155; border-radius:14px; padding:14px 16px;
+      background:#0f172a; border-top-width:4px;
+    }
+    .wg-cont-card h3{ margin:0 0 6px; font-size:1rem; color:#e2e8f0; }
+    .wg-cont-card p{ margin:0; font-size:.85rem; line-height:1.55; color:#94a3b8; }
+    .wg-cont-card--na{ border-top-color:#38bdf8; }
+    .wg-cont-card--sa{ border-top-color:#facc15; }
+    .wg-cont-card--af{ border-top-color:#fb923c; }
+    .wg-cont-card--as{ border-top-color:#f472b6; }
+    .wg-cont-card--au{ border-top-color:#34d399; }
+    .wg-cont-card--an{ border-top-color:#22d3ee; }
+    html[data-theme="light"] .wg-cont-card{ background:#ffffff; border-color:#e2e8f0; }
+    html[data-theme="light"] .wg-cont-card h3{ color:#1e293b; }
+    html[data-theme="light"] .wg-cont-card p{ color:#475569; }
+
+    /* Mnemonic highlight */
+    .wg-mnem{
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      font-weight:700; color:#a5b4fc; letter-spacing:.03em;
+    }
+
+    /* Quiz */
+    .wg-q{
+      border-left:3px solid #6366f1; border-radius:0 10px 10px 0;
+      background:#0f172a; padding:11px 15px; margin:12px 0; cursor:pointer;
+    }
+    .wg-q p{ margin:0; font-weight:600; font-size:.92rem; color:#e2e8f0; }
+    .wg-q .wg-ans{ display:none; margin-top:8px; font-size:.88rem; color:#a5b4fc; font-weight:600; }
+    .wg-q.is-open .wg-ans{ display:block; }
+
+    /* Table wrap */
+    .wg-table-wrap{ overflow-x:auto; margin:14px 0; }
+    .wg-table{
+      width:100%; border-collapse:collapse; font-size:.85rem;
+    }
+    .wg-table th{ background:#1e293b; color:#e2e8f0; padding:8px 10px; text-align:left; border:1px solid #334155; }
+    .wg-table td{ padding:8px 10px; border:1px solid #334155; color:#cbd5e1; }
+    .wg-table tr:nth-child(even) td{ background:#0f172a; }
+    html[data-theme="light"] .wg-table th{ background:#e2e8f0; color:#1e293b; }
+    html[data-theme="light"] .wg-table td{ border-color:#e2e8f0; color:#475569; }
+    html[data-theme="light"] .wg-table tr:nth-child(even) td{ background:#f8fafc; }
+
+    /* Ocean current mini cards */
+    .wg-curr-grid{
+      display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+      gap:10px; margin:14px 0;
+    }
+    .wg-curr-item{
+      border-radius:10px; padding:10px 12px; border-left:4px solid;
+      background:#0f172a;
+    }
+    .wg-curr-item strong{ display:block; font-size:.88rem; color:#e2e8f0; }
+    .wg-curr-item span{ font-size:.75rem; color:#94a3b8; }
+    .wg-curr-item--warm{ border-left-color:#f97316; }
+    .wg-curr-item--cold{ border-left-color:#38bdf8; }
+    html[data-theme="light"] .wg-curr-item{ background:#f8fafc; }
+    html[data-theme="light"] .wg-curr-item strong{ color:#1e293b; }
+    html[data-theme="light"] .wg-curr-item span{ color:#64748b; }
+
+    html[data-theme="light"] .wg-btn{ border-color:#cbd5e1; color:#334155; }
+    html[data-theme="light"] .wg-btn:hover{ border-color:#6366f1; color:#4338ca; }
+    html[data-theme="light"] .wg-card{ background:#ffffff; border-color:#e2e8f0; }
+    html[data-theme="light"] .wg-card.is-open{ background:#eef2ff; border-color:#6366f1; }
+    html[data-theme="light"] .wg-card__head{ color:#1e293b; }
+    html[data-theme="light"] .wg-card__body{ color:#475569; }
+    html[data-theme="light"] .wg-badge{ background:#e0e7ff; color:#4338ca; }
+    html[data-theme="light"] .wg-badge--af{ background:#ffedd5; color:#9a3412; }
+    html[data-theme="light"] .wg-badge--as{ background:#fce7f3; color:#9d174d; }
+    html[data-theme="light"] .wg-badge--na{ background:#dbeafe; color:#1e40af; }
+    html[data-theme="light"] .wg-badge--sa{ background:#fef3c7; color:#92400e; }
+    html[data-theme="light"] .wg-badge--au{ background:#d1fae5; color:#065f46; }
+    html[data-theme="light"] .wg-badge--an{ background:#cffafe; color:#155e75; }
+    html[data-theme="light"] .wg-badge--hot{ background:#fee2e2; color:#991b1b; }
+    html[data-theme="light"] .wg-badge--cold{ background:#dbeafe; color:#1e40af; }
+    html[data-theme="light"] .wg-badge--warm{ background:#ffedd5; color:#9a3412; }
+    html[data-theme="light"] .wg-badge--strait{ background:#ede9fe; color:#5b21b6; }
+    html[data-theme="light"] .wg-q{ background:#f8fafc; }
+    html[data-theme="light"] .wg-q p{ color:#1e293b; }
+    html[data-theme="light"] .wg-q .wg-ans{ color:#4338ca; }
+    html[data-theme="light"] .wg-mnem{ color:#4338ca; }
+  </style>
+</head>
+
+<body style="background: transparent; margin: 0;">
+  <main class="rev-page">
+
+    <h1>World Geography: Deserts, Winds, Currents &amp; Straits</h1>
+    <p class="rev-subtitle">Major deserts · tectonic plates · world winds · ocean currents · strategic straits — tap to reveal.</p>
+
+    <div class="rev-note">
+      <strong>The four pillars of physical geography.</strong> This page combines four high-yield UPSC/BPSC topics:
+      <ul>
+        <li><strong>Deserts</strong> — where rainfall is less than 25 cm/year.</li>
+        <li><strong>Tectonic Plates</strong> — the moving slabs that make continents, mountains, and earthquakes.</li>
+        <li><strong>Winds</strong> — local and global air movements that shape climate.</li>
+        <li><strong>Ocean Currents &amp; Straits</strong> — the "conveyor belt" of the seas and the choke points of global trade.</li>
+      </ul>
+    </div>
+
+    <h2>1 · Major Deserts of the World</h2>
+    <p>Tap each continent to reveal its deserts.</p>
+
+    <div class="wg-tools">
+      <button class="wg-btn" data-wg-all="open">Reveal all</button>
+      <button class="wg-btn" data-wg-all="close">Hide all</button>
+    </div>
+
+    <div class="wg-card">
+      <div class="wg-card__head">Africa <span class="wg-badge wg-badge--af">Africa</span></div>
+      <div class="wg-card__body">
+        <ul>
+          <li><strong>Sahara</strong> — the world's largest hot desert. Covers North Africa.</li>
+          <li><strong>Kalahari</strong> — Southern Africa (Botswana, Namibia, South Africa).</li>
+          <li><strong>Namib</strong> — Coastal desert in Namibia. One of the oldest deserts on Earth.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="wg-card">
+      <div class="wg-card__head">Asia <span class="wg-badge wg-badge--as">Asia</span></div>
+      <div class="wg-card__body">
+        <ul>
+          <li><strong>Arabian</strong> — Middle East (Saudi Arabia, etc.). Largest desert in Asia.</li>
+          <li><strong>Syrian</strong> — Syria, Iraq, Jordan.</li>
+          <li><strong>Thar</strong> — India and Pakistan (the "Great Indian Desert").</li>
+          <li><strong>Karakum</strong> — Turkmenistan.</li>
+          <li><strong>Kyzylkum</strong> — Uzbekistan, Kazakhstan.</li>
+          <li><strong>Taklamakan</strong> — China (Xinjiang).</li>
+          <li><strong>Gobi</strong> — Mongolia and China. A cold desert.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="wg-card">
+      <div class="wg-card__head">North America <span class="wg-badge wg-badge--na">North America</span></div>
+      <div class="wg-card__body">
+        <ul>
+          <li><strong>Great Basin</strong> — USA (Nevada, Utah).</li>
+          <li><strong>Mojave</strong> — USA (California, Nevada).</li>
+          <li><strong>Sonoran</strong> — USA (Arizona) and Mexico.</li>
+          <li><strong>Chihuahuan</strong> — Mexico and USA (Texas, New Mexico).</li>
+          <li><strong>Colorado Plateau</strong> — USA (Arizona, Utah, Colorado, New Mexico).</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="wg-card">
+      <div class="wg-card__head">South America <span class="wg-badge wg-badge--sa">South America</span></div>
+      <div class="wg-card__body">
+        <ul>
+          <li><strong>Atacama</strong> — Chile. The <em>driest place on Earth</em>.</li>
+          <li><strong>Patagonian</strong> — Argentina and Chile. A cold desert.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="wg-card">
+      <div class="wg-card__head">Australia <span class="wg-badge wg-badge--au">Australia</span></div>
+      <div class="wg-card__body">
+        <ul>
+          <li><strong>Great Sandy</strong> — Western Australia.</li>
+          <li><strong>Gibson</strong> — Western Australia.</li>
+          <li><strong>Great Victoria</strong> — Western and South Australia. Largest in Australia.</li>
+          <li><strong>Tanami</strong> — Northern Territory.</li>
+          <li><strong>Simpson</strong> — South Australia / Queensland.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="wg-card">
+      <div class="wg-card__head">Polar Deserts <span class="wg-badge wg-badge--an">Antarctica</span> <span class="wg-badge wg-badge--as">Arctic</span></div>
+      <div class="wg-card__body">
+        <ul>
+          <li><strong>Antarctica</strong> — The largest desert on Earth (it's a cold desert).</li>
+          <li><strong>Arctic</strong> — The northern polar desert.</li>
+        </ul>
+      </div>
+    </div>
+    <hr>
+
+    <div>
+        <!--
+  IMAGE SNIPPET — paste inside <main class="rev-page"> at the spot you want it.
+  • src   : ../images/<lowercase-hyphenated-filename>.<png|jpg|svg|webp>
+  • class : rev-img-sm    (≤320px — icon, portrait, small symbol)
+            rev-img-md    (≤480px — single diagram, illustration)
+            rev-img-wide  (full width — map, timeline, comparison, chart)
+  • alt   : short description, required for accessibility
+-->
+
+
+
+<figure class="rev-figure">
+  <img src="../images/14_01_world-geography.JPG"
+       class="rev-img rev-img-wide"
+       alt="World major deserts.">
+  <figcaption>World Major Deserts</figcaption>
+</figure>
+
+
+
+
+    </div>
+
+
+
+
+    <hr>
+
+    <h2>2 · Tectonic Plates — the moving earth</h2>
+
+    <div class="wg-cont">
+      <div class="wg-cont-card wg-cont-card--na">
+        <h3>Major Plates (7)</h3>
+        <p>Pacific · North American · South American · Eurasian · African · Indo-Australian · Antarctic</p>
+      </div>
+      <div class="wg-cont-card wg-cont-card--as">
+        <h3>Minor Plates</h3>
+        <p>Arabian · Caribbean · Cocos · Juan de Fuca · Nazca · Philippine · Anatolian · Scotia</p>
+      </div>
+    </div>
+
+    <div class="wg-card">
+      <div class="wg-card__head">The 7 Major Plates</div>
+      <div class="wg-card__body">
+        <ul>
+          <li><strong>Pacific Plate</strong> — largest plate; ring of fire.</li>
+          <li><strong>North American Plate</strong> — covers most of North America and the western Atlantic.</li>
+          <li><strong>South American Plate</strong> — covers South America and the western Atlantic.</li>
+          <li><strong>Eurasian Plate</strong> — covers Europe and most of Asia.</li>
+          <li><strong>African Plate</strong> — covers Africa and the eastern Atlantic.</li>
+          <li><strong>Indo-Australian Plate</strong> — covers India, Australia, and the Indian Ocean.</li>
+          <li><strong>Antarctic Plate</strong> — covers Antarctica and the surrounding ocean.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="wg-card">
+      <div class="wg-card__head">The Important Minor Plates</div>
+      <div class="wg-card__body">
+        <ul>
+          <li><strong>Arabian Plate</strong> — moving north, colliding with Eurasia (Zagros mountains).</li>
+          <li><strong>Caribbean Plate</strong> — Central America and the Caribbean islands.</li>
+          <li><strong>Cocos Plate</strong> — off the west coast of Central America (subducting under North America).</li>
+          <li><strong>Juan de Fuca Plate</strong> — off the northwest coast of the USA (subducting under North America).</li>
+          <li><strong>Nazca Plate</strong> — off the west coast of South America (subducting under South America, forming the Andes).</li>
+          <li><strong>Philippine Plate</strong> — beneath the Philippines (subducting under the Eurasian plate).</li>
+          <li><strong>Anatolian Plate</strong> — Turkey (squeezed between Eurasian and Arabian plates).</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="rev-note">
+      <strong>Boundary types — quick refresher:</strong><br>
+      • <strong>Divergent</strong> — plates move apart (Mid-Atlantic Ridge).<br>
+      • <strong>Convergent</strong> — plates collide (Himalayas, Andes).<br>
+      • <strong>Transform</strong> — plates slide past each other (San Andreas Fault).
+    </div>
+<hr>
+
+<div>
+
+  <!--
+  IMAGE SNIPPET — paste inside <main class="rev-page"> at the spot you want it.
+  • src   : ../images/<lowercase-hyphenated-filename>.<png|jpg|svg|webp>
+  • class : rev-img-sm    (≤320px — icon, portrait, small symbol)
+            rev-img-md    (≤480px — single diagram, illustration)
+            rev-img-wide  (full width — map, timeline, comparison, chart)
+  • alt   : short description, required for accessibility
+-->
+
+
+
+<figure class="rev-figure">
+  <img src="../images/14_02_world-geography.JPG"
+       class="rev-img rev-img-wide"
+       alt="World Major and Minor Tectonic Plates">
+  <figcaption>World Major and Minor Tectonic Plates</figcaption>
+</figure>
+
+</div>
+
+
+
+
+
+    <hr>
+
+    <h2>3 · Major World Winds</h2>
+    <p>Grouped by type — tap to reveal location and effect.</p>
+
+    <h3>Hot &amp; Dry Winds</h3>
+
+    <div class="wg-card">
+      <div class="wg-card__head">Loo <span class="wg-badge wg-badge--hot">Hot</span> <span class="wg-badge wg-badge--as">India/Pakistan</span></div>
+      <div class="wg-card__body">Blows in summer (April–June) over northern plains of India and Pakistan. Very hot and dry — causes heat waves. West to east direction.</div>
+    </div>
+
+    <div class="wg-card">
+      <div class="wg-card__head">Foehn <span class="wg-badge wg-badge--hot">Hot</span> <span class="wg-badge wg-badge--eu">Alps</span></div>
+      <div class="wg-card__body">Warm, dry wind on the leeward side of the Alps. Raises temperature suddenly. Similar to Chinook.</div>
+    </div>
+
+    <div class="wg-card">
+      <div class="wg-card__head">Chinook <span class="wg-badge wg-badge--hot">Hot</span> <span class="wg-badge wg-badge--na">Rockies</span></div>
+      <div class="wg-card__body">Warm, dry wind on the eastern slopes of the Rockies (USA/Canada). Causes rapid snowmelt — called the "Snow Eater".</div>
+    </div>
+
+    <div class="wg-card">
+      <div class="wg-card__head">Sirocco <span class="wg-badge wg-badge--hot">Hot</span> <span class="wg-badge wg-badge--af">Sahara</span></div>
+      <div class="wg-card__body">Hot, dry, dusty wind blowing from the Sahara towards the Mediterranean Sea. Brings sandstorms and haze.</div>
+    </div>
+
+    <div class="wg-card">
+      <div class="wg-card__head">Khamsin <span class="wg-badge wg-badge--hot">Hot</span> <span class="wg-badge wg-badge--af">Egypt</span></div>
+      <div class="wg-card__body">Hot, dry wind over Egypt. Raises temperature in spring. Named after the Arabic word for "fifty" (blows for ~50 days).</div>
+    </div>
+
+    <div class="wg-card">
+      <div class="wg-card__head">Harmattan <span class="wg-badge wg-badge--hot">Hot</span> <span class="wg-badge wg-badge--af">West Africa</span></div>
+      <div class="wg-card__body">Very hot, dry wind blowing from the northeast across West Africa. Carries dust from the Sahara, lowering visibility.</div>
+    </div>
+
+    <div class="wg-card">
+      <div class="wg-card__head">Brickfielder <span class="wg-badge wg-badge--hot">Hot</span> <span class="wg-badge wg-badge--au">Australia</span></div>
+      <div class="wg-card__body">Hot, dry wind in southern Australia. Raises temperature suddenly.</div>
+    </div>
+
+    <div class="wg-card">
+      <div class="wg-card__head">Zonda <span class="wg-badge wg-badge--hot">Hot</span> <span class="wg-badge wg-badge--sa">Andes</span></div>
+      <div class="wg-card__body">Warm, dry wind in the Andes (Argentina). Causes sudden rise in temperature. The South American equivalent of Foehn.</div>
+    </div>
+
+    <h3>Cold &amp; Dry Winds</h3>
+
+    <div class="wg-card">
+      <div class="wg-card__head">Mistral <span class="wg-badge wg-badge--cold">Cold</span> <span class="wg-badge wg-badge--eu">France/Mediterranean</span></div>
+      <div class="wg-card__body">Cold, dry, strong wind blowing from the Alps towards the Mediterranean Sea. Blows in winter. Brings clear skies and cold days.</div>
+    </div>
+
+    <div class="wg-card">
+      <div class="wg-card__head">Bora <span class="wg-badge wg-badge--cold">Cold</span> <span class="wg-badge wg-badge--eu">Adriatic</span></div>
+      <div class="wg-card__body">Cold, dry, gusty wind blowing from the mountains into the Adriatic Sea region (Italy, Croatia). Blows from land to sea. Can be very strong.</div>
+    </div>
+
+    <div class="wg-card">
+      <div class="wg-card__head">Blizzard <span class="wg-badge wg-badge--cold">Cold</span> <span class="wg-badge wg-badge--an">Antarctica</span></div>
+      <div class="wg-card__body">Extremely cold, strong wind in Antarctica. Causes severe snowstorms and "whiteout" conditions.</div>
+    </div>
+
+    <div class="wg-card">
+      <div class="wg-card__head">Buran <span class="wg-badge wg-badge--cold">Cold</span> <span class="wg-badge wg-badge--as">Central Asia</span></div>
+      <div class="wg-card__body">Very cold, dry wind in Central Asia and Russia. Causes snowstorms in winters. The Siberian equivalent of a blizzard.</div>
+    </div>
+
+    <h3>Moist / Cool Winds</h3>
+
+    <div class="wg-card">
+      <div class="wg-card__head">Pampero <span class="wg-badge wg-badge--sa">Argentina</span></div>
+      <div class="wg-card__body">Cool, moist wind blowing over the Pampas of Argentina and Uruguay. Brings sudden change in weather — often a welcome relief after heat.</div>
+    </div>
+
+    <h2>4 · Global Ocean Currents — the conveyor belt</h2>
+
+    <div class="rev-note">
+      <strong>Warm currents</strong> (red arrows) flow from the equator towards the poles → bring mild weather.<br>
+      <strong>Cold currents</strong> (blue arrows) flow from the poles towards the equator → create arid coastal deserts (fog, no rain).
+    </div>
+
+    <h3>Warm Currents</h3>
+    <div class="wg-curr-grid">
+      <div class="wg-curr-item wg-curr-item--warm"><strong>Gulf Stream</strong><span>North Atlantic — warms Europe</span></div>
+      <div class="wg-curr-item wg-curr-item--warm"><strong>Kuroshio</strong><span>North Pacific — warms Japan</span></div>
+      <div class="wg-curr-item wg-curr-item--warm"><strong>Brazil Current</strong><span>South Atlantic — warms Brazil</span></div>
+      <div class="wg-curr-item wg-curr-item--warm"><strong>E. Australian Current</strong><span>South Pacific — warms Australia</span></div>
+    </div>
+
+    <h3>Cold Currents</h3>
+    <div class="wg-curr-grid">
+      <div class="wg-curr-item wg-curr-item--cold"><strong>California Current</strong><span>North Pacific — cools USA west coast</span></div>
+      <div class="wg-curr-item wg-curr-item--cold"><strong>Peru (Humboldt)</strong><span>South Pacific — causes Atacama desert</span></div>
+      <div class="wg-curr-item wg-curr-item--cold"><strong>Benguela</strong><span>South Atlantic — causes Namib desert</span></div>
+      <div class="wg-curr-item wg-curr-item--cold"><strong>Canary Current</strong><span>North Atlantic — cools NW Africa</span></div>
+      <div class="wg-curr-item wg-curr-item--cold"><strong>W. Australian Current</strong><span>Indian Ocean — cools W Australia</span></div>
+      <div class="wg-curr-item wg-curr-item--cold"><strong>Oyashio</strong><span>North Pacific — cools Japan</span></div>
+    </div>
+
+    <h3>The Five Major Gyres</h3>
+    <div class="wg-table-wrap">
+      <table class="wg-table">
+        <thead>
+          <tr><th>Gyre</th><th>Ocean</th><th>Key Feature</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>North Atlantic Gyre</td><td>Atlantic</td><td>Contains the Gulf Stream</td></tr>
+          <tr><td>South Atlantic Gyre</td><td>Atlantic</td><td>Contains the Brazil &amp; Benguela currents</td></tr>
+          <tr><td>North Pacific Gyre</td><td>Pacific</td><td>Contains the Kuroshio &amp; California currents</td></tr>
+          <tr><td>South Pacific Gyre</td><td>Pacific</td><td>Contains the Peru &amp; E. Australian currents</td></tr>
+          <tr><td>Indian Ocean Gyre</td><td>Indian</td><td>Contains the W. Australian current</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <hr>
+
+    <div>
+
+      <!--
+  IMAGE SNIPPET — paste inside <main class="rev-page"> at the spot you want it.
+  • src   : ../images/<lowercase-hyphenated-filename>.<png|jpg|svg|webp>
+  • class : rev-img-sm    (≤320px — icon, portrait, small symbol)
+            rev-img-md    (≤480px — single diagram, illustration)
+            rev-img-wide  (full width — map, timeline, comparison, chart)
+  • alt   : short description, required for accessibility
+-->
+
+
+
+<figure class="rev-figure">
+  <img src="../images/14_03_world-geography.JPG"
+       class="rev-img rev-img-wide"
+       alt="  world ocean currents and gyres.">
+  <figcaption>WORLD MAJOR COLD AND HOT OCEAN CURRENTS AND GYRES</figcaption>
+</figure>
+
+
+    </div>
+
+
+
+
+
+<hr>
+
+
+    <div class="rev-note">
+      <strong>Driving factors of ocean currents:</strong><br>
+      • <strong>Wind</strong> — trade winds, westerlies, polar easterlies.<br>
+      • <strong>Earth's rotation (Coriolis effect)</strong> — deflects currents clockwise in the Northern Hemisphere, counter-clockwise in the Southern Hemisphere.<br>
+      • <strong>Water density</strong> — temperature and salinity differences drive thermohaline circulation (the "Great Ocean Conveyor Belt").
+    </div>
+
+    <h2>5 · Major Straits of the World</h2>
+    <p>Tap each strait to reveal what it connects and why it matters.</p>
+
+    <div class="wg-card">
+      <div class="wg-card__head">Strait of Malacca <span class="wg-badge wg-badge--strait">Strait</span></div>
+      <div class="wg-card__body">Connects the <strong>Indian Ocean</strong> with the <strong>Pacific Ocean</strong>. Between Malaysia and Sumatra (Indonesia). Handles ~25% of global seaborne trade. Critical for Asian energy imports (oil from the Middle East to China/Japan).</div>
+    </div>
+
+    <div class="wg-card">
+      <div class="wg-card__head">Strait of Magellan <span class="wg-badge wg-badge--strait">Strait</span></div>
+      <div class="wg-card__body">A maritime gateway in southern Chile. Connects the <strong>Atlantic</strong> and <strong>Pacific Oceans</strong>. Important for global shipping before the Panama Canal.</div>
+    </div>
+
+    <div class="wg-card">
+      <div class="wg-card__head">Bass Strait <span class="wg-badge wg-badge--strait">Strait</span></div>
+      <div class="wg-card__body">Separates <strong>Tasmania</strong> from mainland Australia. Direct passage between the Great Australian Bight and the Tasman Sea.</div>
+    </div>
+
+    <div class="wg-card">
+      <div class="wg-card__head">Strait of Hormuz <span class="wg-badge wg-badge--strait">Strait</span></div>
+      <div class="wg-card__body">Key chokepoint between the <strong>Persian Gulf</strong> and the <strong>Gulf of Oman</strong>. Between Iran and Oman/UAE. Carries ~20% of global oil trade and ~25% of global oil consumption. The world's most important oil choke point.</div>
+    </div>
+
+    <div class="wg-card">
+      <div class="wg-card__head">Singapore Strait <span class="wg-badge wg-badge--strait">Strait</span></div>
+      <div class="wg-card__body">Lies between the Malacca Strait and the South China Sea. One of the world's busiest straits. Vital for the Malacca–Singapore route. Between Malaysia, Singapore, and Indonesia.</div>
+    </div>
+
+    <div class="wg-card">
+      <div class="wg-card__head">Bering Strait <span class="wg-badge wg-badge--strait">Strait</span></div>
+      <div class="wg-card__body">The only waterway between the <strong>Arctic</strong> and the <strong>Pacific Ocean</strong>. Separates <strong>Asia</strong> (Russia) and <strong>North America</strong> (Alaska, USA).</div>
+    </div>
+
+    <div class="wg-card">
+      <div class="wg-card__head">Strait of Gibraltar <span class="wg-badge wg-badge--strait">Strait</span></div>
+      <div class="wg-card__body">Connects the <strong>Atlantic Ocean</strong> to the <strong>Mediterranean Sea</strong>. Separates <strong>Europe</strong> (Spain) from <strong>Africa</strong> (Morocco).</div>
+    </div>
+
+    <div class="wg-card">
+      <div class="wg-card__head">Bosphorus Strait <span class="wg-badge wg-badge--strait">Strait</span></div>
+      <div class="wg-card__body">The <strong>narrowest</strong> strait for international navigation. Connects the <strong>Black Sea</strong> with the <strong>Sea of Marmara</strong>. Separates <strong>Europe</strong> from <strong>Asia</strong> (Turkey).</div>
+    </div>
+    <hr>
+
+    <div>
+      <!--
+  IMAGE SNIPPET — paste inside <main class="rev-page"> at the spot you want it.
+  • src   : ../images/<lowercase-hyphenated-filename>.<png|jpg|svg|webp>
+  • class : rev-img-sm    (≤320px — icon, portrait, small symbol)
+            rev-img-md    (≤480px — single diagram, illustration)
+            rev-img-wide  (full width — map, timeline, comparison, chart)
+  • alt   : short description, required for accessibility
+-->
+
+
+
+<figure class="rev-figure">
+  <img src="../images/14_04_world-geography.JPG"
+       class="rev-img rev-img-wide"
+       alt="major straits of the world.">
+  <figcaption>WORLD MAJOR STRAITS AROUND THE GLOBE AND THEIR SIGNIFICANCE</figcaption>
+</figure>
+
+
+
+    </div>
+
+
+
+
+    <hr>
+
+    <h2>6 · Memory tricks that save you</h2>
+
+    <div class="rev-note">
+      <strong>Trick 1 — Deserts by continent:</strong><br>
+      <span class="wg-mnem">"Sahara, Kalahari, Namib (Africa) · Arabian, Thar, Gobi (Asia) · Atacama, Patagonian (S. America)"</span><br>
+      Remember: <em>Africa has 3 famous ones, Asia has 3 famous ones, South America has 2</em>.
+    </div>
+
+    <div class="rev-note">
+      <strong>Trick 2 — The 7 major plates:</strong><br>
+      <span class="wg-mnem">"P-N-S-E-A-I-A"</span> → <strong>P</strong>acific, <strong>N</strong>orth American, <strong>S</strong>outh American, <strong>E</strong>urasian, <strong>A</strong>frican, <strong>I</strong>ndo-Australian, <strong>A</strong>ntarctic.<br>
+      Mnemonic: <em>"Please Notice Some Elephants Are In Africa"</em>.
+    </div>
+
+    <div class="rev-note">
+      <strong>Trick 3 — Winds by temperature:</strong><br>
+      <strong>Hot:</strong> Loo, Foehn, Chinook, Sirocco, Khamsin, Harmattan, Brickfielder, Zonda.<br>
+      <strong>Cold:</strong> Mistral, Bora, Blizzard, Buran.<br>
+      <strong>Moist:</strong> Pampero.<br>
+      Mnemonic: <em>"Loo Foehn Chinook Sirocco, Khamsin Harmattan — Hot and Dry so severe; Mistral Bora Blizzard Brickfielder, Pampero Zonda Buran — Cold winds we remember."</em>
+    </div>
+
+    <div class="rev-note">
+      <strong>Trick 4 — Ocean currents (Warm vs Cold):</strong><br>
+      <span class="wg-mnem">"Gulf Stream warms Europe; Peru cools South America; Benguela cools Africa; California cools USA."</span><br>
+      Cold currents = coastal deserts (Atacama, Namib). Warm currents = mild climates (Europe).
+    </div>
+
+    <div class="rev-note">
+      <strong>Trick 5 — Straits and what they connect:</strong><br>
+      Malacca = Indian ↔ Pacific.<br>
+      Gibraltar = Atlantic ↔ Mediterranean.<br>
+      Hormuz = Persian Gulf ↔ Gulf of Oman.<br>
+      Bering = Arctic ↔ Pacific.<br>
+      Bosphorus = Black Sea ↔ Sea of Marmara.<br>
+      Magellan = Atlantic ↔ Pacific (southern Chile).
+    </div>
+
+    <h2>7 · Rapid Fire</h2>
+    <p>Answer out loud, then tap to check.</p>
+
+    <div class="wg-q">
+      <p>Which is the largest hot desert in the world?</p>
+      <div class="wg-ans">Sahara (Africa)</div>
+    </div>
+
+    <div class="wg-q">
+      <p>Which is the driest place on Earth?</p>
+      <div class="wg-ans">Atacama Desert (Chile)</div>
+    </div>
+
+    <div class="wg-q">
+      <p>Which is the largest desert on Earth (overall)?</p>
+      <div class="wg-ans">Antarctica (a cold desert)</div>
+    </div>
+
+    <div class="wg-q">
+      <p>Which desert is known as the "Great Indian Desert"?</p>
+      <div class="wg-ans">Thar Desert</div>
+    </div>
+
+    <div class="wg-q">
+      <p>How many major tectonic plates are there?</p>
+      <div class="wg-ans">7</div>
+    </div>
+
+    <div class="wg-q">
+      <p>Which plate is the largest?</p>
+      <div class="wg-ans">Pacific Plate</div>
+    </div>
+
+    <div class="wg-q">
+      <p>Which wind is called the "Snow Eater"?</p>
+      <div class="wg-ans">Chinook (Rockies, USA/Canada)</div>
+    </div>
+
+    <div class="wg-q">
+      <p>Which wind blows from the Sahara to the Mediterranean?</p>
+      <div class="wg-ans">Sirocco</div>
+    </div>
+
+    <div class="wg-q">
+      <p>Which wind blows over northern India in summer and causes heat waves?</p>
+      <div class="wg-ans">Loo</div>
+    </div>
+
+    <div class="wg-q">
+      <p>Which cold wind blows from the Alps to the Mediterranean?</p>
+      <div class="wg-ans">Mistral</div>
+    </div>
+
+    <div class="wg-q">
+      <p>Which warm ocean current keeps Europe mild?</p>
+      <div class="wg-ans">Gulf Stream</div>
+    </div>
+
+    <div class="wg-q">
+      <p>Which cold current causes the Atacama Desert?</p>
+      <div class="wg-ans">Peru (Humboldt) Current</div>
+    </div>
+
+    <div class="wg-q">
+      <p>Which cold current causes the Namib Desert?</p>
+      <div class="wg-ans">Benguela Current</div>
+    </div>
+
+    <div class="wg-q">
+      <p>Which strait connects the Indian Ocean with the Pacific Ocean?</p>
+      <div class="wg-ans">Strait of Malacca</div>
+    </div>
+
+    <div class="wg-q">
+      <p>Which strait connects the Atlantic with the Mediterranean?</p>
+      <div class="wg-ans">Strait of Gibraltar</div>
+    </div>
+
+    <div class="wg-q">
+      <p>Which strait is the world's most important oil choke point?</p>
+      <div class="wg-ans">Strait of Hormuz</div>
+    </div>
+
+    <div class="wg-q">
+      <p>Which strait separates Asia from North America?</p>
+      <div class="wg-ans">Bering Strait</div>
+    </div>
+
+    <div class="wg-q">
+      <p>Which strait separates Europe from Asia (Turkey)?</p>
+      <div class="wg-ans">Bosphorus Strait</div>
+    </div>
+
+    <div class="wg-q">
+      <p>Which strait separates Tasmania from mainland Australia?</p>
+      <div class="wg-ans">Bass Strait</div>
+    </div>
+
+    <hr>
+
+    <p class="rev-subtitle">Tip: use "Hide all" before a session, then "Reveal all" to check. The winds and currents are memory-heavy — go through the rapid-fire twice.</p>
+
+  </main>
+
+  <!-- Tap-to-reveal behaviour for this page. -->
+  <script>
+    (function () {
+      document.addEventListener('click', function (e) {
+        if (e.target.closest('.wg-btn')) return;
+        var el = e.target.closest('.wg-card, .wg-q');
+        if (!el) return;
+        el.classList.toggle('is-open');
+      });
+
+      document.querySelectorAll('.wg-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var open = btn.getAttribute('data-wg-all') === 'open';
+          document.querySelectorAll('.wg-card, .wg-q').forEach(function (el) {
+            el.classList.toggle('is-open', open);
+          });
+        });
+      });
+    })();
+  </script>
+
+  <!-- Report true content height to the parent app.
+       Measures <main class="rev-page"> directly, NOT document.body. -->
+  <script>
+    (function () {
+      function sendHeight() {
+        var el = document.querySelector('.rev-page') || document.body;
+        var h = Math.ceil(el.getBoundingClientRect().height);
+        if (!h) h = el.scrollHeight || 0;
+        if (!h) return;
+        try {
+          window.parent.postMessage({ type: 'revision-height', height: h }, '*');
+        } catch (e) {}
+      }
+      window.addEventListener('load', sendHeight);
+      window.addEventListener('resize', sendHeight);
+      setTimeout(sendHeight, 0);
+      setTimeout(sendHeight, 50);
+      setTimeout(sendHeight, 300);
+      setTimeout(sendHeight, 1000);
+      if (window.ResizeObserver) {
+        new ResizeObserver(sendHeight).observe(document.body);
+      }
+    })();
+  </script>
+</body>
+</html>

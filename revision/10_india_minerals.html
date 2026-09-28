@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>India Mineral Resources (UPSC) — Revision</title>
+
+  <!--
+    Revision page for "India Mineral Resources (UPSC)".
+    Loaded inside the main app's iframe.
+    • Theme is passed via URL hash: #theme=dark or #theme=light
+    • Styles come from ../css/style.css
+  -->
+
+  <!-- Read theme from URL hash BEFORE paint (no flash). -->
+  <script>
+    (function () {
+      var m = location.hash.match(/theme=(light|dark)/);
+      document.documentElement.setAttribute('data-theme', m ? m[1] : 'dark');
+    })();
+  </script>
+
+  <!-- Shared app styles — this links the file to the MAIN stylesheet. -->
+  <link rel="stylesheet" href="../css/style.css">
+
+  <!-- Match the app's font stack. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* Page-specific styles for India Minerals (UPSC) */
+    .upsc-belt-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .upsc-belt-card {
+      background: rgba(30, 41, 59, 0.5);
+      border-left: 4px solid #6366f1;
+      padding: 1.25rem;
+      border-radius: 0 8px 8px 0;
+    }
+
+    html[data-theme="light"] .upsc-belt-card {
+      background: #f8fafc;
+      border-left-color: #4f46e5;
+    }
+
+    .upsc-belt-card h3 {
+      margin-top: 0;
+      color: #818cf8;
+      font-size: 1.1rem;
+    }
+
+    html[data-theme="light"] .upsc-belt-card h3 {
+      color: #4338ca;
+    }
+
+    .upsc-pill {
+      display: inline-block;
+      padding: 0.15rem 0.6rem;
+      border-radius: 99px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin: 0.2rem;
+      border: 1px solid currentColor;
+    }
+    
+    .pill-metallic { color: #f87171; }
+    html[data-theme="light"] .pill-metallic { color: #dc2626; }
+    
+    .pill-nonmetallic { color: #38bdf8; }
+    html[data-theme="light"] .pill-nonmetallic { color: #0284c7; }
+    
+    .pill-energy { color: #fbbf24; }
+    html[data-theme="light"] .pill-energy { color: #d97706; }
+  </style>
+</head>
+
+<body style="background: transparent; margin: 0;">
+  <main class="rev-page">
+
+    <!-- ═══ YOUR CONTENT GOES HERE ═══ -->
+    <h1>India Mineral Wealth & Distribution</h1>
+    <p class="rev-subtitle">Comprehensive geographical analysis for General Studies Paper I & III.</p>
+
+    <div class="rev-note">
+      <strong>📌 Map Reference:</strong> Keep the file <code>01_minirals.jpg</code> handy while reviewing these notes to build your spatial memory for prelims map-pointing questions.
+    </div>
+
+    <h2>1. Major Mineral Belts of India</h2>
+    <p>India's mineral wealth is highly uneven, concentrated primarily in the peninsular plateau region, ancient crystalline rocks, and sedimentary basins.</p>
+
+    <div class="upsc-belt-grid">
+      <div class="upsc-belt-card">
+        <h3>North-Eastern Peninsular Belt</h3>
+        <p><strong>Regions:</strong> Chota Nagpur Plateau (Jharkhand, West Bengal, Odisha)[cite: 1].</p>
+        <p><strong>Significance:</strong> Known as the "Ruhr of India". This is the richest mineral belt.</p>
+        <p><strong>Key Minerals:</strong> Massive concentrations of Coal (⚫), Iron (◯), Manganese (➕), and Mica (🟪)[cite: 1].</p>
+      </div>
+
+      <div class="upsc-belt-card">
+        <h3>Central Belt</h3>
+        <p><strong>Regions:</strong> Chhattisgarh, Madhya Pradesh, Maharashtra, Andhra Pradesh[cite: 1].</p>
+        <p><strong>Significance:</strong> The second most significant belt, serving central and southern heavy industries.</p>
+        <p><strong>Key Minerals:</strong> Manganese (➕), Bauxite (▲), Limestone (★), and Coal (⚫)[cite: 1].</p>
+      </div>
+
+      <div class="upsc-belt-card">
+        <h3>Southern Belt</h3>
+        <p><strong>Regions:</strong> Karnataka Plateau, contiguous parts of Tamil Nadu and Kerala[cite: 1].</p>
+        <p><strong>Significance:</strong> Highly rich in ferrous minerals but distinctively lacks significant coal deposits.</p>
+        <p><strong>Key Minerals:</strong> Gold (🟢), Iron (◯), Bauxite (▲), and Limestone (★)[cite: 1].</p>
+      </div>
+
+      <div class="upsc-belt-card">
+        <h3>North-Western Belt</h3>
+        <p><strong>Regions:</strong> Aravalli region in Rajasthan and adjacent areas of Gujarat[cite: 1].</p>
+        <p><strong>Significance:</strong> Dominated by non-ferrous metals and non-metallic building materials.</p>
+        <p><strong>Key Minerals:</strong> Lead & Zinc (✳), Copper (◽), Gypsum (▲), and Petroleum (🟡) in Gujarat[cite: 1].</p>
+      </div>
+      </div>
+
+      <hr>
+<div>
+<!--
+  IMAGE SNIPPET — paste inside <main class="rev-page"> at the spot you want it.
+  • src   : ../images/<lowercase-hyphenated-filename>.<png|jpg|svg|webp>
+  • class : rev-img-sm    (≤320px — icon, portrait, small symbol)
+            rev-img-md    (≤480px — single diagram, illustration)
+            rev-img-wide  (full width — map, timeline, comparison, chart)
+  • alt   : short description, required for accessibility
+-->
+<figure class="rev-figure">
+  <img src="../images/10_01_india_minerals.JPG"
+       class="rev-img rev-img-wide"
+       alt="Map of India showing Kharif, Rabi and Zaid cropping regions">
+  <figcaption>Regional spread of Kharif, Rabi and Zaid cropping belts across India.</figcaption>
+</figure>
+</div>
+
+
+
+
+
+    <hr>
+
+    <h2>2. Detailed Distribution Analysis</h2>
+
+    <h3>Ferrous & Non-Ferrous Metals <span class="upsc-pill pill-metallic">Metallic</span></h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Mineral</th>
+          <th>Primary States / Regions</th>
+          <th>UPSC Strategic Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Iron Ore (◯)</strong></td>
+          <td>Odisha, Jharkhand, Chhattisgarh, Karnataka, Goa[cite: 1]</td>
+          <td>Backbone of modern industrialization. India has vast high-grade hematite & magnetite reserves.</td>
+        </tr>
+        <tr>
+          <td><strong>Manganese (➕)</strong></td>
+          <td>Madhya Pradesh, Maharashtra, Odisha, Karnataka, Andhra Pradesh[cite: 1]</td>
+          <td>Crucial for steel smelting and manufacturing ferro-alloys.</td>
+        </tr>
+        <tr>
+          <td><strong>Bauxite (▲)</strong></td>
+          <td>Odisha, Jharkhand, Chhattisgarh, Gujarat, Maharashtra, Tamil Nadu, Meghalaya[cite: 1]</td>
+          <td>Ore of Aluminum. Usually found in laterite soil regions (plateau edges and hills).</td>
+        </tr>
+        <tr>
+          <td><strong>Copper (◽)</strong></td>
+          <td>Rajasthan (Khetri), Madhya Pradesh (Malanjkhand), Jharkhand (Singhbhum), Sikkim[cite: 1]</td>
+          <td>India is structurally deficient in Copper, requiring heavy imports despite these reserves.</td>
+        </tr>
+        <tr>
+          <td><strong>Lead & Zinc (✳)</strong></td>
+          <td>Rajasthan (almost monopolistic concentration), small pockets in Sikkim & Meghalaya[cite: 1]</td>
+          <td>Found together in nature. Rajasthan is the undisputed leader[cite: 1].</td>
+        </tr>
+        <tr>
+          <td><strong>Gold (🟢)</strong></td>
+          <td>Karnataka, border of Kerala/TN, Andhra Pradesh[cite: 1]</td>
+          <td>Highly localized (e.g., Kolar, Hutti). India imports massive amounts to meet domestic demand.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Non-Metallic & Industrial Minerals <span class="upsc-pill pill-nonmetallic">Non-Metallic</span></h3>
+    <ul>
+      <li><strong>Mica (🟪):</strong> Concentrated in Jharkhand, Rajasthan, and Andhra Pradesh[cite: 1]. Vital for the electrical/electronics industry due to its insulating properties.</li>
+      <li><strong>Limestone (★):</strong> Widely distributed across almost all states including Rajasthan, MP, Chhattisgarh, AP, Karnataka, Gujarat, Meghalaya, and Assam[cite: 1]. The foundational raw material for the cement industry.</li>
+      <li><strong>Dolomite (🟥):</strong> Mined in MP, Chhattisgarh, Odisha, and Rajasthan[cite: 1]. Used as a flux in the iron and steel industry.</li>
+      <li><strong>Gypsum (▲):</strong> Prominently found in arid/semi-arid regions of Rajasthan, Gujarat, and parts of J&K and Tamil Nadu[cite: 1]. Essential for fertilizers and cement.</li>
+      <li><strong>Asbestos (🟦):</strong> Highly restricted, mostly found in Rajasthan and Andhra Pradesh[cite: 1].</li>
+    </ul>
+
+    <h3>Energy Minerals <span class="upsc-pill pill-energy">Energy</span></h3>
+    <ul>
+      <li><strong>Coal (⚫):</strong> Predominantly in the eastern belt (Jharkhand, West Bengal, Odisha, Chhattisgarh), extending into MP and Telangana[cite: 1]. Tertiary coal is found in the North-East (Assam, Meghalaya, Nagaland, Arunachal Pradesh)[cite: 1].</li>
+      <li><strong>Petroleum & Natural Gas (🟡):</strong> Located in sedimentary basins and offshore regions. Key areas include Gujarat (Cambay), Assam/Arunachal Pradesh (Digboi/Naharkatiya), and Tamil Nadu (Cauvery basin)[cite: 1].</li>
+    </ul>
+
+    <hr>
+
+    <h2>3. Prelims Quick Revision Traps</h2>
+    <div class="rev-note">
+      <ul>
+        <li><strong>Trap 1:</strong> Do not assume the North-East is barren. It holds strategic reserves of Coal (⚫), Petroleum (🟡), Limestone (★), and even Bauxite (▲)[cite: 1].</li>
+        <li><strong>Trap 2:</strong> Rajasthan is not just desert; it is exceptionally rich in non-ferrous and non-metallic minerals like Lead/Zinc, Copper, Gypsum, and Mica[cite: 1].</li>
+        <li><strong>Trap 3:</strong> South India lacks extensive Coal (⚫) reserves (except lignite in Neyveli, TN), but makes up for it with rich Iron (◯) and Gold (🟢) deposits[cite: 1].</li>
+      </ul>
+    </div>
+
+  </main>
+
+  <!-- Report true content height to the parent app.
+       Measures <main class="rev-page"> directly, NOT document.body. -->
+  <script>
+    (function () {
+      function sendHeight() {
+        var el = document.querySelector('.rev-page') || document.body;
+        var h = Math.ceil(el.getBoundingClientRect().height);
+        if (!h) h = el.scrollHeight || 0;
+        if (!h) return;
+        try {
+          window.parent.postMessage({ type: 'revision-height', height: h }, '*');
+        } catch (e) {}
+      }
+      window.addEventListener('load', sendHeight);
+      window.addEventListener('resize', sendHeight);
+      setTimeout(sendHeight, 0);
+      setTimeout(sendHeight, 50);
+      setTimeout(sendHeight, 300);
+      setTimeout(sendHeight, 1000);
+      if (window.ResizeObserver) {
+        new ResizeObserver(sendHeight).observe(document.body);
+      }
+    })();
+  </script>
+</body>
+</html>

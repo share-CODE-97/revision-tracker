@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cropping Seasons in India — Revision</title>
+
+  <!--
+    Revision page for "Cropping Seasons in India".
+    Loaded inside the main app's iframe.
+    • Theme is passed via URL hash: #theme=dark or #theme=light
+    • Styles come from ../css/style.css
+  -->
+
+  <!-- Read theme from URL hash BEFORE paint (no flash). -->
+  <script>
+    (function () {
+      var m = location.hash.match(/theme=(light|dark)/);
+      document.documentElement.setAttribute('data-theme', m ? m[1] : 'dark');
+    })();
+  </script>
+
+  <!-- Shared app styles — this links the file to the MAIN stylesheet. -->
+  <link rel="stylesheet" href="../css/style.css">
+
+  <!-- Match the app's font stack. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Page-specific styles for Cropping Seasons. -->
+  <style>
+    /* Coloured season "chips" for the summary row. */
+    .crops-season-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin: 1rem 0 1.5rem;
+    }
+    .crops-chip {
+      flex: 1 1 180px;
+      border-radius: 12px;
+      padding: 0.75rem 0.9rem;
+      border: 1px solid transparent;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+    .crops-chip small {
+      display: block;
+      font-weight: 400;
+      opacity: 0.85;
+      font-size: 0.8rem;
+      margin-top: 0.15rem;
+    }
+    .crops-chip--kharif {
+      background: #3b2a1a; border-color: #7c5a2a; color: #f6d9a8;
+    }
+    html[data-theme="light"] .crops-chip--kharif {
+      background: #fff4e0; border-color: #e6b877; color: #7a4a12;
+    }
+    .crops-chip--rabi {
+      background: #14293a; border-color: #2e5878; color: #c8e4fb;
+    }
+    html[data-theme="light"] .crops-chip--rabi {
+      background: #e8f3fc; border-color: #8fc2e8; color: #144a75;
+    }
+    .crops-chip--zaid {
+      background: #1e3320; border-color: #3d6a42; color: #cbe9cf;
+    }
+    html[data-theme="light"] .crops-chip--zaid {
+      background: #e9f7ea; border-color: #92c79a; color: #1f5a29;
+    }
+
+    /* Two-column "North vs South" mini cards. */
+    .crops-two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin: 0.75rem 0 1.25rem;
+    }
+    @media (max-width: 640px) {
+      .crops-two-col { grid-template-columns: 1fr; }
+    }
+    .crops-col {
+      border-radius: 10px;
+      padding: 0.75rem 0.9rem;
+      border: 1px solid #334155;
+      background: #0f172a;
+    }
+    html[data-theme="light"] .crops-col {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+    }
+    .crops-col h4 {
+      margin: 0 0 0.4rem;
+      font-size: 0.95rem;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+    .crops-col--north h4 { color: #f59e0b; }
+    .crops-col--south h4 { color: #22c55e; }
+
+    /* "Exam angle" callout variant. */
+    .crops-exam {
+      border-left: 4px solid #a855f7;
+      background: rgba(168, 85, 247, 0.10);
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      margin: 1rem 0;
+    }
+    html[data-theme="light"] .crops-exam {
+      background: #f6effd;
+    }
+    .crops-exam strong { color: #c084fc; }
+    html[data-theme="light"] .crops-exam strong { color: #7c3aed; }
+
+    /* Highlighted mnemonic box. */
+    .crops-mnemonic {
+      display: inline-block;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      background: #1e293b;
+      color: #fbbf24;
+      padding: 0.4rem 0.75rem;
+      border-radius: 8px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+    html[data-theme="light"] .crops-mnemonic {
+      background: #fef3c7;
+      color: #92400e;
+    }
+  </style>
+</head>
+
+<body style="background: transparent; margin: 0;">
+  <main class="rev-page">
+
+    <h1>Cropping Seasons in India</h1>
+    <p class="rev-subtitle">Kharif · Rabi · Zaid — India's three agricultural seasons, crop-wise, region-wise, exam-ready.</p>
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <h2>1. The Big Picture</h2>
+    <p>
+      India's cropping calendar is driven by the <strong>monsoon</strong>. The Indian
+      Council of Agricultural Research (ICAR) classifies the agricultural year into
+      <strong>three main seasons</strong> — plus a fourth "year-long" category for
+      crops like sugarcane.
+    </p>
+
+    <div class="crops-season-strip">
+      <div class="crops-chip crops-chip--kharif">
+        KHARIF
+        <small>June – September (Monsoon)</small>
+      </div>
+      <div class="crops-chip crops-chip--rabi">
+        RABI
+        <small>October – March (Winter)</small>
+      </div>
+      <div class="crops-chip crops-chip--zaid">
+        ZAID
+        <small>April – June (Summer)</small>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <h2>2. Master Comparison Table</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Season</th>
+          <th>Sowing</th>
+          <th>Harvesting</th>
+          <th>North Indian Crops</th>
+          <th>South Indian Crops</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Kharif</strong></td>
+          <td>June – July<br>(monsoon onset)</td>
+          <td>September – October</td>
+          <td>Rice, Cotton, Bajra, Maize, Jowar, Arhar (Tur)</td>
+          <td>Rice, Maize, Ragi, Jowar, Groundnut</td>
+        </tr>
+        <tr>
+          <td><strong>Rabi</strong></td>
+          <td>October – December</td>
+          <td>March – April</td>
+          <td>Wheat, Gram, Torai, Mustard, Barley</td>
+          <td>Rice, Maize, Ragi, Jowar, Groundnut</td>
+        </tr>
+        <tr>
+          <td><strong>Zaid</strong></td>
+          <td>April</td>
+          <td>June</td>
+          <td>Vegetables, Fruits, Fodder Crops</td>
+          <td>Rice, Vegetables, Fodder Crops</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="rev-note">
+      <strong>Why South India grows rice in every season:</strong> because of
+      the <em>tropical climate</em> and <em>double/triple cropping</em> pattern — the
+      seasons there are less sharply divided than in the North.
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <h2>3. Season-wise Deep Dive</h2>
+
+    <h3>3.1 Kharif — the Monsoon Crops</h3>
+    <ul>
+      <li>Sown with the <strong>onset of the South-West monsoon</strong> (June–July).</li>
+      <li>Harvested in <strong>September–October</strong>.</li>
+      <li>Needs high temperature + high humidity at sowing, and warm dry weather at harvest.</li>
+    </ul>
+    <p><strong>Major crops:</strong></p>
+    <p>
+      <code>Paddy</code> · <code>Maize</code> · <code>Jowar</code> · <code>Bajra</code> ·
+      <code>Ragi</code> · <code>Tur (Arhar)</code> · <code>Moong</code> · <code>Urad</code> ·
+      <code>Cotton</code> · <code>Jute</code> · <code>Groundnut</code> · <code>Soyabean</code> ·
+      <code>Sunflower</code> · <code>Sesamum</code> · <code>Nigerseed</code>
+    </p>
+
+    <div class="crops-exam">
+      <strong>Exam angle:</strong> Kharif crops are also called <em>monsoon crops</em>.
+      Remember: <em>cotton and jute</em> are the two most-quoted commercial Kharif crops.
+    </div>
+
+    <h3>3.2 Rabi — the Winter Crops</h3>
+    <ul>
+      <li>Sown in <strong>winter (October–December)</strong>, after the monsoon retreats.</li>
+      <li>Harvested in <strong>March–April</strong> (the "harvest" festival season).</li>
+      <li>Requires cool growing season + bright sunshine at ripening.</li>
+    </ul>
+    <p><strong>Major crops:</strong></p>
+    <p>
+      <code>Wheat</code> · <code>Barley</code> · <code>Peas</code> · <code>Gram (Chana)</code> ·
+      <code>Mustard / Rapeseed</code> · <code>Masur (Lentil)</code> · <code>Safflower</code>
+    </p>
+
+    <div class="crops-exam">
+      <strong>Exam angle:</strong> Wheat is the <em>most important Rabi crop</em> of India.
+      Rabi crops are also called <em>winter crops</em>.
+    </div>
+
+    <h3>3.3 Zaid — the Summer Crops</h3>
+    <ul>
+      <li>Short season <strong>between Rabi and Kharif</strong> (April–June).</li>
+      <li>Grown on irrigated land, requires warm dry weather with ample water supply.</li>
+    </ul>
+    <p><strong>Major crops:</strong></p>
+    <p>
+      <code>Watermelon</code> · <code>Muskmelon</code> · <code>Cucumber</code> ·
+      <code>Bitter gourd</code> · <code>Pumpkin</code> · <code>Ridged gourd</code> ·
+      <code>Vegetables</code> · <code>Fodder crops</code>
+    </p>
+
+    <div class="rev-note">
+      <strong>Year-long crop:</strong> <code>Sugarcane</code> takes almost a full year
+      to grow — it does <em>not</em> fit neatly into Kharif / Rabi / Zaid.
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <h2>4. Quick-Recall Mnemonics</h2>
+
+    <p><strong>Kharif (Rainy) crops — "RIM-BC-JSGN":</strong></p>
+    <p class="crops-mnemonic">R I M · B C · J S G N</p>
+    <p>
+      <strong>R</strong>ice · <strong>I</strong>ute · <strong>M</strong>aize ·
+      <strong>B</strong>ajra · <strong>C</strong>otton · <strong>J</strong>owar ·
+      <strong>S</strong>oyabean · <strong>G</strong>roundnut · <strong>N</strong>igerseed
+    </p>
+
+    <p><strong>Rabi (Winter) crops — "WGB-MPS":</strong></p>
+    <p class="crops-mnemonic">W G B · M P S</p>
+    <p>
+      <strong>W</strong>heat · <strong>G</strong>ram · <strong>B</strong>arley ·
+      <strong>M</strong>ustard · <strong>P</strong>eas · <strong>S</strong>afflower
+    </p>
+
+    <p><strong>Zaid (Summer) crops — "WMC" + Veggies:</strong></p>
+    <p class="crops-mnemonic">W M C + Veg</p>
+    <p>
+      <strong>W</strong>atermelon · <strong>M</strong>uskmelon · <strong>C</strong>ucumber
+      + Vegetables, Fruits, Fodder
+    </p>
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <h2>5. North vs South — Key Contrast</h2>
+
+    <div class="crops-two-col">
+      <div class="crops-col crops-col--north">
+        <h4>North Indian States</h4>
+        <ul>
+          <li>Sharp season division (cold winters, hot summers).</li>
+          <li>Dominant Kharif: Rice, Cotton, Bajra, Maize, Jowar, Arhar.</li>
+          <li>Dominant Rabi: Wheat, Gram, Torai, Mustard, Barley.</li>
+          <li>Zaid: mainly Vegetables, Fruits, Fodder.</li>
+        </ul>
+      </div>
+      <div class="crops-col crops-col--south">
+        <h4>South Indian States</h4>
+        <ul>
+          <li>Tropical climate → less seasonal contrast.</li>
+          <li>Rice, Maize, Ragi, Jowar, Groundnut grown in <em>multiple</em> seasons.</li>
+          <li>Ragi (finger millet) is a South-India speciality.</li>
+          <li>Zaid includes Rice + Vegetables + Fodder.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <h2>6. Exam-Ready Facts (PYQ Fodder)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Fact</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Kharif = monsoon crop; sown June–July, harvested Sept–Oct.</td></tr>
+        <tr><td>2</td><td>Rabi = winter crop; sown Oct–Dec, harvested Mar–Apr.</td></tr>
+        <tr><td>3</td><td>Zaid = short summer season between Rabi &amp; Kharif (Apr–Jun).</td></tr>
+        <tr><td>4</td><td>Wheat = most important Rabi crop; Rice = most important Kharif crop.</td></tr>
+        <tr><td>5</td><td>Sugarcane is a <em>year-long</em> crop — not strictly Kharif/Rabi/Zaid.</td></tr>
+        <tr><td>6</td><td>Ragi / finger millet is mainly a South Indian crop.</td></tr>
+        <tr><td>7</td><td>Cotton and Jute = key commercial Kharif crops.</td></tr>
+        <tr><td>8</td><td>Watermelon, Muskmelon, Cucumber = classic Zaid crops.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="crops-exam">
+      <strong>BPSC / UPSC tip:</strong> Questions usually test —
+      (i) which crop belongs to which season, (ii) sowing/harvest months,
+      (iii) North-vs-South crop split, and (iv) odd-one-out (e.g. "Sugarcane is
+      grown in which season?" → <em>none of the three; it's a year-long crop</em>).
+    </div>
+
+
+
+  </main>
+
+  <!-- Report true content height to the parent app.
+       Measures <main class="rev-page"> directly, NOT document.body. -->
+  <script>
+    (function () {
+      function sendHeight() {
+        var el = document.querySelector('.rev-page') || document.body;
+        var h = Math.ceil(el.getBoundingClientRect().height);
+        if (!h) h = el.scrollHeight || 0;
+        if (!h) return;
+        try {
+          window.parent.postMessage({ type: 'revision-height', height: h }, '*');
+        } catch (e) {}
+      }
+      window.addEventListener('load', sendHeight);
+      window.addEventListener('resize', sendHeight);
+      setTimeout(sendHeight, 0);
+      setTimeout(sendHeight, 50);
+      setTimeout(sendHeight, 300);
+      setTimeout(sendHeight, 1000);
+      if (window.ResizeObserver) {
+        new ResizeObserver(sendHeight).observe(document.body);
+      }
+    })();
+  </script>
+</body>
+</html>

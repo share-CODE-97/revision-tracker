@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ancient Indian Dynasties — Magadha to Guptas — Revision</title>
+
+  <!--
+    Revision page for "Ancient Indian Dynasties — Magadha to Guptas".
+    Loaded inside the main app's iframe.
+    • Theme is passed via URL hash: #theme=dark or #theme=light
+    • Styles come from ../css/style.css
+  -->
+
+  <!-- Read theme from URL hash BEFORE paint (no flash). -->
+  <script>
+    (function () {
+      var m = location.hash.match(/theme=(light|dark)/);
+      document.documentElement.setAttribute('data-theme', m ? m[1] : 'dark');
+    })();
+  </script>
+
+  <!-- Shared app styles — this links the file to the MAIN stylesheet. -->
+  <link rel="stylesheet" href="../css/style.css">
+
+  <!-- Match the app's font stack. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Page-specific styles for Ancient Indian Dynasties. -->
+  <!-- Page-specific styles for Ancient Indian Dynasties. -->
+  <style>
+    .dyn-card { background:#0f172a; border:1px solid #1e293b; border-radius:10px; margin:16px 0; }
+    .dyn-card__head { display:flex; align-items:center; gap:12px; padding:16px 18px; cursor:pointer; font-weight:600; color:#e2e8f0; font-size:15px; line-height:1.5; flex-wrap:wrap; }
+    .dyn-card__head::after { content:'▾'; margin-left:auto; color:#818cf8; transition:transform .2s; flex:0 0 auto; }
+    .dyn-card.open .dyn-card__head::after { transform:rotate(180deg); }
+    .dyn-card__body { display:none; padding:0 18px 18px; color:#cbd5e1; font-size:14px; line-height:1.9; }
+    .dyn-card.open .dyn-card__body { display:block; }
+    .dyn-card__body ul { margin:8px 0; padding-left:22px; }
+    .dyn-card__body li { margin:6px 0; }
+    .dyn-card__body .dyn-fact { display:block; margin-bottom:10px; }
+
+    html[data-theme="light"] .dyn-card { background:#ffffff; border-color:#e2e8f0; }
+    html[data-theme="light"] .dyn-card__head { color:#1e293b; }
+    html[data-theme="light"] .dyn-card__body { color:#475569; }
+
+    .dyn-badge { display:inline-block; font-size:11px; padding:3px 10px; border-radius:999px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; white-space:nowrap; }
+    .dyn-badge--haryanka { background:#7c2d12; color:#fed7aa; }
+    .dyn-badge--shishunaga { background:#78350f; color:#fde68a; }
+    .dyn-badge--nanda { background:#4c1d95; color:#ddd6fe; }
+    .dyn-badge--maurya { background:#064e3b; color:#a7f3d0; }
+    .dyn-badge--shunga { background:#831843; color:#fbcfe8; }
+    .dyn-badge--kanva { background:#0c4a6e; color:#bae6fd; }
+    .dyn-badge--satavahana { background:#7f1d1d; color:#fecaca; }
+    .dyn-badge--kushan { background:#1e3a8a; color:#bfdbfe; }
+    .dyn-badge--gupta { background:#713f12; color:#fef08a; }
+    .dyn-badge--date { background:#475569; color:#e2e8f0; }
+    .dyn-badge--title { background:#3f3f46; color:#fef08a; border:1px solid #52525b; }
+    .dyn-badge--vimp { background:#7f1d1d; color:#fecaca; border:1px dashed #ef4444; }
+    .dyn-badge--vimp-gold { background:#422006; color:#fde68a; border:1px dashed #d97706; }
+
+    html[data-theme="light"] .dyn-badge--haryanka { background:#ffedd5; color:#9a3412; }
+    html[data-theme="light"] .dyn-badge--shishunaga { background:#fef3c7; color:#78350f; }
+    html[data-theme="light"] .dyn-badge--nanda { background:#ede9fe; color:#5b21b6; }
+    html[data-theme="light"] .dyn-badge--maurya { background:#d1fae5; color:#065f46; }
+    html[data-theme="light"] .dyn-badge--shunga { background:#fce7f3; color:#9d174d; }
+    html[data-theme="light"] .dyn-badge--kanva { background:#e0f2fe; color:#075985; }
+    html[data-theme="light"] .dyn-badge--satavahana { background:#fee2e2; color:#991b1b; }
+    html[data-theme="light"] .dyn-badge--kushan { background:#dbeafe; color:#1e40af; }
+    html[data-theme="light"] .dyn-badge--gupta { background:#fef9c3; color:#713f12; }
+    html[data-theme="light"] .dyn-badge--date { background:#e2e8f0; color:#334155; }
+    html[data-theme="light"] .dyn-badge--title { background:#f4f4f5; color:#713f12; border-color:#d4d4d8; }
+    html[data-theme="light"] .dyn-badge--vimp { background:#fee2e2; color:#991b1b; border-color:#dc2626; }
+    html[data-theme="light"] .dyn-badge--vimp-gold { background:#fefce8; color:#854d0e; border-color:#ca8a04; }
+
+    .dyn-tools { display:flex; gap:10px; flex-wrap:wrap; margin:16px 0 10px; }
+    .dyn-btn { background:#1e293b; color:#c7d2fe; border:1px solid #334155; border-radius:8px; padding:8px 16px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; }
+    .dyn-btn:hover { background:#334155; }
+    html[data-theme="light"] .dyn-btn { background:#eef2ff; color:#3730a3; border-color:#c7d2fe; }
+    html[data-theme="light"] .dyn-btn:hover { background:#e0e7ff; }
+
+    .dyn-q { background:#0f172a; border-left:3px solid #6366f1; border-radius:8px; padding:16px 18px; margin:12px 0; cursor:pointer; }
+    .dyn-q p { margin:0; color:#e2e8f0; font-weight:600; font-size:14.5px; line-height:1.6; }
+    .dyn-ans { display:none; margin-top:12px; padding-top:12px; border-top:1px dashed #334155; color:#a5b4fc; font-size:14px; line-height:1.9; }
+    .dyn-q.open .dyn-ans { display:block; }
+    html[data-theme="light"] .dyn-q { background:#ffffff; }
+    html[data-theme="light"] .dyn-q p { color:#1e293b; }
+    html[data-theme="light"] .dyn-ans { color:#4338ca; border-top-color:#e2e8f0; }
+
+    .dyn-mnem { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; background:#1e1b4b; color:#a5b4fc; padding:3px 9px; border-radius:5px; font-size:13px; }
+    html[data-theme="light"] .dyn-mnem { background:#e0e7ff; color:#3730a3; }
+
+    .dyn-flag { background:#1c1917; border-left:3px solid #facc15; border-radius:8px; padding:14px 18px; margin:12px 0; color:#fde68a; font-size:13.5px; line-height:1.8; }
+    html[data-theme="light"] .dyn-flag { background:#fefce8; color:#713f12; }
+
+    .dyn-vimp { background:#1c0a0a; border-left:3px solid #dc2626; border-radius:8px; padding:14px 18px; margin:12px 0; color:#fca5a5; font-size:13.5px; line-height:1.8; }
+    html[data-theme="light"] .dyn-vimp { background:#fef2f2; color:#991b1b; }
+
+    .dyn-timeline { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:10px; margin:16px 0; }
+    .dyn-tl { background:#0f172a; border:1px solid #1e293b; border-radius:8px; padding:12px 14px; }
+    .dyn-tl__yr { font-size:12px; font-weight:800; color:#818cf8; letter-spacing:.05em; }
+    .dyn-tl__ev { font-size:13px; color:#cbd5e1; margin-top:5px; line-height:1.5; }
+    html[data-theme="light"] .dyn-tl { background:#ffffff; border-color:#e2e8f0; }
+    html[data-theme="light"] .dyn-tl__ev { color:#475569; }
+
+    .dyn-king { background:#111827; border:1px solid #1f2937; border-left:4px solid #f59e0b; border-radius:8px; padding:18px 22px; margin:16px 0; }
+    .dyn-king__name { font-weight:700; color:#fbbf24; font-size:15.5px; margin-bottom:12px; line-height:1.5; }
+    .dyn-king__facts { color:#cbd5e1; font-size:14px; line-height:1.9; }
+    .dyn-king__facts strong { color:#e2e8f0; }
+    .dyn-king__facts br { content: ""; display: block; margin-top: 12px; }
+    
+    html[data-theme="light"] .dyn-king { background:#fffbeb; border-color:#fde68a; border-left-color:#d97706; }
+    html[data-theme="light"] .dyn-king__name { color:#92400e; }
+    html[data-theme="light"] .dyn-king__facts { color:#475569; }
+    html[data-theme="light"] .dyn-king__facts strong { color:#1e293b; }
+  </style>
+</head>
+
+<body style="background: transparent; margin: 0;">
+  <main class="rev-page">
+
+    <h1>Ancient Indian Dynasties — Magadha to Guptas</h1>
+    <p class="rev-subtitle">544 BCE → 550 CE. Eight dynasties, one thousand years, and the single most-asked cluster in Prelims Ancient India.</p>
+
+    <div class="rev-note">
+      <strong>How to use this page:</strong> every card is <em>closed</em> by default. Tap it — or hit <strong>Reveal all</strong> — only <em>after</em> you have tried to recall the king, the date, and the title. Reading an open card teaches you nothing. Guessing first is what makes it stick.
+    </div>
+
+    <div class="rev-note">
+      <strong>How this topic is actually asked.</strong> Almost every Prelims question falls into one of five buckets:
+      <br>① <em>Title → king</em> (who was "Devanampriya Priyadarshi"?)
+      <br>② <em>King → dynasty / date</em> (Bimbisara belonged to which dynasty?)
+      <br>③ <em>Chronological order</em> (who came first — Haryanka or Shishunaga?)
+      <br>④ <em>Capital / founder / successor</em> (who founded Pataliputra?)
+      <br>⑤ <em>Foreign / Greek names</em> (Sandrakottos = Chandragupta Maurya)
+      <br>Cards below are built so any of those five queries hits a single fact, not a paragraph.
+    </div>
+
+    <div class="dyn-timeline">
+      <div class="dyn-tl"><div class="dyn-tl__yr">544 BCE</div><div class="dyn-tl__ev">Haryanka dynasty</div></div>
+      <div class="dyn-tl"><div class="dyn-tl__yr">413 BCE</div><div class="dyn-tl__ev">Shishunaga dynasty</div></div>
+      <div class="dyn-tl"><div class="dyn-tl__yr">345 BCE</div><div class="dyn-tl__ev">Nanda dynasty</div></div>
+      <div class="dyn-tl"><div class="dyn-tl__yr">321 BCE</div><div class="dyn-tl__ev">Maurya dynasty</div></div>
+      <div class="dyn-tl"><div class="dyn-tl__yr">185 BCE</div><div class="dyn-tl__ev">Shunga dynasty</div></div>
+      <div class="dyn-tl"><div class="dyn-tl__yr">73 BCE</div><div class="dyn-tl__ev">Kanva dynasty</div></div>
+      <div class="dyn-tl"><div class="dyn-tl__yr">1st c. BCE</div><div class="dyn-tl__ev">Satavahana dynasty</div></div>
+      <div class="dyn-tl"><div class="dyn-tl__yr">1st c. CE</div><div class="dyn-tl__ev">Kushan dynasty</div></div>
+      <div class="dyn-tl"><div class="dyn-tl__yr">240 CE</div><div class="dyn-tl__ev">Gupta dynasty</div></div>
+    </div>
+
+    <h2>1 · The Pre-Mauryan stage — Haryanka, Shishunaga, Nanda</h2>
+    <p class="rev-subtitle">544–321 BCE. Magadha's rise from a small kingdom in Bihar to the first great empire of India.</p>
+
+    <div class="dyn-tools">
+      <button class="dyn-btn" data-dyn-all="open">Reveal all</button>
+      <button class="dyn-btn" data-dyn-all="close">Hide all</button>
+    </div>
+
+    <div class="dyn-card">
+      <div class="dyn-card__head">Haryanka Dynasty <span class="dyn-badge dyn-badge--haryanka">Pre-Maurya</span> <span class="dyn-badge dyn-badge--date">544–413 BCE</span></div>
+      <div class="dyn-card__body">
+        <span class="dyn-fact"><strong>Founder:</strong> Bimbisara (544–492 BCE) — title <em>Seniya</em>.</span>
+        <span class="dyn-fact"><strong>Capital:</strong> Rajgriha (Rajgir).</span>
+        <span class="dyn-fact"><strong>Significance:</strong> The first dynasty to make Magadha a major power. Contemporary of <strong>Gautama Buddha and Mahavira</strong> — the Haryankas ruled during the lifetime of both.</span>
+        <span class="dyn-fact"><strong>Key kings:</strong> Bimbisara → Ajatashatru → Udayin → Anuruddha, Munda, Nagadasaka.</span>
+      </div>
+    </div>
+
+    <div class="dyn-king">
+      <div class="dyn-king__name">Bimbisara (544–492 BCE) — "Seniya" <span class="dyn-badge dyn-badge--vimp-gold">V.Imp</span></div>
+      <div class="dyn-king__facts">
+        <strong>① Founder</strong> of the Haryanka dynasty — the first historical dynasty of Magadha.<br>
+        <strong>② Contemporary of Buddha and Mahavira</strong> — both are said to have visited his court.<br>
+        <strong>③ Matrimonial alliances:</strong> Married <em>Kosala Devi</em> (princess of Kosala), <em>Chellana</em> (Lichchhavi princess of Vaishali), and <em>Khema</em> (princess of Madra). This is why he is called the <em>first Indian king to use matrimonial alliances as a tool of diplomacy</em>.<br>
+        <strong>④ Title "Seniya"</strong> means "of the army" — a reference to his military strength.<br>
+        <strong>⑤ Capital:</strong> Rajgriha. He built the city's first fortifications.
+      </div>
+    </div>
+
+    <div class="dyn-king">
+      <div class="dyn-king__name">Ajatashatru (492–460 BCE) — "Killer of Father" <span class="dyn-badge dyn-badge--vimp-gold">V.Imp</span></div>
+      <div class="dyn-king__facts">
+        <strong>① Killed his father Bimbisara</strong> and seized the throne — this is why his title in Jain and Buddhist sources is <em>Kunika</em> ("the parricide").<br>
+        <strong>② Contemporary of Buddha</strong> — the Buddha died during his reign (c. 483 BCE). The <strong>First Buddhist Council</strong> was held at Rajgriha under his patronage.<br>
+        <strong>③ Wars:</strong> Fought against <strong>Kosala</strong> (his maternal uncle's kingdom) and against the <strong>Lichchhavis of Vaishali</strong> — the latter was a long-drawn war.<br>
+        <strong>④ Military innovations:</strong> Used <em>rathamusala</em> (a scythed chariot) and <em>mahashilakantaka</em> (a stone-throwing catapult) against the Lichchhavis.<br>
+        <strong>⑤ Moved the capital to Pataliputra</strong> — the foundation of what would become one of the greatest cities of the ancient world.<br>
+        <strong>⑥ Also known as:</strong> "Videhi" and "Vaidehi" in some sources (because of his mother's Kosalan lineage).
+      </div>
+    </div>
+
+    <div class="dyn-king">
+      <div class="dyn-king__name">Udayin (460–444 BCE) <span class="dyn-badge dyn-badge--vimp-gold">V.Imp</span></div>
+      <div class="dyn-king__facts">
+        <strong>① Founded Pataliputra</strong> — the future capital of the Mauryas, the Shungas, the Guptas, and the British (as Patna). One of the most strategic city-foundations in Indian history.<br>
+        <strong>② Reason for the shift:</strong> Pataliputra was at the confluence of the Ganga and Son rivers — far easier to defend than Rajgriha and better placed for trade and communication.<br>
+        <strong>③ Killed by the successors</strong> — after Udayin, the Haryanka dynasty fell into a period of weak rulers.
+      </div>
+    </div>
+
+    <div class="dyn-card">
+      <div class="dyn-card__head">Shishunaga Dynasty <span class="dyn-badge dyn-badge--shishunaga">Pre-Maurya</span> <span class="dyn-badge dyn-badge--date">413–345 BCE</span></div>
+      <div class="dyn-card__body">
+        <span class="dyn-fact"><strong>Founder:</strong> Shishunaga (413–395 BCE) — a former <em>amatya</em> (minister) who overthrew the last Haryanka ruler.</span>
+        <span class="dyn-fact"><strong>Key king:</strong> Kalashoka (395–367 BCE) — also called <em>Kakavarna</em>.</span>
+        <span class="dyn-fact"><strong>Capital:</strong> Rajgriha, later shifted to Pataliputra (Vaishali for a brief period under Kalashoka).</span>
+        <span class="dyn-fact"><strong>Significance:</strong></span>
+        <ul>
+          <li>The <strong>Second Buddhist Council</strong> was held at <strong>Vaishali</strong> (c. 383 BCE) under Kalashoka's patronage — where the Buddhist order first split into <em>Sthaviravadins</em> and <em>Mahasanghikas</em>.</li>
+          <li>Kalashoka divided the kingdom among his sons — a partition that weakened Magadha and paved the way for the Nandas.</li>
+          <li>Shishunaga temporarily shifted the capital to Vaishali, but Pataliputra remained the effective centre.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="dyn-king">
+      <div class="dyn-king__name">Kalashoka (395–367 BCE) — "Kakavarna" <span class="dyn-badge dyn-badge--vimp-gold">V.Imp</span></div>
+      <div class="dyn-king__facts">
+        <strong>① Patron of the Second Buddhist Council</strong> at Vaishali (c. 383 BCE) — the council that formalised the first great schism in Buddhism.<br>
+        <strong>② Divided his kingdom among his ten sons</strong> — this partition is often cited as the beginning of the end for the Shishunagas.<br>
+        <strong>③ "Kakavarna"</strong> means "crow-coloured" — a nickname given in the Puranas.
+      </div>
+    </div>
+
+    <div class="dyn-card">
+      <div class="dyn-card__head">Nanda Dynasty <span class="dyn-badge dyn-badge--nanda">Pre-Maurya</span> <span class="dyn-badge dyn-badge--date">345–321 BCE</span></div>
+      <div class="dyn-card__body">
+        <span class="dyn-fact"><strong>Founder:</strong> Mahapadma Nanda (345–329 BCE) — the <strong>first Shudra king</strong> of Magadha, and the first "empire-builder" of India.</span>
+        <span class="dyn-fact"><strong>Last ruler:</strong> Dhana Nanda (329–321 BCE) — overthrown by Chandragupta Maurya with the help of Chanakya (Kautilya).</span>
+        <span class="dyn-fact"><strong>Significance:</strong></span>
+        <ul>
+          <li>First dynasty to extend Magadha's power across almost the whole of northern India — from the Punjab to Bengal, and from the Himalayas to the Godavari.</li>
+          <li>The Nandas were enormously wealthy — their treasury was one of the reasons Alexander's soldiers wanted to march to the Ganga (they refused, and Alexander turned back).</li>
+          <li>Described in Greek sources as ruling over a vast army: <em>200,000 infantry, 20,000 cavalry, 2,000 four-horse chariots, 3,000 elephants</em> (per Diodorus and Curtius).</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="dyn-king">
+      <div class="dyn-king__name">Mahapadma Nanda (345–329 BCE) — "Ekarat" <span class="dyn-badge dyn-badge--vimp-gold">V.Imp</span></div>
+      <div class="dyn-king__facts">
+        <strong>① Title "Ekarat"</strong> = "sole sovereign" — the first Indian ruler to be called the sole sovereign of a vast territory.<br>
+        <strong>② Also called "Sarva-kshatrantaka"</strong> — "destroyer of all Kshatriyas" — because he is said to have wiped out the old Kshatriya dynasties of northern India.<br>
+        <strong>③ First Shudra king</strong> of Magadha, per the Puranas — a major social break from the Haryankas and Shishunagas.<br>
+        <strong>④ His army</strong> was the largest India had seen until then — and the fear of it is what made Alexander's army refuse to advance beyond the Beas.<br>
+        <strong>⑤ His empire</strong> is the territorial base that Chandragupta Maurya inherited and expanded.
+      </div>
+    </div>
+
+    <div class="dyn-king">
+      <div class="dyn-king__name">Dhana Nanda (329–321 BCE) <span class="dyn-badge dyn-badge--vimp-gold">V.Imp</span></div>
+      <div class="dyn-king__facts">
+        <strong>① Last Nanda ruler.</strong> Overthrown by Chandragupta Maurya (with Chanakya's strategy) in c. 321 BCE — the founding date of the Mauryan Empire.<br>
+        <strong>② Called "Agrammes" or "Xandrammes"</strong> in Greek sources (probably a corruption of "Dhana Nanda" or a title).<br>
+        <strong>③ His unpopularity</strong> — heavy taxation, low status in the varna order, and a reputation for greed — is what made Chanakya's plot succeed.<br>
+        <strong>④ Chanakya's grudge:</strong> According to tradition, Chanakya was insulted by Dhana Nanda at his court, and swore to destroy the Nanda dynasty. This is the backdrop of the <em>Arthashastra</em> and the <em>Mudrarakshasa</em>.
+      </div>
+    </div>
+
+    <h2>2 · The Mauryan Empire — the first all-India state</h2>
+    <p class="rev-subtitle">321–185 BCE. The dynasty that gave us Chandragupta, Chanakya, Megasthenes, Ashoka, and the first pan-Indian administration.</p>
+
+    <div class="dyn-tools">
+      <button class="dyn-btn" data-dyn-all="open">Reveal all</button>
+      <button class="dyn-btn" data-dyn-all="close">Hide all</button>
+    </div>
+
+    <div class="dyn-card">
+      <div class="dyn-card__head">Maurya Dynasty <span class="dyn-badge dyn-badge--maurya">Maurya</span> <span class="dyn-badge dyn-badge--date">321–185 BCE</span></div>
+      <div class="dyn-card__body">
+        <span class="dyn-fact"><strong>Founder:</strong> Chandragupta Maurya (321–297 BCE) — with Chanakya (Kautilya / Vishnugupta).</span>
+        <span class="dyn-fact"><strong>Capital:</strong> Pataliputra (modern Patna).</span>
+        <span class="dyn-fact"><strong>Key kings:</strong> Chandragupta → Bindusara → Ashoka → Dasharatha → Samprati → Salisuka, Devavarman, Satadhanvan, Brihadratha.</span>
+        <span class="dyn-fact"><strong>Significance:</strong> The first dynasty to unify almost the entire Indian subcontinent — from the Hindu Kush to the Godavari. Also the first to leave behind a coherent administrative text (the <em>Arthashastra</em>) and a rich epigraphic record (Ashoka's edicts).</span>
+      </div>
+    </div>
+
+    <div class="dyn-king">
+      <div class="dyn-king__name">Chandragupta Maurya (321–297 BCE) — "Sandrakottos" <span class="dyn-badge dyn-badge--vimp-gold">V.Imp</span></div>
+      <div class="dyn-king__facts">
+        <strong>① Founder</strong> of the Mauryan Empire — the first empire in Indian history to cover almost the whole subcontinent.<br>
+        <strong>② Greek name:</strong> <em>Sandrakottos</em> (also written Sandrocottus). This is how the Greeks — and through them, the Romans — knew him.<br>
+        <strong>③ Defeated Seleucus Nicator</strong> (Alexander's general) in c. 305 BCE. The treaty gave Chandragupta: (a) the satrapies of Arachosia, Gedrosia, and Paropamisadae; (b) a marriage alliance; (c) <strong>Megasthenes</strong> as Seleucus' ambassador to the Mauryan court.<br>
+        <strong>④ Megasthenes</strong> wrote <em>Indica</em> — the first Greek account of India, and our main foreign source for Mauryan administration.<br>
+        <strong>⑤ Chanakya</strong> (Kautilya) was his chief minister and the author of the <em>Arthashastra</em> — the foundational text of Indian statecraft.<br>
+        <strong>⑥ Jain tradition:</strong> In his later years Chandragupta converted to Jainism, went south with Bhadrabahu, and died by <em>Sallekhana</em> (ritual fasting) at Shravanabelagola (Karnataka).<br>
+        <strong>⑦ His empire</strong> — from the Hindu Kush and Baluchistan in the west to Bengal in the east, and from the Himalayas to the Deccan — is the territorial template for the Guptas.
+      </div>
+    </div>
+
+    <div class="dyn-king">
+      <div class="dyn-king__name">Bindusara (297–273 BCE) — "Amitraghata" <span class="dyn-badge dyn-badge--vimp-gold">V.Imp</span></div>
+      <div class="dyn-king__facts">
+        <strong>① Title "Amitraghata"</strong> = "Slayer of Foes". The Greeks called him <em>Amitrochates</em>.<br>
+        <strong>② Son of Chandragupta, father of Ashoka.</strong> His reign is the least documented of the three great Mauryas — because he left no inscriptions of his own.<br>
+        <strong>③ Known for:</strong> consolidating the empire his father had built, putting down revolts in Taxila and Ujjain, and maintaining diplomatic contact with the Greek world (Deimachus was the Seleucid ambassador at his court).<br>
+        <strong>④ Jain tradition:</strong> He was a patron of Jainism and is said to have been a follower of the Jain saint Pingalavatsa.<br>
+        <strong>⑤ His death</strong> (c. 273 BCE) was followed by a four-year war of succession — Ashoka emerged as the victor.
+      </div>
+    </div>
+
+    <div class="dyn-king">
+      <div class="dyn-king__name">Ashoka the Great (273–232 BCE) — "Devanampriya Priyadarshi" <span class="dyn-badge dyn-badge--vimp-gold">V.Imp</span></div>
+      <div class="dyn-king__facts">
+        <strong>① Titles:</strong> <em>Devanampriya</em> ("Beloved of the Gods") and <em>Priyadarshi</em> ("He who looks on with affection"). These are the names Ashoka uses for himself in his edicts — not "Ashoka", which appears only in a few minor inscriptions.<br>
+        <strong>② The Kalinga War (c. 261 BCE)</strong> — the turning point of his life. The bloodshed (per his own edict: 100,000 killed, 150,000 deported) led him to embrace Buddhism and the policy of <em>Dhamma</em>.<br>
+        <strong>③ Dhamma:</strong> Not Buddhism itself, but a set of ethical principles — compassion, truthfulness, tolerance of all sects, non-injury to living beings, and obedience to parents and teachers. His <em>Dhamma Mahamatta</em> officers were appointed to spread it.<br>
+        <strong>④ Third Buddhist Council</strong> at <strong>Pataliputra</strong> (c. 250 BCE), under the presidency of <em>Moggaliputta Tissa</em>. This council compiled the <em>Abhidhamma Pitaka</em> and sent missionaries abroad — including <strong>Mahendra and Sanghamitra to Sri Lanka</strong>.<br>
+        <strong>⑤ His inscriptions:</strong> The <strong>Rock Edicts</strong> (Major and Minor), the <strong>Pillar Edicts</strong>, and the <strong>Separate Edicts</strong>. They are in <em>Prakrit</em> using <em>Brahmi</em> script (and Kharosthi in the northwest, Greek and Aramaic in the border regions). The <strong>Maski</strong> and <strong>Gujarra</strong> edicts use the name "Ashoka" directly.<br>
+        <strong>⑥ Language of the edicts:</strong> Prakrit — the language of the common people, not Sanskrit. This is a deliberate choice for a mass audience.<br>
+        <strong>⑦ His Dhamma tours:</strong> He visited Lumbini (Buddha's birthplace, 249 BCE) and erected a pillar there with a reduced tax for the village.<br>
+        <strong>⑧ His death (232 BCE)</strong> was followed by the rapid decline of the Mauryan Empire.
+      </div>
+    </div>
+
+    <div class="dyn-vimp">
+      <strong>V.V.Imp — Ashoka's edicts and what they are NOT:</strong> The edicts are not "Buddhist propaganda". They are a public moral code — Ashoka's <em>Dhamma</em> is a civil religion, not a sectarian one. His inscriptions never mention the Buddha, the Sangha, or the Four Noble Truths by name. Questions often try to equate "Dhamma" with "Buddhism" — do not fall for it.
+    </div>
+
+    <div class="dyn-king">
+      <div class="dyn-king__name">Dasharatha (232–224 BCE) <span class="dyn-badge dyn-badge--vimp-gold">V.Imp</span></div>
+      <div class="dyn-king__facts">
+        <strong>① Grandson of Ashoka</strong>, son of either Kunala or Jalauka (sources differ).<br>
+        <strong>② Known for:</strong> His inscription on the <em>Nagarjuni Hills</em> (near Barabar, Bihar) — where he dedicated three caves to the <em>Ajivika</em> sect. This is the only Mauryan inscription after Ashoka that names a king directly.<br>
+        <strong>③ Under him</strong> the Mauryan Empire began to break up — Vidarbha and parts of the Deccan broke away.
+      </div>
+    </div>
+
+    <div class="dyn-king">
+      <div class="dyn-king__name">Samprati (224–215 BCE) <span class="dyn-badge dyn-badge--vimp-gold">V.Imp</span></div>
+      <div class="dyn-king__facts">
+        <strong>① Successor of Dasharatha</strong> — and one of the most important Jain patrons in Indian history.<br>
+        <strong>② Jain tradition:</strong> Called <em>Jaina Ashoka</em> — he is said to have built thousands of Jain temples and sent missionaries to South India and Sri Lanka.<br>
+        <strong>③ His reign</strong> is the last period of Mauryan strength in the south; after him the empire rapidly shrinks.
+      </div>
+    </div>
+
+    <div class="dyn-king">
+      <div class="dyn-king__name">Brihadratha (185 BCE) — the last Maurya <span class="dyn-badge dyn-badge--vimp-gold">V.Imp</span></div>
+      <div class="dyn-king__facts">
+        <strong>① Last Mauryan ruler.</strong> Assassinated by his own commander-in-chief, <strong>Pushyamitra Shunga</strong>, during a military review — the founding act of the Shunga dynasty.<br>
+        <strong>② Preceded by:</strong> Salisuka, Devavarman, Satadhanvan — all weak rulers who presided over the empire's contraction.<br>
+        <strong>③ Exam keyword:</strong> "Who killed the last Mauryan ruler?" — Pushyamitra Shunga, 185 BCE. This is a permanent one-line answer.
+      </div>
+    </div>
+
+    <h2>3 · The Shunga and Kanva dynasties — the post-Mauryan aftermath</h2>
+    <p class="rev-subtitle">185–28 BCE. Two Brahminical dynasties that ruled Magadha after the Mauryas.</p>
+
+    <div class="dyn-tools">
+      <button class="dyn-btn" data-dyn-all="open">Reveal all</button>
+      <button class="dyn-btn" data-dyn-all="close">Hide all</button>
+    </div>
+
+    <div class="dyn-card">
+      <div class="dyn-card__head">Shunga Dynasty <span class="dyn-badge dyn-badge--shunga">Post-Maurya</span> <span class="dyn-badge dyn-badge--date">185–73 BCE</span></div>
+      <div class="dyn-card__body">
+        <span class="dyn-fact"><strong>Founder:</strong> Pushyamitra Shunga (185–149 BCE) — a Brahmin general who assassinated Brihadratha.</span>
+        <span class="dyn-fact"><strong>Capital:</strong> Pataliputra, with <em>Vidisha</em> (Besnagar) as an important secondary centre.</span>
+        <span class="dyn-fact"><strong>Key kings:</strong> Pushyamitra → Agnimitra → Vasujyeshtha → Bhagabhadra → Devabhuti.</span>
+        <span class="dyn-fact"><strong>Significance:</strong></span>
+        <ul>
+          <li>A <strong>Brahminical reaction</strong> to the Mauryan patronage of Buddhism and Jainism — the Shungas revived Vedic sacrifices, especially the <em>Ashvamedha</em>.</li>
+          <li>Pushyamitra is credited with two Ashvamedha sacrifices.</li>
+          <li>Patanjali's <em>Mahabhashya</em> (c. 150 BCE) refers to Pushyamitra's Ashvamedha — one of the few contemporary references.</li>
+          <li>The <strong>Shunga empire</strong> extended from the Punjab to the Narmada, with Vidisha as a key centre.</li>
+          <li>After Pushyamitra, the dynasty declined rapidly — Devabhuti, the last ruler, was killed by his own minister <strong>Vasudeva Kanva</strong>.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="dyn-king">
+      <div class="dyn-king__name">Pushyamitra Shunga (185–149 BCE) <span class="dyn-badge dyn-badge--vimp-gold">V.Imp</span></div>
+      <div class="dyn-king__facts">
+        <strong>① Assassinated Brihadratha</strong> — the last Mauryan ruler — during a military review, and founded the Shunga dynasty.<br>
+        <strong>② A Brahmin</strong> by birth — this is significant because it marks the return of Brahminical power after the Shudra Nandas and the Buddhist-leaning Mauryas.<br>
+        <strong>③ Performed two Ashvamedha sacrifices</strong> — a public statement of Vedic revival.<br>
+        <strong>④ Buddhist sources</strong> (especially the <em>Divyavadana</em>) accuse him of persecuting Buddhists — but this is debated by historians. The evidence is mixed.<br>
+        <strong>⑤ His court</strong> was a centre of Sanskrit learning — Patanjali's <em>Mahabhashya</em> belongs to this period.<br>
+        <strong>⑥ His son Agnimitra</strong> is the hero of Kalidasa's play <em>Malavikagnimitram</em>.
+      </div>
+    </div>
+
+    <div class="dyn-card">
+      <div class="dyn-card__head">Kanva Dynasty <span class="dyn-badge dyn-badge--kanva">Post-Maurya</span> <span class="dyn-badge dyn-badge--date">73–28 BCE</span></div>
+      <div class="dyn-card__body">
+        <span class="dyn-fact"><strong>Founder:</strong> Vasudeva Kanva (73–64 BCE) — a minister of the last Shunga ruler, Devabhuti. He killed his master and seized the throne.</span>
+        <span class="dyn-fact"><strong>Key kings:</strong> Vasudeva → Bhumimitra → Narayana → Susarman.</span>
+        <span class="dyn-fact"><strong>Significance:</strong></span>
+        <ul>
+          <li>A short-lived dynasty (about 45 years) — ruled only over Magadha and its immediate surroundings.</li>
+          <li>Their power was largely nominal — the real authority in the region had passed to the Satavahanas in the Deccan and the Indo-Greeks in the northwest.</li>
+          <li>The dynasty ended when the Satavahanas overthrew Susarman (c. 28 BCE).</li>
+          <li>They were <strong>Brahmins</strong>, like the Shungas — and the Puranas record them as the successors of the Shungas in Magadha.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>4 · The Satavahanas — the bridge to the Deccan</h2>
+    <p class="rev-subtitle">1st century BCE – 3rd century CE. The first great Deccan power — and the dynasty that links Magadha's legacy to South India.</p>
+
+    <div class="dyn-tools">
+      <button class="dyn-btn" data-dyn-all="open">Reveal all</button>
+      <button class="dyn-btn" data-dyn-all="close">Hide all</button>
+    </div>
+
+    <div class="dyn-card">
+      <div class="dyn-card__head">Satavahana Dynasty <span class="dyn-badge dyn-badge--satavahana">Deccan</span> <span class="dyn-badge dyn-badge--date">1st c. BCE – 3rd c. CE</span></div>
+      <div class="dyn-card__body">
+        <span class="dyn-fact"><strong>Also called:</strong> <em>Andhra</em> dynasty — the Puranas refer to them as <em>Andhras</em>.</span>
+        <span class="dyn-fact"><strong>Founder:</strong> Simuka (c. 1st century BCE).</span>
+        <span class="dyn-fact"><strong>Capital:</strong> <em>Pratishthana</em> (Paithan, Maharashtra) — with <em>Amaravati</em> and <em>Dhanyakataka</em> as other important centres.</span>
+        <span class="dyn-fact"><strong>Key kings:</strong> Simuka → Satakarni I → Gautamiputra Satakarni → Vashishthiputra Pulumavi → Yajna Sri Satakarni.</span>
+        <span class="dyn-fact"><strong>Significance:</strong></span>
+        <ul>
+          <li>The first major power in the Deccan — controlled the trade routes between the Gangetic plain and the ports of the west and east coasts.</li>
+          <li>Their coins and inscriptions are the first to be issued in the Deccan with Sanskrit and Prakrit legends.</li>
+          <li>Known as the <em>bridge dynasty</em> — they carried the Magadhan political and cultural legacy into South India.</li>
+          <li>Patrons of both Buddhism and Brahminism — they gave land grants to both, which is a key marker of the early medieval transition.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="dyn-king">
+      <div class="dyn-king__name">Gautamiputra Satakarni (106–130 CE) — "Trisamudratoyapitavahana" <span class="dyn-badge dyn-badge--vimp-gold">V.Imp</span></div>
+      <div class="dyn-king__facts">
+        <strong>① The greatest Satavahana ruler</strong> — his empire covered the Deccan from the Konkan to the Godavari, and from Malwa to the Krishna delta.<br>
+        <strong>② Title "Trisamudratoyapitavahana"</strong> = "one whose horses drank the waters of the three oceans" — a claim to suzerainty over a vast area between the Arabian Sea, the Bay of Bengal, and the Indian Ocean (this is usually interpreted as a reference to the three coasts).<br>
+        <strong>③ Defeated Nahapana</strong>, the Western Kshatrapa ruler — a victory recorded in his mother's <em>Nashik inscription</em> (the <em>Nasik prasasti</em> by Gautami Balashri).<br>
+        <strong>④ His mother Gautami Balashri</strong> — one of the most important women in early Indian epigraphy. Her inscription is the main source for his reign.<br>
+        <strong>⑤ He is described in the inscription</strong> as the "destroyer of Shakas, Yavanas, Pahlavas" — a claim of defeating foreign powers.<br>
+        <strong>⑥ Also known as a patron of Brahminism</strong> — he is described as <em>Eka-Brahmana</em> ("the only Brahmana"), meaning a great patron of the Brahmanas.
+      </div>
+    </div>
+
+    <div class="dyn-king">
+      <div class="dyn-king__name">Vashishthiputra Pulumavi (130–154 CE) <span class="dyn-badge dyn-badge--vimp-gold">V.Imp</span></div>
+      <div class="dyn-king__facts">
+        <strong>① Son of Gautamiputra Satakarni</strong> — his name means "son of Vashishthi" (his mother's name).<br>
+        <strong>② Known for:</strong> Consolidating the Satavahana empire in the Deccan after his father's conquests. His coins and inscriptions are found across Maharashtra and Andhra Pradesh.<br>
+        <strong>③ The <em>Periplus of the Erythraean Sea</em></strong> (1st century CE) mentions the Satavahana ports — this period sees the peak of Indo-Roman trade.<br>
+        <strong>④ His inscriptions</strong> record donations to Buddhist monasteries — showing the continuing Satavahana patronage of Buddhism.
+      </div>
+    </div>
+
+    <div class="dyn-king">
+      <div class="dyn-king__name">Yajna Sri Satakarni (165–194 CE) <span class="dyn-badge dyn-badge--vimp-gold">V.Imp</span></div>
+      <div class="dyn-king__facts">
+        <strong>① One of the last great Satavahana rulers.</strong> His coins depict a ship with a mast — the most direct numismatic evidence of Satavahana maritime trade.<br>
+        <strong>② His reign</strong> marks the last phase of Satavahana power before the dynasty fragmented into smaller Deccan kingdoms.<br>
+        <strong>③ Exam keyword:</strong> The ship-type coins of Yajna Sri Satakarni are a classic "match the coin to the dynasty" question.
+      </div>
+    </div>
+
+    <h2>5 · The Kushans — the empire that gave India the Saka era</h2>
+    <p class="rev-subtitle">1st century CE – 3rd century CE. A Central Asian dynasty that ruled from Afghanistan to the Ganga — and defined the art and chronology of early India.</p>
+
+    <div class="dyn-tools">
+      <button class="dyn-btn" data-dyn-all="open">Reveal all</button>
+      <button class="dyn-btn" data-dyn-all="close">Hide all</button>
+    </div>
+
+    <div class="dyn-card">
+      <div class="dyn-card__head">Kushan Dynasty <span class="dyn-badge dyn-badge--kushan">Central Asia</span> <span class="dyn-badge dyn-badge--date">1st c. CE – 3rd c. CE</span></div>
+      <div class="dyn-card__body">
+        <span class="dyn-fact"><strong>Also called:</strong> <em>Kushana</em> or <em>Yuezhi</em> — a branch of the Yuezhi confederation from Central Asia.</span>
+        <span class="dyn-fact"><strong>Founder (of the Indian branch):</strong> Kujula Kadphises (30–80 CE).</span>
+        <span class="dyn-fact"><strong>Capital:</strong> <em>Purushapura</em> (Peshawar) — with a summer capital at <em>Mathura</em>.</span>
+        <span class="dyn-fact"><strong>Key kings:</strong> Kujula Kadphises → Vima Kadphises → Kanishka → Huvishka → Vasudeva I.</span>
+        <span class="dyn-fact"><strong>Significance:</strong></span>
+        <ul>
+          <li>Controlled the Silk Road — the trade route between China, India, Persia, and the Roman Empire. Their coins and art show a fusion of Indian, Greek, Persian, and Central Asian elements.</li>
+          <li>The <strong>Gandhara school of art</strong> and the <strong>Mathura school</strong> flourished under Kushan patronage.</li>
+          <li>The first gold coins in India were issued by <strong>Vima Kadphises</strong> — the Kushans are the first to mint gold on a large scale in India.</li>
+          <li>The <strong>Saka era (78 CE)</strong> — still used by the Government of India as the national calendar — was started by Kanishka.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="dyn-king">
+      <div class="dyn-king__name">Kanishka (127–150 CE) — the greatest Kushan <span class="dyn-badge dyn-badge--vimp-gold">V.Imp</span></div>
+      <div class="dyn-king__facts">
+        <strong>① Started the Saka era (78 CE)</strong> — the official Indian national calendar is still based on this era. Every Indian government calendar uses Saka dates.<br>
+        <strong>② Fourth Buddhist Council</strong> was held in Kashmir (Kundalvana, near Srinagar) under his patronage — presided over by <em>Vasumitra</em> and <em>Ashvaghosha</em>. This council formally split Buddhism into <em>Mahayana</em> and <em>Hinayana</em>.<br>
+        <strong>③ Patron of Mahayana Buddhism</strong> — he is called the "Second Ashoka" for his patronage of Buddhism, though his was specifically Mahayana.<br>
+        <strong>④ His court</strong> was a gathering of intellectual giants — <em>Ashvaghosha</em> (poet of the <em>Buddhacharita</em>), <em>Vasumitra</em>, <em>Charaka</em> (the physician, author of the <em>Charaka Samhita</em>), and <em>Nagarjuna</em> (the philosopher).<br>
+        <strong>⑤ His conquests:</strong> He extended Kushan power over Kashmir, the Punjab, and parts of the Ganga plain — and fought a war with the Han Chinese (recorded in Chinese sources).<br>
+        <strong>⑥ His coins</strong> show a remarkable range of deities — Buddha, Shiva, Iranian gods, and Greek gods — a sign of the religious plurality of his empire.<br>
+        <strong>⑦ His relics</strong> — the famous <em>Kanishka casket</em> — are held in Peshawar Museum; his statue is in Mathura Museum.<br>
+        <strong>⑧ His name</strong> in Chinese sources is <em>Qiujiuque</em> or <em>Jia-ni-se-jia</em>. Inscriptions call him <em>Maharaja Rajadhiraja Devaputra Kanishka</em>.
+      </div>
+    </div>
+
+    <div class="dyn-vimp">
+      <strong>V.V.Imp — the Saka era:</strong> The Saka era began in <strong>78 CE</strong> and is traditionally attributed to Kanishka. The <strong>Indian National Calendar</strong> (adopted 22 March 1957) uses the Saka era — the first month is <em>Chaitra</em>, and the year begins on 22 March (21 March in a leap year). A permanent Prelims question.
+    </div>
+
+    <div class="dyn-king">
+      <div class="dyn-king__name">Vima Kadphises (95–127 CE) <span class="dyn-badge dyn-badge--vimp-gold">V.Imp</span></div>
+      <div class="dyn-king__facts">
+        <strong>① First Kushan ruler to issue gold coins</strong> — the first large-scale gold coinage in India. This is a direct consequence of the Silk Road trade.<br>
+        <strong>② His coins</strong> show a remarkable fusion: the king on one side, and on the other, <em>Oesho</em> (a form of Shiva), Iranian deities, or Greek gods.<br>
+        <strong>③ His reign</strong> marks the territorial consolidation of the Kushan empire in India — from Bactria to the Ganga plain.
+      </div>
+    </div>
+
+    <div class="dyn-king">
+      <div class="dyn-king__name">Vasudeva I (190–230 CE) — the last great Kushan <span class="dyn-badge dyn-badge--vimp-gold">V.Imp</span></div>
+      <div class="dyn-king__facts">
+        <strong>① The last great Kushan ruler</strong> — after him the empire fragmented into smaller Kushano-Sasanian and local dynasties.<br>
+        <strong>② His coins</strong> are predominantly <em>Shaivite</em> — the reverse shows Shiva with a bull. This marks a shift from the earlier Buddhist-and-eclectic coinage.<br>
+        <strong>③ His name</strong> itself — "Vasudeva" — is a Vaishnava name, indicating the growing strength of Brahminical Hinduism in the Kushan court.<br>
+        <strong>④ End of the Kushans</strong> in India: their territory was taken over by the <em>Nagas</em>, the <em>Yaudheyas</em>, and eventually the <em>Guptas</em>.
+      </div>
+    </div>
+
+    <h2>6 · The Guptas — the golden age</h2>
+    <p class="rev-subtitle">c. 240–550 CE. The dynasty that defined classical India — its art, its literature, its science, and its political ideal.</p>
+
+    <div class="dyn-tools">
+      <button class="dyn-btn" data-dyn-all="open">Reveal all</button>
+      <button class="dyn-btn" data-dyn-all="close">Hide all</button>
+    </div>
+
+    <div class="dyn-card">
+      <div class="dyn-card__head">Gupta Dynasty <span class="dyn-badge dyn-badge--gupta">Golden Age</span> <span class="dyn-badge dyn-badge--date">c. 240–550 CE</span></div>
+      <div class="dyn-card__body">
+        <span class="dyn-fact"><strong>Founder:</strong> Sri Gupta (c. 240–280 CE) — probably a local chief in Magadha.</span>
+        <span class="dyn-fact"><strong>Capital:</strong> Pataliputra, with <em>Ujjain</em> as a major secondary centre (especially under Chandragupta II).</span>
+        <span class="dyn-fact"><strong>Key kings:</strong> Sri Gupta → Ghatotkacha → Chandragupta I → Samudragupta → Chandragupta II → Kumaragupta I → Skandagupta.</span>
+        <span class="dyn-fact"><strong>Significance:</strong></span>
+        <ul>
+          <li>The empire that gave India the <strong>classical age</strong> — the age of Kalidasa, Aryabhata, Varahamihira, and the Ajanta frescoes.</li>
+          <li>The <strong>Gupta era</strong> (319–320 CE) was started by Chandragupta I — the second great era after the Saka era.</li>
+          <li>The empire at its peak covered almost the whole of northern India — from the Indus to the Brahmaputra, and from the Himalayas to the Narmada.</li>
+          <li>The decline began with the <strong>Huna invasions</strong> — Skandagupta checked them, but his successors could not.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="dyn-king">
+      <div class="dyn-king__name">Chandragupta I (319–335 CE) — "Maharajadhiraja" <span class="dyn-badge dyn-badge--vimp-gold">V.Imp</span></div>
+      <div class="dyn-king__facts">
+        <strong>① First great Gupta ruler</strong> — he raised the family from local chiefs to imperial status.<br>
+        <strong>② Started the Gupta era (319–320 CE)</strong> — the second great era in Indian chronology, after the Saka era. The date is usually taken as 26 February 320 CE (his accession).<br>
+        <strong>③ Married Kumaradevi</strong> — a Lichchhavi princess. This marriage gave the Guptas the prestige of the Lichchhavi lineage, which they advertised on their coins (the "Lichchhavi" type coins show the couple).<br>
+        <strong>④ Title "Maharajadhiraja"</strong> — "Great King of Kings" — the first Gupta to use this imperial title.<br>
+        <strong>⑤ His empire</strong> covered Magadha, Saketa (Ayodhya), and Prayaga (Allahabad) — the core of what Samudragupta would later expand.
+      </div>
+    </div>
+
+    <div class="dyn-king">
+      <div class="dyn-king__name">Samudragupta (335–375 CE) — "Napoleon of India" <span class="dyn-badge dyn-badge--vimp-gold">V.Imp</span></div>
+      <div class="dyn-king__facts">
+        <strong>① Called the "Napoleon of India"</strong> by the British historian <strong>V. A. Smith</strong> — because of his extensive conquests and military genius.<br>
+        <strong>② His campaigns</strong> are recorded in the <strong>Allahabad Pillar Inscription</strong> (Prayag Prashasti), composed by his court poet <strong>Harisena</strong>. This is the single most important source for his reign.<br>
+        <strong>③ His conquests:</strong> He defeated 9 kings of Aryavarta (northern India), 12 kings of Dakshinapatha (the Deccan), the Atavika (forest) kingdoms, and the frontier kingdoms (Samatata, Davaka, Kamarupa, Nepala, Kartripura). He also received tribute from the Kushans, Shakas, and the kings of Sri Lanka.<br>
+        <strong>④ Title "Kaviraja"</strong> — "King of Poets" — he was himself a poet and musician. His coins show him playing the <em>veena</em>. He is also called <em>Parakramanka</em>.<br>
+        <strong>⑤ His Ashvamedha</strong> — he performed the Ashvamedha sacrifice to proclaim his sovereignty.<br>
+        <strong>⑥ His coins:</strong> The "Ashvamedha" type, the "Lyrist" type (playing the veena), the "Archer" type, and the "Battle-axe" type — a remarkable numismatic record.<br>
+        <strong>⑦ He was succeeded by his son Chandragupta II</strong> — the two together are the high point of the Gupta empire.
+      </div>
+    </div>
+
+    <div class="dyn-king">
+      <div class="dyn-king__name">Chandragupta II (375–415 CE) — "Vikramaditya" <span class="dyn-badge dyn-badge--vimp-gold">V.Imp</span></div>
+      <div class="dyn-king__facts">
+        <strong>① Title "Vikramaditya"</strong> — "Sun of Valour" — the name by which he is best known. The legend of Vikramaditya and the <em>Navaratna</em> (nine gems) is traditionally associated with his court.<br>
+        <strong>② The <strong>Mehrauli Iron Pillar</strong> (Delhi) — the famous rust-free iron pillar — carries an inscription that is usually attributed to Chandragupta II (or to a king named <em>Chandra</em>). The pillar is a metallurgical marvel — the iron has not rusted in 1,600 years.<br>
+        <strong>③ Defeated the Western Kshatrapas</strong> — his campaign against Rudrasimha III ended Shaka rule in Gujarat and gave the Guptas control of the western ports (a major economic gain).<br>
+        <strong>④ Married Kuberanaga</strong> — a Naga princess — to secure the Naga territories.<br>
+        <strong>⑤ The <em>Navaratna</em>:</strong> Kalidasa, Dhanvantari, Kshapanaka, Amarasimha, Shanku, Vetalabhatta, Ghatakarpara, Varahamihira, and Vararuchi — nine gems of his court (the list varies). <strong>Kalidasa</strong> is the most famous.<br>
+        <strong>⑥ His court</strong> was the peak of Sanskrit literature — Kalidasa wrote <em>Abhijnanashakuntalam</em>, <em>Meghaduta</em>, <em>Raghuvamsha</em>, <em>Kumarasambhava</em>, and <em>Ritusamhara</em>.<br>
+        <strong>⑦ The Chinese pilgrim <strong>Faxian (Fa-Hien)</strong></strong> visited India during his reign (399–414 CE) — his account is our main foreign source for Gupta administration.<br>
+        <strong>⑧ His coins</strong> — the "Archer" type is the most famous. He is also shown on a coin with his queen.
+      </div>
+    </div>
+
+    <div class="dyn-vimp">
+      <strong>V.V.Imp — the Navaratna of Chandragupta II:</strong> Kalidasa (poet), Dhanvantari (physician), Kshapanaka (astrologer), Amarasimha (lexicographer), Shanku (architect), Vetalabhatta (magician), Ghatakarpara (poet), Varahamihira (astronomer), Vararuchi (grammarian). The list varies across sources — but Kalidasa and Varahamihira are always there.
+    </div>
+
+    <div class="dyn-king">
+      <div class="dyn-king__name">Kumaragupta I (415–455 CE) — "Mahendraditya" <span class="dyn-badge dyn-badge--vimp-gold">V.Imp</span></div>
+      <div class="dyn-king__facts">
+        <strong>① Title "Mahendraditya"</strong> — "Sun among the great".<br>
+        <strong>② Founded Nalanda University</strong> — the greatest centre of learning in ancient India. This is the single most important fact about him for UPSC.<br>
+        <strong>③ His coins</strong> show him as a <em>horseman</em>, a <em>lion-slayer</em>, and an <em>archer</em> — a sign of his military activity.<br>
+        <strong>④ His reign</strong> saw the beginning of the Huna attacks — though he seems to have held them off in his lifetime.<br>
+        <strong>⑤ The <em>Bhitari Pillar Inscription</em></strong> of Skandagupta records Kumaragupta's reign and his campaigns.
+      </div>
+    </div>
+
+    <div class="dyn-king">
+      <div class="dyn-king__name">Skandagupta (455–467 CE) — "Vikramaditya" <span class="dyn-badge dyn-badge--vimp-gold">V.Imp</span></div>
+      <div class="dyn-king__facts">
+        <strong>① The last great Gupta ruler.</strong><br>
+        <strong>② Defeated the Huns (Hunas)</strong> — the Central Asian invaders who would eventually destroy the Gupta empire. His <em>Bhitari Pillar Inscription</em> records his victories against the <em>Pushyamitras</em> and the <em>Hunas</em>.<br>
+        <strong>③ The <em>Junagadh Rock Inscription</em></strong> — the same as Rudradaman's earlier inscription — records the repair of the Sudarshana Lake under Skandagupta's governor, Parnadatta.<br>
+        <strong>④ His coins</strong> show him as a <em>lion-slayer</em> and a <em>horseman</em> — a clear military iconography.<br>
+        <strong>⑤ After him</strong> the Gupta empire shrank rapidly — his successors Purugupta, Narasimhagupta Baladitya, Kumaragupta II, Budhagupta, and Vishnugupta ruled over a much smaller territory until c. 550 CE.
+      </div>
+    </div>
+
+    <div class="dyn-king">
+      <div class="dyn-king__name">The later Guptas (467–550 CE) <span class="dyn-badge dyn-badge--vimp-gold">V.Imp</span></div>
+      <div class="dyn-king__facts">
+        <strong>① Purugupta</strong> (467–473 CE) — son of Kumaragupta I (or of Skandagupta, depending on the source).<br>
+        <strong>② Narasimhagupta Baladitya</strong> (c. 495–530 CE) — known for his conflicts with the Hunas. The Chinese traveller <em>Xuanzang</em> refers to him as a patron of Nalanda.<br>
+        <strong>③ Kumaragupta II</strong> (c. 473–476 CE) — a short reign.<br>
+        <strong>④ Budhagupta</strong> (c. 476–495 CE) — one of the last Guptas with inscriptions.<br>
+        <strong>⑤ Vishnugupta</strong> (c. 540–550 CE) — the last recognised Gupta ruler. The empire had shrunk to Magadha and its neighbourhood.<br>
+        <strong>⑥ The end of the Guptas</strong> is usually dated to c. 550 CE, when the <em>Maukhari</em> dynasty of Kanauj and the <em>Later Guptas</em> of Magadha emerged as successor states.
+      </div>
+    </div>
+
+    <h2>7 · Very Important notes for UPSC / BPSC</h2>
+    <p class="rev-subtitle">The one-liners, traps, and "not-to-be-confused" facts that decide the answer.</p>
+
+    <div class="dyn-tools">
+      <button class="dyn-btn" data-dyn-all="open">Reveal all</button>
+      <button class="dyn-btn" data-dyn-all="close">Hide all</button>
+    </div>
+
+    <div class="dyn-card">
+      <div class="dyn-card__head">The Buddhist Councils — dynasty by dynasty <span class="dyn-badge dyn-badge--vimp-gold">V.Imp</span></div>
+      <div class="dyn-card__body">
+        <span class="dyn-fact"><strong>First Council</strong> — Rajgriha, c. 483 BCE, under <em>Ajatashatru</em> (Haryanka). President: Mahakassapa. Compiled the <em>Vinaya</em> and <em>Sutta Pitakas</em>.</span>
+        <span class="dyn-fact"><strong>Second Council</strong> — Vaishali, c. 383 BCE, under <em>Kalashoka</em> (Shishunaga). Resulted in the first great schism — <em>Sthaviravadins</em> vs <em>Mahasanghikas</em>.</span>
+        <span class="dyn-fact"><strong>Third Council</strong> — Pataliputra, c. 250 BCE, under <em>Ashoka</em> (Maurya). President: Moggaliputta Tissa. Compiled the <em>Abhidhamma Pitaka</em>. Missionaries sent abroad — Mahendra and Sanghamitra to Sri Lanka.</span>
+        <span class="dyn-fact"><strong>Fourth Council</strong> — Kundalvana, Kashmir, c. 1st–2nd century CE, under <em>Kanishka</em> (Kushan). President: Vasumitra. Vice-President: Ashvaghosha. Buddhism split formally into <em>Mahayana</em> and <em>Hinayana</em>.</span>
+        <span class="dyn-fact"><strong>Exam keyword:</strong> "Which Buddhist council was held under Kanishka?" — Fourth, Kashmir. "Which was held under Ashoka?" — Third, Pataliputra.</span>
+      </div>
+    </div>
+
+    <div class="dyn-card">
+      <div class="dyn-card__head">The Greek names of Indian kings <span class="dyn-badge dyn-badge--vimp-gold">V.Imp</span></div>
+      <div class="dyn-card__body">
+        <span class="dyn-fact"><strong>Sandrakottos</strong> = Chandragupta Maurya (given by Megasthenes and other Greek writers).</span>
+        <span class="dyn-fact"><strong>Amitrochates</strong> = Bindusara (from <em>Amitraghata</em>, "Slayer of Foes").</span>
+        <span class="dyn-fact"><strong>Agrammes / Xandrammes</strong> = Dhana Nanda (usually interpreted as a corruption of "Dhana Nanda" or a title).</span>
+        <span class="dyn-fact"><strong>Devanampriya / Priyadarshi</strong> = Ashoka (in his own edicts — the name "Ashoka" appears only in a few minor inscriptions).</span>
+        <span class="dyn-fact"><strong>Exam trap:</strong> The question usually asks "which Greek name refers to Chandragupta Maurya?" — Sandrakottos. Do not confuse it with "Amitrochates" (Bindusara).</span>
+      </div>
+    </div>
+
+    <div class="dyn-card">
+      <div class="dyn-card__head">The two eras — Saka and Gupta <span class="dyn-badge dyn-badge--vimp-gold">V.Imp</span></div>
+      <div class="dyn-card__body">
+        <span class="dyn-fact"><strong>Saka era</strong> — started 78 CE, attributed to <em>Kanishka</em>. Used by the Government of India as the <strong>Indian National Calendar</strong> (adopted 22 March 1957).</span>
+        <span class="dyn-fact"><strong>Gupta era</strong> — started 319–320 CE, by <em>Chandragupta I</em>. Also called the <em>Gupta-Valabhi era</em> in some inscriptions.</span>
+        <span class="dyn-fact"><strong>Vikrama era</strong> — 57 BCE, associated with the legendary king Vikramaditya of Ujjain (not to be confused with Chandragupta II, who also bore the title Vikramaditya).</span>
+        <span class="dyn-fact"><strong>Exam trap:</strong> "Which era is the Indian National Calendar based on?" — the Saka era, not the Gupta era.</span>
+      </div>
+    </div>
+
+    <div class="dyn-card">
+      <div class="dyn-card__head">Who founded which city <span class="dyn-badge dyn-badge--vimp-gold">V.Imp</span></div>
+      <div class="dyn-card__body">
+        <span class="dyn-fact"><strong>Rajgriha</strong> — the early capital of Magadha (Haryanka period, Bimbisara).</span>
+        <span class="dyn-fact"><strong>Pataliputra</strong> — founded by <em>Udayin</em> (Haryanka dynasty), c. 460 BCE. Later the capital of the Mauryas, Shungas, and Guptas.</span>
+        <span class="dyn-fact"><strong>Vaishali</strong> — the Lichchhavi capital; briefly the Shishunaga capital under Kalashoka.</span>
+        <span class="dyn-fact"><strong>Pratishthana (Paithan)</strong> — the Satavahana capital.</span>
+        <span class="dyn-fact"><strong>Purushapura (Peshawar)</strong> — the Kushan capital, under Kanishka.</span>
+        <span class="dyn-fact"><strong>Ujjain</strong> — a major Gupta centre under Chandragupta II.</span>
+        <span class="dyn-fact"><strong>Exam trap:</strong> Pataliputra was founded by Udayin — not by Ajatashatru and not by Chandragupta Maurya.</span>
+      </div>
+    </div>
+
+    <div class="dyn-card">
+      <div class="dyn-card__head">Who wrote what — the sources <span class="dyn-badge dyn-badge--vimp-gold">V.Imp</span></div>
+      <div class="dyn-card__body">
+        <span class="dyn-fact"><strong>Indica</strong> — Megasthenes (Greek ambassador at Chandragupta Maurya's court). The main foreign source for Mauryan administration.</span>
+        <span class="dyn-fact"><strong>Arthashastra</strong> — Kautilya / Chanakya (Chandragupta Maurya's minister). The foundational text of Indian statecraft.</span>
+        <span class="dyn-fact"><strong>Mudrarakshasa</strong> — Vishakhadatta (a play about Chanakya's plot against the Nandas).</span>
+        <span class="dyn-fact"><strong>Allahabad Pillar Inscription (Prayag Prashasti)</strong> — Harisena, court poet of Samudragupta. The main source for Samudragupta's conquests.</span>
+        <span class="dyn-fact"><strong>Bhitari Pillar Inscription</strong> — Skandagupta's reign and his victories over the Hunas.</span>
+        <span class="dyn-fact"><strong>Junagadh Rock Inscription</strong> — Rudradaman (Shaka) and Skandagupta (Gupta) — the same rock carries inscriptions of both dynasties.</span>
+        <span class="dyn-fact"><strong>Mahabhashya</strong> — Patanjali, c. 150 BCE, referring to Pushyamitra Shunga's Ashvamedha.</span>
+        <span class="dyn-fact"><strong>Periplus of the Erythraean Sea</strong> — an anonymous Greek text (1st century CE) describing Indo-Roman trade, including Satavahana ports.</span>
+      </div>
+    </div>
+
+    <div class="dyn-card">
+      <div class="dyn-card__head">The "firsts" — one-liners that win marks <span class="dyn-badge dyn-badge--vimp-gold">V.Imp</span></div>
+      <div class="dyn-card__body">
+        <span class="dyn-fact"><strong>First historical dynasty of Magadha</strong> — Haryanka.</span>
+        <span class="dyn-fact"><strong>First Indian king to use matrimonial alliances as diplomacy</strong> — Bimbisara.</span>
+        <span class="dyn-fact"><strong>First Shudra king of Magadha</strong> — Mahapadma Nanda.</span>
+        <span class="dyn-fact"><strong>First Indian ruler to be called "Ekarat" (sole sovereign)</strong> — Mahapadma Nanda.</span>
+        <span class="dyn-fact"><strong>First empire in Indian history to cover almost the whole subcontinent</strong> — Mauryan, under Chandragupta Maurya.</span>
+        <span class="dyn-fact"><strong>First large-scale gold coinage in India</strong> — Vima Kadphises (Kushan).</span>
+        <span class="dyn-fact"><strong>First to start an era in India that is still in use</strong> — Kanishka (Saka era, 78 CE).</span>
+        <span class="dyn-fact"><strong>First Gupta ruler to take the title "Maharajadhiraja"</strong> — Chandragupta I.</span>
+        <span class="dyn-fact"><strong>Founder of Nalanda University</strong> — Kumaragupta I (Gupta).</span>
+      </div>
+    </div>
+
+    <div class="dyn-card">
+      <div class="dyn-card__head">The "not-to-be-confused" pairs <span class="dyn-badge dyn-badge--vimp">Trap Alert</span></div>
+      <div class="dyn-card__body">
+        <span class="dyn-fact"><strong>Bimbisara vs Ajatashatru:</strong> Bimbisara is the father and founder; Ajatashatru is the son who killed him and moved the capital to Pataliputra. Never swap them.</span>
+        <span class="dyn-fact"><strong>Kalashoka vs Kalidasa:</strong> Kalashoka is the Shishunaga king (5th century BCE); Kalidasa is the Gupta poet (4th–5th century CE). Completely different people.</span>
+        <span class="dyn-fact"><strong>Chandragupta Maurya vs Chandragupta I vs Chandragupta II:</strong> Maurya is the founder (321 BCE); Chandragupta I is the Gupta founder (319 CE); Chandragupta II is Vikramaditya (375 CE). Three different kings, three different eras.</span>
+        <span class="dyn-fact"><strong>Kanishka vs Kanishka II:</strong> Kanishka (127–150 CE) is the great Kushan; later "Kanishka" rulers are minor. Prelims usually means the first one.</span>
+        <span class="dyn-fact"><strong>Pushyamitra Shunga vs Pushyamitra of the Shunga dynasty:</strong> Same person — the founder. But do not confuse with the <em>Pushyamitras</em> (a tribe defeated by Skandagupta) — different people, different era.</span>
+        <span class="dyn-fact"><strong>Samudragupta vs Skandagupta:</strong> Samudragupta is the conqueror (Allahabad Pillar); Skandagupta is the Huna-defeater (Bhitari Pillar). Both are Guptas — but different generations.</span>
+      </div>
+    </div>
+
+    <div class="dyn-card">
+      <div class="dyn-card__head">Art and architecture under the Guptas <span class="dyn-badge dyn-badge--vimp-gold">V.Imp</span></div>
+      <div class="dyn-card__body">
+        <span class="dyn-fact"><strong>Ajanta caves</strong> — the finest paintings of the Gupta period (some earlier, some later). The <em>Mahajanaka Jataka</em> and the <em>Bodhisattva Padmapani</em> are the most famous.</span>
+        <span class="dyn-fact"><strong>Sarnath Buddha</strong> — the classic Gupta Buddha image, with a serene expression and a transparent drapery.</span>
+        <span class="dyn-fact"><strong>Dashavatara Temple, Deogarh</strong> — the finest Gupta temple, with panels of Vishnu's avatars.</span>
+        <span class="dyn-fact"><strong>Mehrauli Iron Pillar</strong> — the rust-free iron pillar, attributed to Chandragupta II. A metallurgical marvel.</span>
+        <span class="dyn-fact"><strong>Nalanda University</strong> — founded by Kumaragupta I; became the greatest centre of Buddhist learning in the world.</span>
+        <span class="dyn-fact"><strong>Exam keyword:</strong> The Gupta period is called the "Golden Age" of Indian art — but the term is contested. The <em>classical</em> label is more accurate than "golden".</span>
+      </div>
+    </div>
+
+    <h2>8 · Memory tricks that save you</h2>
+
+    <div class="rev-note">
+      <strong>The three Pre-Mauryan dynasties — in order.</strong>
+      <span class="dyn-mnem">"Haryanka, Shishunaga, Nanda"</span><br>
+      Read the years as a ladder: <code>544 → 413 → 345 BCE</code>. Haryanka is the founder-dynasty (Bimbisara, Ajatashatru, Udayin). Shishunaga is the short interlude (Shishunaga, Kalashoka). Nanda is the empire-builder (Mahapadma, Dhana). Three dynasties, one road to the Mauryas.
+    </div>
+
+    <div class="rev-note">
+      <strong>The three great Mauryas — by title.</strong>
+      <span class="dyn-mnem">"Chandragupta Sandrakottos, Bindusara Amitraghata, Ashoka Devanampriya"</span><br>
+      <strong>Chandragupta</strong> = Sandrakottos (Greek) = the founder. <strong>Bindusara</strong> = Amitraghata / Amitrochates = the consolidator. <strong>Ashoka</strong> = Devanampriya Priyadarshi = the Dhamma-king. Three kings, three titles, three roles — never swap them.
+    </div>
+
+    <div class="rev-note">
+      <strong>The Buddhist councils — dynasty by dynasty.</strong>
+      <span class="dyn-mnem">"Ajatashatru 1st, Kalashoka 2nd, Ashoka 3rd, Kanishka 4th"</span><br>
+      <strong>1st</strong> — Rajgriha, under Ajatashatru (Haryanka). <strong>2nd</strong> — Vaishali, under Kalashoka (Shishunaga). <strong>3rd</strong> — Pataliputra, under Ashoka (Maurya). <strong>4th</strong> — Kashmir, under Kanishka (Kushan). Four councils, four dynasties — the sequence is the question.
+    </div>
+
+    <div class="rev-note">
+      <strong>The Gupta line — by achievement.</strong>
+      <span class="dyn-mnem">"Sri Gupta founds, Ghatotkacha starts, Chandragupta I eras, Samudragupta conquers, Chandragupta II shines, Kumaragupta teaches, Skandagupta defends"</span><br>
+      <strong>Sri Gupta</strong> = founder. <strong>Ghatotkacha</strong> = first important ruler. <strong>Chandragupta I</strong> = Gupta era (319 CE). <strong>Samudragupta</strong> = conquests (Allahabad Pillar). <strong>Chandragupta II</strong> = golden age (Kalidasa, Navaratna). <strong>Kumaragupta I</strong> = Nalanda University. <strong>Skandagupta</strong> = defeated the Hunas. Seven names, seven roles.
+    </div>
+
+    <div class="rev-note">
+      <strong>The two great eras — the year that matters.</strong>
+      <span class="dyn-mnem">"Saka 78, Gupta 319"</span><br>
+      <strong>Saka era</strong> — 78 CE — Kanishka (Kushan). <strong>Gupta era</strong> — 319–320 CE — Chandragupta I (Gupta). These are the only two eras you must memorise for Prelims. The Vikrama era (57 BCE) is legendary; the Saka and Gupta eras are historical.
+    </div>
+
+    <div class="rev-note">
+      <strong>The four great "Vikramadityas".</strong>
+      <span class="dyn-mnem">"Chandragupta II is the one that matters"</span><br>
+      There are several kings with the title Vikramaditya — the legendary Ujjain king (Vikrama era 57 BCE), Chandragupta II (Gupta, 375–415 CE), Skandagupta (Gupta, 455–467 CE), and later Chalukya and Paramara kings. The one that Prelims means is almost always <strong>Chandragupta II</strong> — the Navaratna, the Mehrauli Pillar, the Faxian visit.
+    </div>
+
+    <div class="rev-note">
+      <strong>The two Gupta "Chandraguptas" — easy to mix.</strong>
+      <span class="dyn-mnem">"I starts the era, II lives in it"</span><br>
+      <strong>Chandragupta I</strong> (319–335 CE) = <em>starts</em> the Gupta era. He married Kumaradevi (Lichchhavi princess) and took the title Maharajadhiraja. <strong>Chandragupta II</strong> (375–415 CE) = <em>the golden age</em> — Vikramaditya, Navaratna, Mehrauli Pillar, Faxian's visit. Two kings, same name, different roles.
+    </div>
+
+    <div class="rev-note">
+      <strong>The Nanda to Maurya transition — one chain.</strong>
+      <span class="dyn-mnem">"Dhana Nanda → Chanakya's plot → Chandragupta Maurya"</span><br>
+      Dhana Nanda insults Chanakya at his court → Chanakya vows to destroy the Nandas → he finds Chandragupta, trains him, and together they overthrow Dhana Nanda in c. 321 BCE. This is the founding story of the Mauryan Empire — and the plot of the <em>Mudrarakshasa</em>.
+    </div>
+
+    <div class="dyn-flag">
+      <strong>Three traps to watch.</strong>
+      <strong>①</strong> "Dhamma" is <em>not</em> Buddhism — it is Ashoka's civil moral code, and his edicts never mention the Buddha by name.
+      <strong>②</strong> Pataliputra was founded by <em>Udayin</em> — not Ajatashatru, not Chandragupta Maurya.
+      <strong>③</strong> The Allahabad Pillar Inscription was composed by <em>Harisena</em> — not by Kalidasa, not by Samudragupta himself. Harisena was Samudragupta's court poet.
+    </div>
+
+    <h2>9 · Rapid Fire</h2>
+    <p class="rev-subtitle">Cover the whole page. Answer out loud <em>before</em> you tap.</p>
+
+    <div class="dyn-tools">
+      <button class="dyn-btn" data-dyn-all="open">Reveal all</button>
+      <button class="dyn-btn" data-dyn-all="close">Hide all</button>
+    </div>
+
+    <div class="dyn-q">
+      <p>1. Who founded the Haryanka dynasty, and what was his title?</p>
+      <div class="dyn-ans">Bimbisara (544–492 BCE) — title <em>Seniya</em>. Capital: Rajgriha. Contemporary of Buddha and Mahavira.</div>
+    </div>
+
+    <div class="dyn-q">
+      <p>2. Who founded Pataliputra, and in which dynasty?</p>
+      <div class="dyn-ans">Udayin (460–444 BCE) of the Haryanka dynasty. He shifted the capital from Rajgriha to Pataliputra — at the confluence of the Ganga and Son rivers.</div>
+    </div>
+
+    <div class="dyn-q">
+      <p>3. Who killed his father and seized the throne of Magadha, and what were his military innovations?</p>
+      <div class="dyn-ans">Ajatashatru (492–460 BCE) — killed Bimbisara. He used <em>rathamusala</em> (scythed chariot) and <em>mahashilakantaka</em> (stone-throwing catapult) against the Lichchhavis of Vaishali. The First Buddhist Council was held under his patronage at Rajgriha.</div>
+    </div>
+
+    <div class="dyn-q">
+      <p>4. Who founded the Shishunaga dynasty, and which Buddhist council was held under Kalashoka?</p>
+      <div class="dyn-ans">Shishunaga (413–395 BCE), a former <em>amatya</em>. The <strong>Second Buddhist Council</strong> was held at Vaishali (c. 383 BCE) under Kalashoka's patronage — where the Buddhist order split into Sthaviravadins and Mahasanghikas.</div>
+    </div>
+
+    <div class="dyn-q">
+      <p>5. Who was the first Shudra king of Magadha, and what was his title?</p>
+      <div class="dyn-ans">Mahapadma Nanda (345–329 BCE) — title <em>Ekarat</em> ("sole sovereign"). He was also called <em>Sarva-kshatrantaka</em> ("destroyer of all Kshatriyas") and was the first great empire-builder of India.</div>
+    </div>
+
+    <div class="dyn-q">
+      <p>6. Who was the last Nanda ruler, and who overthrew him?</p>
+      <div class="dyn-ans">Dhana Nanda (329–321 BCE). Overthrown by Chandragupta Maurya with the help of Chanakya (Kautilya).</div>
+    </div>
+
+    <div class="dyn-q">
+      <p>7. Who founded the Mauryan Empire, and what is his Greek name?</p>
+      <div class="dyn-ans">Chandragupta Maurya (321–297 BCE). Greek name: <em>Sandrakottos</em>. He defeated Seleucus Nicator in c. 305 BCE and received Megasthenes as ambassador.</div>
+    </div>
+
+    <div class="dyn-q">
+      <p>8. Who wrote the <em>Indica</em>, and whose court did he visit?</p>
+      <div class="dyn-ans">Megasthenes — the Greek ambassador of Seleucus Nicator at the court of Chandragupta Maurya. <em>Indica</em> is the main foreign source for Mauryan administration.</div>
+    </div>
+
+    <div class="dyn-q">
+      <p>9. Who was Bindusara, and what was his title?</p>
+      <div class="dyn-ans">Bindusara (297–273 BCE) — son of Chandragupta Maurya and father of Ashoka. Title: <em>Amitraghata</em> ("Slayer of Foes"), which the Greeks rendered as <em>Amitrochates</em>.</div>
+    </div>
+
+    <div class="dyn-q">
+      <p>10. What are Ashoka's titles in his own edicts, and what was the Kalinga War?</p>
+      <div class="dyn-ans">Ashoka calls himself <em>Devanampriya</em> ("Beloved of the Gods") and <em>Priyadarshi</em> ("He who looks on with affection"). The Kalinga War (c. 261 BCE) — 100,000 killed, 150,000 deported — led him to embrace Buddhism and the policy of Dhamma.</div>
+    </div>
+
+    <div class="dyn-q">
+      <p>11. Which Buddhist council was held under Ashoka, and who presided over it?</p>
+      <div class="dyn-ans">The <strong>Third Buddhist Council</strong> at Pataliputra (c. 250 BCE), presided over by Moggaliputta Tissa. It compiled the <em>Abhidhamma Pitaka</em> and sent missionaries abroad — including Mahendra and Sanghamitra to Sri Lanka.</div>
+    </div>
+
+    <div class="dyn-q">
+      <p>12. Who killed the last Mauryan ruler, and when?</p>
+      <div class="dyn-ans">Pushyamitra Shunga — he assassinated Brihadratha (the last Maurya) in 185 BCE during a military review, and founded the Shunga dynasty.</div>
+    </div>
+
+    <div class="dyn-q">
+      <p>13. Who were the Shungas, and what was their religious policy?</p>
+      <div class="dyn-ans">The Shunga dynasty (185–73 BCE) was founded by Pushyamitra Shunga, a Brahmin general. They represented a Brahminical revival — Pushyamitra performed two Ashvamedha sacrifices. Patanjali's <em>Mahabhashya</em> refers to this. The last Shunga ruler, Devabhuti, was killed by his minister Vasudeva Kanva.</div>
+    </div>
+
+    <div class="dyn-q">
+      <p>14. Who founded the Kanva dynasty, and how long did it last?</p>
+      <div class="dyn-ans">Vasudeva Kanva (73–64 BCE) — a minister of Devabhuti, the last Shunga ruler. The Kanva dynasty lasted about 45 years (73–28 BCE). It was overthrown by the Satavahanas.</div>
+    </div>
+
+    <div class="dyn-q">
+      <p>15. Who founded the Satavahana dynasty, and what was their capital?</p>
+      <div class="dyn-ans">Simuka (c. 1st century BCE). Capital: <em>Pratishthana</em> (Paithan, Maharashtra). The Satavahanas are also called the <em>Andhras</em>.</div>
+    </div>
+
+    <div class="dyn-q">
+      <p>16. Who was Gautamiputra Satakarni, and what was his title?</p>
+      <div class="dyn-ans">Gautamiputra Satakarni (106–130 CE) — the greatest Satavahana ruler. Title: <em>Trisamudratoyapitavahana</em> ("one whose horses drank the waters of the three oceans"). He defeated Nahapana, the Western Kshatrapa ruler. His mother Gautami Balashri's Nashik inscription is the main source for his reign.</div>
+    </div>
+
+    <div class="dyn-q">
+      <p>17. Which Satavahana king issued ship-type coins?</p>
+      <div class="dyn-ans">Yajna Sri Satakarni (165–194 CE) — his coins depict a ship with a mast, the most direct numismatic evidence of Satavahana maritime trade.</div>
+    </div>
+
+    <div class="dyn-q">
+      <p>18. Who were the Kushans, and who founded their Indian branch?</p>
+      <div class="dyn-ans">The Kushans were a Central Asian dynasty (a branch of the Yuezhi confederation). Their Indian branch was founded by Kujula Kadphises (30–80 CE). Their capital was Purushapura (Peshawar).</div>
+    </div>
+
+    <div class="dyn-q">
+      <p>19. Who started the Saka era, and in which year?</p>
+      <div class="dyn-ans">Kanishka (127–150 CE) — the Saka era began in <strong>78 CE</strong>. The Indian National Calendar (adopted 22 March 1957) uses the Saka era.</div>
+    </div>
+
+    <div class="dyn-q">
+      <p>20. Which Buddhist council was held under Kanishka, and where?</p>
+      <div class="dyn-ans">The <strong>Fourth Buddhist Council</strong>, held at Kundalvana in Kashmir, under Kanishka's patronage. It was presided over by Vasumitra and Ashvaghosha. Buddhism formally split into Mahayana and Hinayana at this council.</div>
+    </div>
+
+    <div class="dyn-q">
+      <p>21. Who was the first Kushan ruler to issue gold coins in India?</p>
+      <div class="dyn-ans">Vima Kadphises (95–127 CE) — the first large-scale gold coinage in India, a direct consequence of the Silk Road trade.</div>
+    </div>
+
+    <div class="dyn-q">
+      <p>22. Who were the Navaratna of Chandragupta II's court?</p>
+      <div class="dyn-ans">Kalidasa, Dhanvantari, Kshapanaka, Amarasimha, Shanku, Vetalabhatta, Ghatakarpara, Varahamihira, and Vararuchi. Kalidasa is the most famous — he wrote <em>Abhijnanashakuntalam</em>, <em>Meghaduta</em>, and <em>Raghuvamsha</em>.</div>
+    </div>
+
+    <div class="dyn-q">
+      <p>23. Who founded the Gupta dynasty, and who started the Gupta era?</p>
+      <div class="dyn-ans">Sri Gupta (c. 240–280 CE) founded the dynasty. Chandragupta I (319–335 CE) started the Gupta era (319–320 CE) and took the title <em>Maharajadhiraja</em>.</div>
+    </div>
+
+    <div class="dyn-q">
+      <p>24. Which Gupta king is called the "Napoleon of India", and by whom?</p>
+      <div class="dyn-ans">Samudragupta (335–375 CE), called the "Napoleon of India" by the British historian V. A. Smith. His conquests are recorded in the Allahabad Pillar Inscription (Prayag Prashasti) by his court poet Harisena.</div>
+    </div>
+
+    <div class="dyn-q">
+      <p>25. Who composed the Allahabad Pillar Inscription, and whose reign does it describe?</p>
+      <div class="dyn-ans">Harisena — the court poet of Samudragupta. It describes Samudragupta's conquests — 9 kings of Aryavarta, 12 kings of Dakshinapatha, the Atavika kingdoms, and the frontier kingdoms.</div>
+    </div>
+
+    <div class="dyn-q">
+      <p>26. Who was Chandragupta II, and what is his most famous title?</p>
+      <div class="dyn-ans">Chandragupta II (375–415 CE) — title <em>Vikramaditya</em>. His court was the golden age of Sanskrit literature (Kalidasa and the Navaratna). The Mehrauli Iron Pillar is attributed to him. Faxian (Fa-Hien) visited India during his reign.</div>
+    </div>
+
+    <div class="dyn-q">
+      <p>27. Who founded Nalanda University?</p>
+      <div class="dyn-ans">Kumaragupta I (415–455 CE) — title <em>Mahendraditya</em>. Nalanda became the greatest centre of Buddhist learning in the ancient world.</div>
+    </div>
+
+    <div class="dyn-q">
+      <p>28. Who defeated the Hunas, and which inscription records it?</p>
+      <div class="dyn-ans">Skandagupta (455–467 CE) — the last great Gupta ruler. His <em>Bhitari Pillar Inscription</em> records his victories over the Pushyamitras and the Hunas.</div>
+    </div>
+
+    <div class="dyn-q">
+      <p>29. Who was the last recognised Gupta ruler, and when did the dynasty end?</p>
+      <div class="dyn-ans">Vishnugupta (c. 540–550 CE) — the last recognised Gupta ruler. The dynasty ended around 550 CE, when the Maukhari dynasty of Kanauj and the Later Guptas of Magadha emerged as successor states.</div>
+    </div>
+
+    <div class="dyn-q">
+      <p>30. Who was the Chinese pilgrim who visited India during Chandragupta II's reign?</p>
+      <div class="dyn-ans">Faxian (Fa-Hien), 399–414 CE. His <em>Record of Buddhist Kingdoms</em> describes Gupta administration as mild and liberal — no capital punishment, no harsh penal code.</div>
+    </div>
+
+    <div class="dyn-q">
+      <p>31. Which Greek name refers to Chandragupta Maurya, and which to Bindusara?</p>
+      <div class="dyn-ans">Chandragupta Maurya = <em>Sandrakottos</em>. Bindusara = <em>Amitrochates</em> (from <em>Amitraghata</em>).</div>
+    </div>
+
+    <div class="dyn-q">
+      <p>32. What are the two great eras in Indian chronology, and who started each?</p>
+      <div class="dyn-ans"><strong>Saka era</strong> (78 CE) — Kanishka. <strong>Gupta era</strong> (319–320 CE) — Chandragupta I. The Saka era is used by the Indian National Calendar.</div>
+    </div>
+
+    <div class="dyn-q">
+      <p>33. Which Mauryan ruler dedicated caves to the Ajivika sect, and where?</p>
+      <div class="dyn-ans">Dasharatha (232–224 BCE) — the Nagarjuni Hills inscription near Barabar, Bihar. He dedicated three caves to the Ajivikas.</div>
+    </div>
+
+    <div class="dyn-q">
+      <p>34. Which Mauryan ruler is called "Jaina Ashoka"?</p>
+      <div class="dyn-ans">Samprati (224–215 BCE) — he is said to have built thousands of Jain temples and sent missionaries to South India and Sri Lanka.</div>
+    </div>
+
+    <div class="dyn-q">
+      <p>35. Where is the Mehrauli Iron Pillar, and to which king is it attributed?</p>
+      <div class="dyn-ans">Delhi — the rust-free iron pillar in the Qutb complex. It is usually attributed to Chandragupta II (Gupta). The pillar has not rusted in 1,600 years — a metallurgical marvel.</div>
+    </div>
+
+    <p class="rev-subtitle" style="margin-top:18px;">Closing tip: on the night before the exam, only read the <strong>Rapid Fire</strong> section. If you can answer 30 of 35 out loud without tapping, this page has done its job.</p>
+
+  </main>
+
+  <!-- Report true content height to the parent app.
+       Measures <main class="rev-page"> directly, NOT document.body. -->
+  <script>
+    (function () {
+      function sendHeight() {
+        var el = document.querySelector('.rev-page') || document.body;
+        var h = Math.ceil(el.getBoundingClientRect().height);
+        if (!h) h = el.scrollHeight || 0;
+        if (!h) return;
+        try {
+          window.parent.postMessage({ type: 'revision-height', height: h }, '*');
+        } catch (e) {}
+      }
+      window.addEventListener('load', sendHeight);
+      window.addEventListener('resize', sendHeight);
+      setTimeout(sendHeight, 0);
+      setTimeout(sendHeight, 50);
+      setTimeout(sendHeight, 300);
+      setTimeout(sendHeight, 1000);
+      if (window.ResizeObserver) {
+        new ResizeObserver(sendHeight).observe(document.body);
+      }
+    })();
+  </script>
+
+  <!-- Card + quiz interaction -->
+  <script>
+    (function () {
+      // Reveal-all / Hide-all toolbars — scoped to cards that follow them,
+      // stopping at the next toolbar or heading.
+      document.querySelectorAll('.dyn-tools').forEach(function (tools) {
+        tools.addEventListener('click', function (e) {
+          var btn = e.target.closest('[data-dyn-all]');
+          if (!btn) return;
+          var open = btn.getAttribute('data-dyn-all') === 'open';
+          var node = tools.nextElementSibling;
+          while (node) {
+            if (node.classList && node.classList.contains('dyn-tools')) break;
+            if (node.tagName === 'H2' || node.tagName === 'H3') break;
+            if (node.classList && (node.classList.contains('dyn-card') || node.classList.contains('dyn-q'))) {
+              node.classList.toggle('open', open);
+            }
+            node = node.nextElementSibling;
+          }
+        });
+      });
+
+      // Individual card / quiz tap.
+      document.addEventListener('click', function (e) {
+        var head = e.target.closest('.dyn-card__head');
+        if (head) {
+          var card = head.closest('.dyn-card');
+          if (card) card.classList.toggle('open');
+          return;
+        }
+        var q = e.target.closest('.dyn-q');
+        if (q) q.classList.toggle('open');
+      });
+    })();
+  </script>
+</body>
+</html>

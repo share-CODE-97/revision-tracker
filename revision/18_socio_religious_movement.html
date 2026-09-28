@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Social &amp; Religious Reform Movements — Revision</title>
+
+  <!--
+    Revision page for "Social & Religious Reform Movements in India".
+    Loaded inside the main app's iframe.
+    • Theme is passed via URL hash: #theme=dark or #theme=light
+    • Styles come from ../css/style.css
+  -->
+
+  <!-- Read theme from URL hash BEFORE paint (no flash). -->
+  <script>
+    (function () {
+      var m = location.hash.match(/theme=(light|dark)/);
+      document.documentElement.setAttribute('data-theme', m ? m[1] : 'dark');
+    })();
+  </script>
+
+  <!-- Shared app styles — this links the file to the MAIN stylesheet. -->
+  <link rel="stylesheet" href="../css/style.css">
+
+  <!-- Match the app's font stack. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Page-specific styles for Social & Religious Reform Movements. -->
+  <style>
+    .srm-card { background:#0f172a; border:1px solid #1e293b; border-radius:10px; margin:8px 0; }
+    .srm-card__head { display:flex; align-items:center; gap:10px; padding:12px 14px; cursor:pointer; font-weight:600; color:#e2e8f0; font-size:14.5px; line-height:1.4; flex-wrap:wrap; }
+    .srm-card__head::after { content:'▾'; margin-left:auto; color:#818cf8; transition:transform .2s; flex:0 0 auto; }
+    .srm-card.open .srm-card__head::after { transform:rotate(180deg); }
+    .srm-card__body { display:none; padding:0 14px 14px; color:#cbd5e1; font-size:14px; line-height:1.65; }
+    .srm-card.open .srm-card__body { display:block; }
+    .srm-card__body ul { margin:6px 0; padding-left:20px; }
+    .srm-card__body li { margin:3px 0; }
+    .srm-card__body .srm-fact { display:block; margin-bottom:5px; }
+
+    html[data-theme="light"] .srm-card { background:#ffffff; border-color:#e2e8f0; }
+    html[data-theme="light"] .srm-card__head { color:#1e293b; }
+    html[data-theme="light"] .srm-card__body { color:#475569; }
+
+    .srm-badge { display:inline-block; font-size:10.5px; padding:2px 8px; border-radius:999px; font-weight:700; letter-spacing:.03em; text-transform:uppercase; white-space:nowrap; }
+    .srm-badge--bengal  { background:#7c2d12; color:#fed7aa; }
+    .srm-badge--maha    { background:#0c4a6e; color:#bae6fd; }
+    .srm-badge--punjab  { background:#064e3b; color:#a7f3d0; }
+    .srm-badge--south   { background:#831843; color:#fbcfe8; }
+    .srm-badge--pan     { background:#4c1d95; color:#ddd6fe; }
+    .srm-badge--parsi   { background:#78350f; color:#fde68a; }
+    .srm-badge--front   { background:#7f1d1d; color:#fecaca; }
+    .srm-badge--women   { background:#9d174d; color:#fce7f3; }
+    .srm-badge--year    { background:#1e3a8a; color:#bfdbfe; }
+    .srm-badge--fix     { background:#3f3f46; color:#fef08a; }
+
+    html[data-theme="light"] .srm-badge--bengal  { background:#ffedd5; color:#9a3412; }
+    html[data-theme="light"] .srm-badge--maha    { background:#e0f2fe; color:#075985; }
+    html[data-theme="light"] .srm-badge--punjab  { background:#d1fae5; color:#065f46; }
+    html[data-theme="light"] .srm-badge--south   { background:#fce7f3; color:#9d174d; }
+    html[data-theme="light"] .srm-badge--pan     { background:#ede9fe; color:#5b21b6; }
+    html[data-theme="light"] .srm-badge--parsi   { background:#fef3c7; color:#92400e; }
+    html[data-theme="light"] .srm-badge--front   { background:#fee2e2; color:#991b1b; }
+    html[data-theme="light"] .srm-badge--women   { background:#fce7f3; color:#9d174d; }
+    html[data-theme="light"] .srm-badge--year    { background:#dbeafe; color:#1e40af; }
+    html[data-theme="light"] .srm-badge--fix     { background:#fef9c3; color:#713f12; }
+
+    .srm-tools { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0 6px; }
+    .srm-btn { background:#1e293b; color:#c7d2fe; border:1px solid #334155; border-radius:8px; padding:6px 14px; font-size:12.5px; font-weight:600; cursor:pointer; font-family:inherit; }
+    .srm-btn:hover { background:#334155; }
+    html[data-theme="light"] .srm-btn { background:#eef2ff; color:#3730a3; border-color:#c7d2fe; }
+    html[data-theme="light"] .srm-btn:hover { background:#e0e7ff; }
+
+    .srm-q { background:#0f172a; border-left:3px solid #6366f1; border-radius:8px; padding:12px 14px; margin:8px 0; cursor:pointer; }
+    .srm-q p { margin:0; color:#e2e8f0; font-weight:600; font-size:14.5px; line-height:1.45; }
+    .srm-ans { display:none; margin-top:9px; padding-top:9px; border-top:1px dashed #334155; color:#a5b4fc; font-size:14px; line-height:1.6; }
+    .srm-q.open .srm-ans { display:block; }
+    html[data-theme="light"] .srm-q { background:#ffffff; }
+    html[data-theme="light"] .srm-q p { color:#1e293b; }
+    html[data-theme="light"] .srm-ans { color:#4338ca; border-top-color:#e2e8f0; }
+
+    .srm-mnem { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; background:#1e1b4b; color:#a5b4fc; padding:2px 7px; border-radius:5px; font-size:13px; }
+    html[data-theme="light"] .srm-mnem { background:#e0e7ff; color:#3730a3; }
+
+    .srm-fix { background:#1c1917; border-left:3px solid #facc15; border-radius:8px; padding:10px 14px; margin:8px 0; color:#fde68a; font-size:13.5px; line-height:1.6; }
+    html[data-theme="light"] .srm-fix { background:#fefce8; color:#713f12; }
+  </style>
+</head>
+
+<body style="background: transparent; margin: 0;">
+  <main class="rev-page">
+
+    <h1>Social &amp; Religious Reform Movements in India</h1>
+    <p class="rev-subtitle">1814 → 1949. The Bengal renaissance, the Maharashtra anti-caste stream, Punjab's revivalism, the South Indian revolution, and the pan-India universalists.</p>
+
+    <div class="rev-note">
+      <strong>How to use this page:</strong> every card is <em>closed</em> by default. Tap it — or hit <strong>Reveal all</strong> — only <em>after</em> you have tried to recall the year, the leader, and the one-line objective. Reading an open card teaches you nothing. Guessing first is what makes it stick.
+    </div>
+
+    <div class="rev-note">
+      <strong>Four streams, one paper.</strong> These movements are always asked in one of four ways:
+      (1) <em>Match year → movement → leader</em>; (2) <em>which region</em>; (3) <em>which movement was against caste vs. against sati vs. for women's education</em>; (4) <em>chronological order</em>. Every section below is built so you can answer all four.
+    </div>
+
+    <h2>1 · Bengal — the Brahmo story &amp; its children</h2>
+    <p class="rev-subtitle">Calcutta, 1814–1875. The starting point of every reform-movement question in Prelims.</p>
+
+    <div class="srm-tools">
+      <button class="srm-btn" data-srm-all="open">Reveal all</button>
+      <button class="srm-btn" data-srm-all="close">Hide all</button>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Atmiya Sabha <span class="srm-badge srm-badge--bengal">Bengal</span> <span class="srm-badge srm-badge--year">1814</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Leader:</strong> Raja Ram Mohan Roy</span>
+        <span class="srm-fact"><strong>Objective:</strong> Early reform platform — criticised <em>sati</em> and idol worship; emphasised belief in one God. Also called the "Friend's Association" — a weekly meeting of like-minded men.</span>
+        <span class="srm-fact"><strong>Significance:</strong> The <em>first</em> organised reform body of the Bengal Renaissance. It is the seed from which Brahmo Samaj grows.</span>
+      </div>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Brahmo Samaj <span class="srm-badge srm-badge--bengal">Bengal</span> <span class="srm-badge srm-badge--year">1828</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Leader:</strong> Raja Ram Mohan Roy</span>
+        <span class="srm-fact"><strong>Objective:</strong> Advocated rational thought and worked to eliminate social evils — especially caste discrimination and idol worship.</span>
+        <span class="srm-fact"><strong>The big win:</strong> Ram Mohan's campaign led to the <strong>abolition of Sati by Lord William Bentinck in 1829 (Regulation XVII)</strong>.</span>
+      </div>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Dharma Sabha <span class="srm-badge srm-badge--bengal">Bengal</span> <span class="srm-badge srm-badge--year">1830</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Leader:</strong> Radhakant Deb</span>
+        <span class="srm-fact"><strong>Objective:</strong> The <em>orthodox reaction</em> — founded to counter the Brahmo Samaj and defend traditional Hindu practice. Interestingly, it still supported <em>Western education for women</em>.</span>
+        <span class="srm-fact"><strong>Exam angle:</strong> This is the classic "which body opposed the Brahmo Samaj" answer. Radhakant Deb was also a founder of the Hindu College (later Presidency College).</span>
+      </div>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Tattvabodhini Sabha <span class="srm-badge srm-badge--bengal">Bengal</span> <span class="srm-badge srm-badge--year">1839</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Leader:</strong> Debendranath Tagore (father of Rabindranath)</span>
+        <span class="srm-fact"><strong>Objective:</strong> Spread Brahmo Samaj teachings and drive intellectual reform in Bengal. Ran a journal called <em>Tattvabodhini Patrika</em>.</span>
+        <span class="srm-fact"><strong>Significance:</strong> Revived the Brahmo movement after Ram Mohan's death (1833) — Debendranath is the reason the Samaj survived.</span>
+      </div>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Deva Samaj <span class="srm-badge srm-badge--bengal">Bengal</span> <span class="srm-badge srm-badge--year">1867</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Leader:</strong> Shiv Narain Agnihotri</span>
+        <span class="srm-fact"><strong>Objective:</strong> Focused on ethical living, discouraged caste barriers, and inspired spiritual awakening.</span>
+        <span class="srm-fact"><strong>Quick distinction:</strong> A <em>Brahmo offshoot</em> with a strong ethical emphasis — not to be confused with Dev Samaj of <em>Shiv Narayan Agnihotri in Lahore (1887)</em>, which many textbooks treat separately. Same founder, two spellings — Prelims has played with this.</span>
+      </div>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Brahmo Samaj of India <span class="srm-badge srm-badge--bengal">Bengal</span> <span class="srm-badge srm-badge--year">1866</span> <span class="srm-badge srm-badge--fix">Added</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Leader:</strong> Keshab Chandra Sen (after the split from Debendranath Tagore's Adi Brahmo Samaj)</span>
+        <span class="srm-fact"><strong>Objective:</strong> More radical — campaigned for <em>inter-caste marriage, widow remarriage, and women's education</em>. Keshab's daughter's inter-caste marriage in 1878 caused another split.</span>
+        <span class="srm-fact"><strong>Why it matters:</strong> Paves the way for the <strong>Sadharan Brahmo Samaj (1878)</strong>, founded by Anand Mohan Bose and Sivanath Sastri — the most progressive wing.</span>
+      </div>
+    </div>
+
+    <h2>2 · Maharashtra — the anti-caste engine &amp; the service tradition</h2>
+    <p class="rev-subtitle">Pune and Bombay, 1849–1914. Two distinct streams here — <em>caste resistance</em> (Phule, Patil) and <em>national service</em> (Gokhale, Ranade, Kunzru).</p>
+
+    <div class="srm-tools">
+      <button class="srm-btn" data-srm-all="open">Reveal all</button>
+      <button class="srm-btn" data-srm-all="close">Hide all</button>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Paramhans Mandali <span class="srm-badge srm-badge--maha">Maharashtra</span> <span class="srm-badge srm-badge--year">1849</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Leaders:</strong> Dadoba Pandurang, Bal Shastri Jambhekar</span>
+        <span class="srm-fact"><strong>Objective:</strong> Worship of a single deity, opposition to social hierarchies, and support for reforms like <em>widow remarriage</em>. Published the journal <em>Darpan</em>.</span>
+        <span class="srm-fact"><strong>Placement:</strong> The earliest reform body in Maharashtra — the local counterpart to Bengal's Atmiya Sabha.</span>
+      </div>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Satyashodhak Samaj <span class="srm-badge srm-badge--maha">Maharashtra</span> <span class="srm-badge srm-badge--year">1873</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Leader:</strong> Jyotiba Phule (with Savitribai Phule)</span>
+        <span class="srm-fact"><strong>Objective:</strong> Resisted Brahminical supremacy; empowered lower castes through <em>education</em>.</span>
+        <ul>
+          <li>Established schools for marginalised groups — Savitribai ran the first girls' school (1848, Bhide Wada, Pune).</li>
+          <li>Wrote <em>Ghulamgiri</em> ("Slavery") — dedicated to the African-American struggle, comparing caste to slavery.</li>
+          <li>Advocated social equality and opposed caste-based restrictions.</li>
+        </ul>
+        <span class="srm-fact"><strong>Exam keyword:</strong> <em>Ghulamgiri</em> + <em>Satyashodhak Samaj</em> + Jyotiba Phule = a permanent Prelims combo.</span>
+      </div>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Bahujan Samaj <span class="srm-badge srm-badge--maha">Maharashtra</span> <span class="srm-badge srm-badge--year">1910</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Leader:</strong> Mukundrao Patil</span>
+        <span class="srm-fact"><strong>Objective:</strong> Worked against exploitation by Brahmin landlords and merchants; empowered lower-caste communities and promoted socio-economic advancement.</span>
+        <span class="srm-fact"><strong>Placement:</strong> A Maharashtra continuation of the Phule stream — not to be confused with Kanshi Ram's <em>Bahujan Samaj Party</em> (1984), which is a political party.</span>
+      </div>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Indian National Social Conference <span class="srm-badge srm-badge--maha">Maharashtra</span> <span class="srm-badge srm-badge--year">1887</span> <span class="srm-badge srm-badge--fix">Corrected</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Actual founders:</strong> <strong>M. G. Ranade</strong> and <strong>Raghunath Rao</strong> — <em>not</em> M. K. Gandhi. (The note you shared has this wrong; Gandhi was only 18 in 1887 and still in London.)</span>
+        <span class="srm-fact"><strong>Objective:</strong> Held its first session in Madras alongside the Indian National Congress. Focused on <em>social reform within the nationalist platform</em> — caste, widow remarriage, women's education.</span>
+        <span class="srm-fact"><strong>Exam angle:</strong> The Social Conference was <em>attached</em> to the Congress sessions — that linkage itself is the question.</span>
+      </div>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Deccan Education Society <span class="srm-badge srm-badge--maha">Maharashtra</span> <span class="srm-badge srm-badge--year">1884</span> <span class="srm-badge srm-badge--fix">Corrected</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Actual founders:</strong> <strong>Bal Gangadhar Tilak, Gopal Ganesh Agarkar, Mahadev Namjoshi, Vishnushastri Chiplunkar</strong>. <em>Not</em> M. K. Gandhi — this is a common error in the note you shared.</span>
+        <span class="srm-fact"><strong>Objective:</strong> Spread modern education; also addressed social issues like polygamy, caste-based marriage restrictions, and encouraged inter-caste marriage.</span>
+        <span class="srm-fact"><strong>Institution it created:</strong> <strong>Fergusson College, Pune (1885)</strong> — still one of India's leading colleges.</span>
+      </div>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Nishkam Karma Math <span class="srm-badge srm-badge--maha">Maharashtra</span> <span class="srm-badge srm-badge--year">1910</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Leader:</strong> Bal Gangadhar Tilak (Lokmanya Tilak)</span>
+        <span class="srm-fact"><strong>Objective:</strong> Social service without expectation of reward — the <em>karma yoga</em> of the Gita applied to national regeneration. Tilak's answer to the moderate style of service politics.</span>
+      </div>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Servants of India Society <span class="srm-badge srm-badge--maha">Maharashtra</span> <span class="srm-badge srm-badge--year">1905</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Leader:</strong> Gopal Krishna Gokhale</span>
+        <span class="srm-fact"><strong>Objective:</strong> Train "national missionaries" for the service of India — famine relief, education of the depressed classes, tribal welfare, and spreading political awareness.</span>
+        <span class="srm-fact"><strong>Interesting:</strong> On Gokhale's death in 1915, <strong>Gandhi</strong> — who regarded Gokhale as his political guru — was made the Society's first "life member"? No — the Society's leadership passed to <em>V. S. Srinivasa Sastri</em>. Gandhi was not its head.</span>
+      </div>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Poona Seva Sadan <span class="srm-badge srm-badge--maha">Maharashtra</span> <span class="srm-badge srm-badge--year">1909</span> <span class="srm-badge srm-badge--fix">Corrected</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Leaders:</strong> <strong>Ramabai Ranade</strong> and <strong>G. K. Devadhar</strong> (the note calls him "DK Devdhar" — usually written G.K. Devadhar).</span>
+        <span class="srm-fact"><strong>Objective:</strong> Channelled education for widows and advocated selfless service. Ran a hostel, a training school, and literacy classes for women.</span>
+      </div>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Seva Samiti <span class="srm-badge srm-badge--maha">Maharashtra</span> <span class="srm-badge srm-badge--year">1914</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Leader:</strong> Pandit Hridayanath Kunzru</span>
+        <span class="srm-fact"><strong>Objective:</strong> Community welfare, rehabilitation, and criminal justice reform. Famous for organising volunteers during the <em>Kumbh Mela</em> for sanitation, order, and lost-and-found services — the origin of the model that the <em>Seva Dal</em> later borrowed.</span>
+      </div>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Prarthana Samaj <span class="srm-badge srm-badge--maha">Maharashtra</span> <span class="srm-badge srm-badge--year">1867</span> <span class="srm-badge srm-badge--fix">Added</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Leaders:</strong> Atmaram Pandurang (founder), with <strong>M. G. Ranade</strong>, R. G. Bhandarkar, and N. G. Chandavarkar.</span>
+        <span class="srm-fact"><strong>Inspiration:</strong> Keshab Chandra Sen's visit to Bombay in 1864 led to its formation — so it is a Brahmo-faith body, but it went further on caste and women.</span>
+        <span class="srm-fact"><strong>Programme:</strong> Abolition of caste, widow remarriage, women's education, and a reformist reading of the Hindu scriptures. Ran the journal <em>Subodh Patrika</em>.</span>
+        <span class="srm-fact"><strong>Why UPSC loves it:</strong> "Which reform body did M. G. Ranade belong to?" — Prarthana Samaj is almost always the answer.</span>
+      </div>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Depressed Classes Institute &amp; Samaj Samata Sangh <span class="srm-badge srm-badge--maha">Maharashtra</span> <span class="srm-badge srm-badge--year">1924 / 1927</span> <span class="srm-badge srm-badge--fix">Added</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Leader:</strong> Dr. B. R. Ambedkar</span>
+        <ul>
+          <li><strong>Depressed Classes Institute (Bahishkrit Hitakarini Sabha) — 1924:</strong> the first organisation founded by Ambedkar; for the education and welfare of the depressed classes.</li>
+          <li><strong>Samaj Samata Sangh — 1927:</strong> for social equality; directly after the Mahad Satyagraha (1927) where Ambedkar led Dalits to drink water from the Chavdar tank.</li>
+        </ul>
+        <span class="srm-fact"><strong>Exam sequence:</strong> Phule (1873) → Ambedkar (1924, 1927). Always in that order.</span>
+      </div>
+    </div>
+
+    <h2>3 · Punjab &amp; the Northwest Frontier — revivalism and resistance</h2>
+    <p class="rev-subtitle">Sikh revival, a syncretic sect, and one of the greatest non-violent movements of the freedom struggle.</p>
+
+    <div class="srm-tools">
+      <button class="srm-btn" data-srm-all="open">Reveal all</button>
+      <button class="srm-btn" data-srm-all="close">Hide all</button>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Namdhari / Kuka Movement <span class="srm-badge srm-badge--punjab">Punjab</span> <span class="srm-badge srm-badge--year">1841 / 1857</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Leaders:</strong> Bhai Balak Singh (founder), Baba Ram Singh (organiser)</span>
+        <span class="srm-fact"><strong>Objective:</strong> Revived Sikh principles, opposed caste-based discrimination, and raised voices against British rule.</span>
+        <ul>
+          <li>Called "Kuka" because of the <em>shriek-like chanting</em> during prayer — the nickname stuck.</li>
+          <li>Opposed the British, the cow slaughter, and the caste hierarchy inside Sikh society.</li>
+          <li><strong>1857 is the usual founding date</strong> (Hazro, Balak Singh); some sources use 1841. Safe answer: <em>mid-19th century, Punjab, Baba Ram Singh</em>.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Radhaswami Movement <span class="srm-badge srm-badge--punjab">Punjab</span> <span class="srm-badge srm-badge--year">1861</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Leader:</strong> Tulsi Ram, also known as <strong>Shiv Dayal Saheb</strong> (Swamiji Maharaj)</span>
+        <span class="srm-fact"><strong>Objective:</strong> Devotion to a living guru, simple living, and the unity of all religions. Emerged from the <em>Sant Mat</em> tradition of the Punjab.</span>
+        <span class="srm-fact"><strong>Also remember:</strong> The sect's spiritual headquarters is at <strong>Dayalbagh, Agra</strong> — where the Radhasoami Satsang has its main centre.</span>
+      </div>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Khudai Khidmatgar Movement <span class="srm-badge srm-badge--front">NWFP</span> <span class="srm-badge srm-badge--year">1929</span> <span class="srm-badge srm-badge--fix">Added</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Leader:</strong> Khan Abdul Ghaffar Khan — the <strong>"Frontier Gandhi"</strong></span>
+        <span class="srm-fact"><strong>Objective:</strong> A non-violent "Servants of God" corps of Pashtun volunteers, drawn from the <em>Qissa Khwani Bazaar</em> tradition. Directly linked to the freedom struggle in the NWFP (now Khyber Pakhtunkhwa).</span>
+        <span class="srm-fact"><strong>Exam keyword:</strong> "Frontier Gandhi" + Khudai Khidmatgar + red-shirt volunteers = one precise question, almost every year.</span>
+      </div>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Singh Sabha Movement <span class="srm-badge srm-badge--punjab">Punjab</span> <span class="srm-badge srm-badge--year">1873</span> <span class="srm-badge srm-badge--fix">Added</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Founded at:</strong> Amritsar (first Singh Sabha); a second was founded at Lahore in 1879.</span>
+        <span class="srm-fact"><strong>Objective:</strong> Sikh religious and educational revival — counter Christian missionary activity, restore Sikh scriptures and institutions (Khalsa College, Amritsar), and reform Sikh social practice.</span>
+      </div>
+    </div>
+
+    <h2>4 · Parsi reform — the Mazdayasnan stream</h2>
+
+    <div class="srm-tools">
+      <button class="srm-btn" data-srm-all="open">Reveal all</button>
+      <button class="srm-btn" data-srm-all="close">Hide all</button>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Rahnumai Mazdayasan Sabha <span class="srm-badge srm-badge--parsi">Parsi</span> <span class="srm-badge srm-badge--year">1851</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Leaders:</strong> S. S. Bengali, Naoroji Furdonji, and J. B. Nacha (per your note — also associated with Dadabhai Naoroji and K. R. Cama in most standard textbooks)</span>
+        <span class="srm-fact"><strong>Objective:</strong> Promoted Zoroastrian principles, reformation within Parsi society, and modern education.</span>
+        <span class="srm-fact"><strong>Context:</strong> The Parsi community in Bombay was early to Western education and produced the first generation of Indian businessmen and nationalists. This Sabha is the intellectual root of that.</span>
+      </div>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Ahmadiyya Movement <span class="srm-badge srm-badge--parsi">Muslim reform</span> <span class="srm-badge srm-badge--year">1889</span> <span class="srm-badge srm-badge--fix">Added</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Leader:</strong> Mirza Ghulam Ahmad (Qadian, Punjab)</span>
+        <span class="srm-fact"><strong>Objective:</strong> A reformist current within Islam — emphasised a liberal, individual, and rational approach; built its own schools and missionary activity.</span>
+      </div>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Aligarh Movement <span class="srm-badge srm-badge--parsi">Muslim reform</span> <span class="srm-badge srm-badge--year">1875</span> <span class="srm-badge srm-badge--fix">Added</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Leader:</strong> Sir Syed Ahmad Khan</span>
+        <span class="srm-fact"><strong>Objective:</strong> Modern education for Muslims after 1857 — <em>Muhammadan Anglo-Oriental College, Aligarh</em> (1875), which became <strong>Aligarh Muslim University (1920)</strong>.</span>
+        <span class="srm-fact"><strong>Exam keyword:</strong> "Which reformer urged Muslims to take to English education?" — Sir Syed Ahmad Khan. He also wrote <em>Tahzib-ul-Akhlaq</em>.</span>
+      </div>
+    </div>
+
+    <h2>5 · Pan-India universalists — Arya, Theosophy, Ramakrishna</h2>
+    <p class="rev-subtitle">Three movements whose reach extended beyond any one region — and which UPSC treats as a single cluster.</p>
+
+    <div class="srm-tools">
+      <button class="srm-btn" data-srm-all="open">Reveal all</button>
+      <button class="srm-btn" data-srm-all="close">Hide all</button>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Arya Samaj <span class="srm-badge srm-badge--pan">Pan-India</span> <span class="srm-badge srm-badge--year">1875</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Leader:</strong> Swami Dayanand Saraswati</span>
+        <span class="srm-fact"><strong>Founded at:</strong> Bombay (10 April 1875) — later headquartered in Lahore.</span>
+        <span class="srm-fact"><strong>Objective:</strong></span>
+        <ul>
+          <li>Return to <strong>Vedic values</strong> — "Back to the Vedas"</li>
+          <li>Fought for <strong>gender equality</strong>; opposed child marriage; supported widow remarriage and women's education</li>
+          <li>Led <strong>Shuddhi</strong> (reconversion) — bringing converts back into the Hindu fold</li>
+          <li>Criticised idol worship, caste by birth, and untouchability</li>
+        </ul>
+        <span class="srm-fact"><strong>Famous work:</strong> <em>Satyarth Prakash</em>. The Samaj also built the <em>D.A.V. (Dayanand Anglo-Vedic) school network</em>.</span>
+      </div>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Theosophical Society <span class="srm-badge srm-badge--pan">Pan-India</span> <span class="srm-badge srm-badge--year">1875</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Founders:</strong> Madame H. P. Blavatsky and Colonel H. S. Olcott (New York, 1875)</span>
+        <span class="srm-fact"><strong>Objective:</strong> Revived global interest in Indian philosophies and spiritual wisdom; promoted the unity of religions, education for the masses, and humanitarian service.</span>
+        <span class="srm-fact"><strong>India connection:</strong> Headquarters moved to <strong>Adyar, Madras (Chennai) in 1882</strong>. Annie Besant later led the Society and entered Indian politics from that platform.</span>
+        <span class="srm-fact"><strong>Exam favourite:</strong> "Where is the Theosophical Society's headquarters?" — Adyar, Chennai. Not New York, not London.</span>
+      </div>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Ramakrishna Mission <span class="srm-badge srm-badge--pan">Pan-India</span> <span class="srm-badge srm-badge--year">1897</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Leader:</strong> Swami Vivekananda (disciple of Sri Ramakrishna Paramhansa)</span>
+        <span class="srm-fact"><strong>Founded at:</strong> <strong>Belur Math, near Calcutta</strong>. Vivekananda had already electrified the <em>Parliament of Religions, Chicago (1893)</em> before founding the Mission.</span>
+        <span class="srm-fact"><strong>Objective:</strong> Social service as practical Vedanta — hospitals, schools, relief work; "Atmano Mokshartham Jagaddhitaya Cha" (for one's own liberation and the welfare of the world).</span>
+      </div>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Veda Samaj / Brahmo Samaj of South India <span class="srm-badge srm-badge--south">South</span> <span class="srm-badge srm-badge--year">1864</span> <span class="srm-badge srm-badge--fix">Added</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Leader:</strong> K. Sridharalu Naidu (founded 1864, Madras)</span>
+        <span class="srm-fact"><strong>Objective:</strong> The Brahmo Samaj carried to the South — monotheism, opposition to caste, and reform of Hindu practice. Renamed the <em>Brahmo Samaj of South India</em> in 1871.</span>
+      </div>
+    </div>
+
+    <h2>6 · South India — the anti-caste revolution</h2>
+    <p class="rev-subtitle">Kerala and Tamil Nadu, 1902–1949. The heaviest part of the syllabus for BPSC's South India questions.</p>
+
+    <div class="srm-tools">
+      <button class="srm-btn" data-srm-all="open">Reveal all</button>
+      <button class="srm-btn" data-srm-all="close">Hide all</button>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">SNDP Movement <span class="srm-badge srm-badge--south">Kerala</span> <span class="srm-badge srm-badge--year">1902–03</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Full name:</strong> Shri Narayana Dharma Paripalana Yogam</span>
+        <span class="srm-fact"><strong>Leader:</strong> Shri Narayana Guru</span>
+        <span class="srm-fact"><strong>Objective:</strong> Promoted equality and rejected caste hierarchy. Spearheaded the <em>Aravipuram Movement</em>.</span>
+        <span class="srm-fact"><strong>Famous slogan:</strong> <span class="srm-mnem">"One caste, one religion, one God for man"</span> — the line that defines the entire movement.</span>
+        <span class="srm-fact"><strong>Also:</strong> Advocated unrestricted temple access for lower castes; installed the famous <em>Shiva idol at Aruvippuram (1888)</em>.</span>
+      </div>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Temple Entry Movement <span class="srm-badge srm-badge--south">Kerala</span> <span class="srm-badge srm-badge--year">1920s–1936</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Leaders:</strong> T. K. Madhavan, N. Kumaran Asan, Shri Narayana Guru</span>
+        <span class="srm-fact"><strong>Objective:</strong> Campaigned for the right of lower castes to enter temples. Played a crucial role in dismantling caste-based discrimination in Kerala's temples.</span>
+        <span class="srm-fact"><strong>Two key episodes:</strong></span>
+        <ul>
+          <li><strong>Vaikom Satyagraha (1924–25)</strong> — led by T. K. Madhavan; supported by Gandhi and Periyar. The road-blockade that lasted 20 months.</li>
+          <li><strong>Temple Entry Proclamation (1936)</strong> — issued by the Maharaja of Travancore, Chithira Thirunal Balarama Varma. The legal breakthrough.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Self Respect Movement <span class="srm-badge srm-badge--south">Tamil Nadu</span> <span class="srm-badge srm-badge--year">1925</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Leader:</strong> E. V. Ramaswami Naicker — "Periyar" (the Great One)</span>
+        <span class="srm-fact"><strong>Objective:</strong> Advocated a society free of caste-based oppression; promoted rational thought, self-respect, and social equality, rejecting Brahminical dominance.</span>
+        <span class="srm-fact"><strong>Methods:</strong> Anti-theism, "self-respect marriages" (without priests or rituals), rationalist journals (<em>Kudi Arasu</em>).</span>
+        <span class="srm-fact"><strong>Exam keyword:</strong> "Who started the Self Respect Movement?" — Periyar, 1925. He was also associated with the <em>Justice Party</em> (founded 1917).</span>
+      </div>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Dravidar Munnetra Kazhagam (DMK) <span class="srm-badge srm-badge--south">Tamil Nadu</span> <span class="srm-badge srm-badge--year">1949</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Leader:</strong> C. N. Annadurai (Anna)</span>
+        <span class="srm-fact"><strong>Objective:</strong> Worked to uplift Harijan communities and integrate them into society; emphasised Dravidian identity, social justice, and non-Brahmin rights.</span>
+        <span class="srm-fact"><strong>Origin:</strong> A split from Periyar's <em>Dravidar Kazhagam</em> in 1949 — Annadurai took the political wing, Periyar kept the social-reform wing.</span>
+      </div>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Harijan Sevak Sangh <span class="srm-badge srm-badge--pan">Pan-India</span> <span class="srm-badge srm-badge--year">1932</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Leader:</strong> M. K. Gandhi</span>
+        <span class="srm-fact"><strong>Founded:</strong> 1932, after the Poona Pact — originally called the <em>All India Anti-Untouchability League</em>, renamed Harijan Sevak Sangh.</span>
+        <span class="srm-fact"><strong>Objective:</strong> Eradicate untouchability and caste discrimination; encourage inclusive temple access, simplified marriages without rituals, and uphold the dignity of marginalised groups.</span>
+        <span class="srm-fact"><strong>Funding fact:</strong> Gandhi insisted it be funded <em>entirely by non-Harijans</em> — it was meant to be a movement of the conscience of the upper castes, not a Harijan self-help body. Ambedkar criticised this design.</span>
+      </div>
+    </div>
+
+    <h2>7 · Women's movements — the quiet half of the reform story</h2>
+    <p class="rev-subtitle">1897–1917. UPSC increasingly asks these as a separate cluster.</p>
+
+    <div class="srm-tools">
+      <button class="srm-btn" data-srm-all="open">Reveal all</button>
+      <button class="srm-btn" data-srm-all="close">Hide all</button>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Bharat Stree Mandal <span class="srm-badge srm-badge--women">Women</span> <span class="srm-badge srm-badge--year">1910</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Leader:</strong> Sarala Devi Chaudhurani</span>
+        <span class="srm-fact"><strong>Objective:</strong> Empowering women through education and social reform — one of the earliest all-India women's organisations. Ran a journal <em>Bharati</em>.</span>
+      </div>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Indian Women's Association <span class="srm-badge srm-badge--women">Women</span> <span class="srm-badge srm-badge--year">1917</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Leader:</strong> Annie Besant</span>
+        <span class="srm-fact"><strong>Objective:</strong> Pioneered women's rights in India, encouraging education and political participation.</span>
+        <span class="srm-fact"><strong>Context:</strong> The same year (1917) the <em>Women's Indian Association</em> deputation met Montagu — the first formal Indian women's political demand for the vote. Besant was the driving force behind both.</span>
+      </div>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Arya Mahila Samaj <span class="srm-badge srm-badge--women">Women</span> <span class="srm-badge srm-badge--year">1882</span> <span class="srm-badge srm-badge--fix">Added</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Founder:</strong> Pandita Ramabai Saraswati (Pune, 1882)</span>
+        <span class="srm-fact"><strong>Objective:</strong> Education and welfare of Indian women, especially widows. Her <em>Sharda Sadan</em> (1889, Bombay) gave shelter to widows and taught them self-reliance.</span>
+        <span class="srm-fact"><strong>Exam keyword:</strong> "Who founded the Arya Mahila Samaj?" — Pandita Ramabai, 1882.</span>
+      </div>
+    </div>
+
+    <h2>8 · What was missing — a UPSC/BPSC add-on pack</h2>
+    <p class="rev-subtitle">Movements not in your notes, but which appear in the same Prelims questions. Skim, don't memorise.</p>
+
+    <div class="srm-tools">
+      <button class="srm-btn" data-srm-all="open">Reveal all</button>
+      <button class="srm-btn" data-srm-all="close">Hide all</button>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Young Bengal Movement <span class="srm-badge srm-badge--bengal">Bengal</span> <span class="srm-badge srm-badge--year">1826–31</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Leader:</strong> Henry Vivian Derozio (a Portuguese-Indian teacher at Hindu College)</span>
+        <span class="srm-fact"><strong>Objective:</strong> Radical rationalism, free thought, and social criticism. Derozio's students — the "Derozians" — attacked idol worship, caste, and the subjection of women.</span>
+      </div>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Wahabi Movement <span class="srm-badge srm-badge--front">Muslim revival</span> <span class="srm-badge srm-badge--year">1820s</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Leader:</strong> Syed Ahmad Barelvi (of Rai Bareilly, later settled at Patna)</span>
+        <span class="srm-fact"><strong>Objective:</strong> Purity of Islamic practice and resistance to British rule; the "Wahhabi" label was used by the British loosely. Strong in Bihar and the North-West Frontier.</span>
+      </div>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Faraizi Movement <span class="srm-badge srm-badge--bengal">Bengal</span> <span class="srm-badge srm-badge--year">1818</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Leader:</strong> Haji Shariatullah (later Dudu Miyan)</span>
+        <span class="srm-fact"><strong>Objective:</strong> Islamic revival in Bengal, and defence of peasantry against Hindu landlords and indigo planters. Merged religion and agrarian resistance.</span>
+      </div>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Sadharan Brahmo Samaj <span class="srm-badge srm-badge--bengal">Bengal</span> <span class="srm-badge srm-badge--year">1878</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Founders:</strong> Anand Mohan Bose, Sivanath Sastri, and others — after breaking from Keshab Chandra Sen over his autocratic style and the marriage of his under-age daughter.</span>
+        <span class="srm-fact"><strong>Objective:</strong> The most progressive wing of the Brahmo movement — openly committed to caste abolition, women's education, and democratic functioning.</span>
+      </div>
+    </div>
+
+    <div class="srm-card">
+      <div class="srm-card__head">Justice Party <span class="srm-badge srm-badge--south">Tamil Nadu</span> <span class="srm-badge srm-badge--year">1917</span></div>
+      <div class="srm-card__body">
+        <span class="srm-fact"><strong>Founders:</strong> T. M. Nair, P. Thyagaraya Chetty, and others (Madras)</span>
+        <span class="srm-fact"><strong>Objective:</strong> Non-Brahmin political representation in the Madras Presidency. The political twin of the Self Respect Movement — Periyar later took it over and renamed it the <em>Dravidar Kazhagam</em> (1944).</span>
+      </div>
+    </div>
+
+    <h2>9 · Memory tricks that save you</h2>
+
+    <div class="rev-note">
+      <strong>The four Bengals, in order.</strong>
+      <span class="srm-mnem">"Atmiya 14, Brahmo 28, Dharma 30, Tattva 39"</span><br>
+      Read them as a story: <em>1814</em> Ram Mohan starts a small friend-circle → <em>1828</em> he turns it into a formal Samaj → <em>1830</em> the orthodox hit back with Dharma Sabha → <em>1839</em> Debendranath revives the Samaj as Tattvabodhini. Four dates, four roles, one arc.
+    </div>
+
+    <div class="rev-note">
+      <strong>Phule vs Ambedkar — two Maharashtra milestones.</strong>
+      <span class="srm-mnem">"73 Phule founds, 24 Ambedkar founds"</span><br>
+      Satyashodhak Samaj (1873) is Phule. Bahishkrit Hitakarini Sabha (1924) is Ambedkar. Both are Maharashtra, both about caste, both 51 years apart. The gap is deliberate — remember it as the "Phule → Ambedkar handover".
+    </div>
+
+    <div class="rev-note">
+      <strong>Two 1875s — the great twin year.</strong>
+      <span class="srm-mnem">"Vedic and Vedantic, both born in '75"</span><br>
+      <strong>Arya Samaj</strong> (Dayanand Saraswati, Bombay) is the <em>Vedic</em> revival — back to the Vedas, Shuddhi, D.A.V. schools. <strong>Theosophical Society</strong> (Blavatsky + Olcott, New York → Adyar) is the <em>Vedantic</em> revival — Hindu philosophy to the world, Adyar HQ. Same year, opposite directions.
+    </div>
+
+    <div class="rev-note">
+      <strong>The South Indian anti-caste ladder.</strong>
+      <span class="srm-mnem">"Aruvippuram 88 → SNDP 03 → Vaikom 24 → Temple Entry 36 → Self Respect 25 → DMK 49"</span><br>
+      Narayana Guru's idol installation (1888) → the organisation (1902–03) → the street satyagraha (1924) → the legal victory (1936) → Periyar's rationalist movement (1925) → Annadurai's political party (1949). Read it as <em>spiritual → organisational → agitational → legal → political</em>.
+    </div>
+
+    <div class="rev-note">
+      <strong>Two 1870s Punjab-origin, three Punjabi movements — sorted by what they revive.</strong>
+      <span class="srm-mnem">"Namdhari = Sikh rites, Radhaswami = Guru bhakti, Singh Sabha = Sikh institutions"</span><br>
+      Namdhari (mid-19th c.) — revival of Sikh practice + anti-British. Radhaswami (1861) — guru devotion + unity of religions. Singh Sabha (1873) — Sikh education + defence against Christian missions. Same province, different jobs.
+    </div>
+
+    <div class="rev-note">
+      <strong>Gokhale vs Gandhi — who founded what.</strong>
+      <span class="srm-mnem">"Gokhale serves, Gandhi untouches, Ranade conferences"</span><br>
+      Gokhale → <strong>Servants of India Society (1905)</strong>. Gandhi → <strong>Harijan Sevak Sangh (1932)</strong>. Ranade + Raghunath Rao → <strong>Indian National Social Conference (1887)</strong>. If a question puts Gandhi and 1887 together, it is a trap.
+    </div>
+
+    <div class="srm-fix">
+      <strong>Three corrections to the notes you shared:</strong>
+      (1) <strong>Indian National Social Conference (1887)</strong> — founders were <em>M. G. Ranade</em> and <em>Raghunath Rao</em>, not Gandhi.
+      (2) <strong>Deccan Education Society (1884)</strong> — founders were <em>Tilak, Agarkar, Namjoshi, Chiplunkar</em>, not Gandhi.
+      (3) <strong>Poona Seva Sadan (1909)</strong> — founded by <em>Ramabai Ranade</em> and <em>G. K. Devadhar</em> (not "DK Devdhar"). Get these right; Prelims has set traps on all three.
+    </div>
+
+    <h2>10 · Rapid Fire</h2>
+    <p class="rev-subtitle">Cover the whole page. Answer out loud <em>before</em> you tap.</p>
+
+    <div class="srm-tools">
+      <button class="srm-btn" data-srm-all="open">Reveal all</button>
+      <button class="srm-btn" data-srm-all="close">Hide all</button>
+    </div>
+
+    <div class="srm-q">
+      <p>1. Which was the earliest reform body of the Bengal Renaissance, and who founded it?</p>
+      <div class="srm-ans">Atmiya Sabha, 1814, Raja Ram Mohan Roy — Calcutta.</div>
+    </div>
+
+    <div class="srm-q">
+      <p>2. Which reform body was founded to <em>oppose</em> the Brahmo Samaj, by whom, and in which year?</p>
+      <div class="srm-ans">Dharma Sabha, 1830, by Radhakant Deb. Interestingly, it still supported Western education for women.</div>
+    </div>
+
+    <div class="srm-q">
+      <p>3. Who founded the Tattvabodhini Sabha, in which year, and to what purpose?</p>
+      <div class="srm-ans">Debendranath Tagore, 1839 — to spread Brahmo Samaj teachings and drive intellectual reform in Bengal. Ran the <em>Tattvabodhini Patrika</em>.</div>
+    </div>
+
+    <div class="srm-q">
+      <p>4. Which reformer's campaign led to the abolition of Sati, and in which year?</p>
+      <div class="srm-ans">Raja Ram Mohan Roy's campaign led to the abolition of Sati by Lord William Bentinck in <strong>1829 (Regulation XVII)</strong>.</div>
+    </div>
+
+    <div class="srm-q">
+      <p>5. Who founded the Paramhans Mandali, when, and what journal did it run?</p>
+      <div class="srm-ans">Dadoba Pandurang and Bal Shastri Jambhekar, 1849, Maharashtra. Journal: <em>Darpan</em>.</div>
+    </div>
+
+    <div class="srm-q">
+      <p>6. In which year was the Satyashodhak Samaj founded, by whom, and which book is associated with it?</p>
+      <div class="srm-ans">1873, Jyotiba Phule. Book: <em>Ghulamgiri</em> ("Slavery"). Savitribai Phule ran the first girls' school (1848, Pune).</div>
+    </div>
+
+    <div class="srm-q">
+      <p>7. Which movement did Shri Narayana Guru lead, and what was its full name?</p>
+      <div class="srm-ans">The SNDP Movement — <em>Shri Narayana Dharma Paripalana Yogam</em>, founded 1902–03. He spearheaded the Aravipuram Movement, and his slogan was "One caste, one religion, one God for man".</div>
+    </div>
+
+    <div class="srm-q">
+      <p>8. What was the Vaikom Satyagraha, when did it happen, and who led it?</p>
+      <div class="srm-ans">A temple-entry / road-access movement in Kerala, 1924–25, led by T. K. Madhavan with support from Gandhi and Periyar. It is the most famous episode of the Temple Entry Movement.</div>
+    </div>
+
+    <div class="srm-q">
+      <p>9. Who issued the Temple Entry Proclamation, in which year, and what did it do?</p>
+      <div class="srm-ans">The Maharaja of Travancore, Chithira Thirunal Balarama Varma, in <strong>1936</strong> — opening Hindu temples in Travancore to all castes.</div>
+    </div>
+
+    <div class="srm-q">
+      <p>10. Who started the Self Respect Movement, in which year, and what was his nickname?</p>
+      <div class="srm-ans">E. V. Ramaswami Naicker — <strong>Periyar</strong> — in <strong>1925</strong>, in Tamil Nadu. He rejected Brahminical dominance and promoted rationalism and self-respect marriages.</div>
+    </div>
+
+    <div class="srm-q">
+      <p>11. When and by whom was the DMK founded, and from which party did it split?</p>
+      <div class="srm-ans">C. N. Annadurai, 1949 — a split from Periyar's Dravidar Kazhagam. Emphasised Dravidian identity, social justice, and non-Brahmin rights.</div>
+    </div>
+
+    <div class="srm-q">
+      <p>12. When was the Harijan Sevak Sangh founded, by whom, and what was it originally called?</p>
+      <div class="srm-ans">1932, by M. K. Gandhi — originally the <em>All India Anti-Untouchability League</em>, renamed after the Poona Pact. Gandhi insisted it be funded entirely by non-Harijans.</div>
+    </div>
+
+    <div class="srm-q">
+      <p>13. Who founded the Arya Samaj, in which year, and at which place?</p>
+      <div class="srm-ans">Swami Dayanand Saraswati, 10 April 1875, Bombay. Later HQ shifted to Lahore. Famous work: <em>Satyarth Prakash</em>. Led Shuddhi and founded D.A.V. schools.</div>
+    </div>
+
+    <div class="srm-q">
+      <p>14. Who founded the Theosophical Society, in which year, and where is its Indian headquarters?</p>
+      <div class="srm-ans">Madame H. P. Blavatsky and Colonel H. S. Olcott, 1875 (New York). Indian HQ shifted to <strong>Adyar, Madras (Chennai) in 1882</strong>.</div>
+    </div>
+
+    <div class="srm-q">
+      <p>15. Who founded the Ramakrishna Mission, in which year, and where?</p>
+      <div class="srm-ans">Swami Vivekananda, 1897, at <strong>Belur Math</strong> near Calcutta — four years after his address at the Parliament of Religions, Chicago (1893).</div>
+    </div>
+
+    <div class="srm-q">
+      <p>16. Who founded the Servants of India Society, in which year, and for what purpose?</p>
+      <div class="srm-ans">Gopal Krishna Gokhale, 1905 — to train "national missionaries" for famine relief, education of the depressed classes, tribal welfare, and political awareness.</div>
+    </div>
+
+    <div class="srm-q">
+      <p>17. Who actually founded the Indian National Social Conference in 1887?</p>
+      <div class="srm-ans">M. G. Ranade and Raghunath Rao — <em>not</em> Gandhi. It held its first session in Madras alongside the Indian National Congress.</div>
+    </div>
+
+    <div class="srm-q">
+      <p>18. Who founded the Deccan Education Society, in which year, and which famous college did it create?</p>
+      <div class="srm-ans">Bal Gangadhar Tilak, Gopal Ganesh Agarkar, Mahadev Namjoshi, and Vishnushastri Chiplunkar — 1884, Pune. It created <strong>Fergusson College (1885)</strong>.</div>
+    </div>
+
+    <div class="srm-q">
+      <p>19. Who founded the Radhaswami Movement, in which year, and under what other name is he known?</p>
+      <div class="srm-ans">Tulsi Ram, also known as <strong>Shiv Dayal Saheb</strong>, 1861, Punjab. The main centre is Dayalbagh, Agra.</div>
+    </div>
+
+    <div class="srm-q">
+      <p>20. Which movement was called the Kuka Movement, and who led it?</p>
+      <div class="srm-ans">The <strong>Namdhari Movement</strong> — founded by Bhai Balak Singh (mid-19th century; 1857 in most sources), organised by Baba Ram Singh. Called "Kuka" because of the shriek-like chanting during prayer.</div>
+    </div>
+
+    <div class="srm-q">
+      <p>21. Which reformer is known as the "Frontier Gandhi", and which movement did he lead?</p>
+      <div class="srm-ans">Khan Abdul Ghaffar Khan — leader of the <strong>Khudai Khidmatgar Movement (1929)</strong> in the North-West Frontier Province. His volunteers wore red shirts.</div>
+    </div>
+
+    <div class="srm-q">
+      <p>22. Who founded the Rahnumai Mazdayasan Sabha, in which year, and for which community?</p>
+      <div class="srm-ans">S. S. Bengali, Naoroji Furdonji, and J. B. Nacha, 1851 — for the Parsi community in Bombay, promoting Zoroastrian principles and modern education.</div>
+    </div>
+
+    <div class="srm-q">
+      <p>23. Who founded the Aligarh Movement, in which year, and what institution did it create?</p>
+      <div class="srm-ans">Sir Syed Ahmad Khan — Muhammadan Anglo-Oriental College, Aligarh, 1875; it became <strong>Aligarh Muslim University in 1920</strong>. His journal was <em>Tahzib-ul-Akhlaq</em>.</div>
+    </div>
+
+    <div class="srm-q">
+      <p>24. Name the two all-India women's organisations founded by Annie Besant and Sarala Devi Chaudhurani.</p>
+      <div class="srm-ans">Annie Besant — <strong>Indian Women's Association (1917)</strong>. Sarala Devi Chaudhurani — <strong>Bharat Stree Mandal (1910)</strong>. Also: Pandita Ramabai's <strong>Arya Mahila Samaj (1882)</strong>.</div>
+    </div>
+
+    <p class="rev-subtitle" style="margin-top:18px;">Closing tip: on the night before the exam, only read the <strong>Rapid Fire</strong> section. If you can answer 20 of 24 out loud without tapping, this page has done its job.</p>
+
+  </main>
+
+  <!-- Report true content height to the parent app.
+       Measures <main class="rev-page"> directly, NOT document.body. -->
+  <script>
+    (function () {
+      function sendHeight() {
+        var el = document.querySelector('.rev-page') || document.body;
+        var h = Math.ceil(el.getBoundingClientRect().height);
+        if (!h) h = el.scrollHeight || 0;
+        if (!h) return;
+        try {
+          window.parent.postMessage({ type: 'revision-height', height: h }, '*');
+        } catch (e) {}
+      }
+      window.addEventListener('load', sendHeight);
+      window.addEventListener('resize', sendHeight);
+      setTimeout(sendHeight, 0);
+      setTimeout(sendHeight, 50);
+      setTimeout(sendHeight, 300);
+      setTimeout(sendHeight, 1000);
+      if (window.ResizeObserver) {
+        new ResizeObserver(sendHeight).observe(document.body);
+      }
+    })();
+  </script>
+
+  <!-- Card + quiz interaction -->
+  <script>
+    (function () {
+      // Reveal-all / Hide-all toolbars — scoped to everything after the toolbar.
+      document.querySelectorAll('.srm-tools').forEach(function (tools) {
+        tools.addEventListener('click', function (e) {
+          var btn = e.target.closest('[data-srm-all]');
+          if (!btn) return;
+          var open = btn.getAttribute('data-srm-all') === 'open';
+          var node = tools.nextElementSibling;
+          while (node) {
+            if (node.classList && (node.classList.contains('srm-card') || node.classList.contains('srm-q'))) {
+              node.classList.toggle('open', open);
+            }
+            node = node.nextElementSibling;
+          }
+        });
+      });
+
+      // Individual card / quiz tap.
+      document.addEventListener('click', function (e) {
+        var head = e.target.closest('.srm-card__head');
+        if (head) {
+          var card = head.closest('.srm-card');
+          if (card) card.classList.toggle('open');
+          return;
+        }
+        var q = e.target.closest('.srm-q');
+        if (q) q.classList.toggle('open');
+      });
+    })();
+  </script>
+</body>
+</html>

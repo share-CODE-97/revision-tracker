@@ -13,7 +13,7 @@
  * app just won't be available offline in that case.
  * ==========================================================================*/
 
-const CACHE_VERSION = 'revision-tracker-v5';
+const CACHE_VERSION = 'revision-tracker-v6';
 const CACHE_NAME    = CACHE_VERSION;
 
 /* ---------------------------------------------------------------------------
@@ -29,14 +29,38 @@ const PRECACHE_URLS = [
   './js/main.js',
   './js/revision.js',
 
-  './revision/squares-cubes_01.html',
-  './revision/table_02.html',
-  './revision/magadha-dynasties_03.html',
-  './revision/medival-history_04.html',
-  './revision/akbar-campaigns_05.html',
-  './revision/anglo-wars_06.html',
-  './revision/foreign-crops_07.html',
+  './revision/01_squares-cubes.html',
+  './revision/02_table.html',
+  './revision/03_magadha-dynasties.html',
+  './revision/04_medival-history.html',
+  './revision/05_akbar-campaigns.html',
+  './revision/06_anglo-wars.html',
+  './revision/07_foreign-crops.html',
+  './revision/08_cropping-seasons.html',
+  './revision/09_alloys-ores.html',
+  './revision/10_india_minerals.html',
+  './revision/11_indian-rivers.html',
+  './revision/12_grasslands-world.html',  
+  './revision/13_mountains-volcanoes.html',
+  './revision/14_world-geography.html',  
+  './revision/15_physical-geography.html',
+  './revision/16_science-capsule.html',  
+  './revision/17_international_organization.html',
+  './revision/18_socio_religious_movement.html',  
+  './revision/19_foreign_travellers.html',
+  './revision/20_modern_india_1857_1947_overview.html',  
+  './revision/21_viceroys.html',
+  './revision/22_president_of_india.html', 
+
+
+/* ABOVE THIS LINE IS PERFECT */
+
+ 
+
   
+
+
+  /* BELOW THIS LINE IS PERFECT */
   
   './manifest.webmanifest',
   './icons/icon-192.png',

@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Foreign Travellers to India — Revision</title>
+
+  <!--
+    Revision page for "Foreign Travellers to India".
+    Loaded inside the main app's iframe.
+    • Theme is passed via URL hash: #theme=dark or #theme=light
+    • Styles come from ../css/style.css
+  -->
+
+  <!-- Read theme from URL hash BEFORE paint (no flash). -->
+  <script>
+    (function () {
+      var m = location.hash.match(/theme=(light|dark)/);
+      document.documentElement.setAttribute('data-theme', m ? m[1] : 'dark');
+    })();
+  </script>
+
+  <!-- Shared app styles — this links the file to the MAIN stylesheet. -->
+  <link rel="stylesheet" href="../css/style.css">
+
+  <!-- Match the app's font stack. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Page-specific styles for Foreign Travellers to India. -->
+  <style>
+    .trav-card { background:#0f172a; border:1px solid #1e293b; border-radius:10px; margin:8px 0; }
+    .trav-card__head { display:flex; align-items:center; gap:10px; padding:12px 14px; cursor:pointer; font-weight:600; color:#e2e8f0; font-size:14.5px; line-height:1.4; flex-wrap:wrap; }
+    .trav-card__head::after { content:'▾'; margin-left:auto; color:#818cf8; transition:transform .2s; flex:0 0 auto; }
+    .trav-card.open .trav-card__head::after { transform:rotate(180deg); }
+    .trav-card__body { display:none; padding:0 14px 14px; color:#cbd5e1; font-size:14px; line-height:1.65; }
+    .trav-card.open .trav-card__body { display:block; }
+    .trav-card__body ul { margin:6px 0; padding-left:20px; }
+    .trav-card__body li { margin:3px 0; }
+    .trav-card__body .trav-fact { display:block; margin-bottom:5px; }
+
+    html[data-theme="light"] .trav-card { background:#ffffff; border-color:#e2e8f0; }
+    html[data-theme="light"] .trav-card__head { color:#1e293b; }
+    html[data-theme="light"] .trav-card__body { color:#475569; }
+
+    .trav-badge { display:inline-block; font-size:10.5px; padding:2px 8px; border-radius:999px; font-weight:700; letter-spacing:.03em; text-transform:uppercase; white-space:nowrap; }
+    .trav-badge--greek   { background:#78350f; color:#fde68a; }
+    .trav-badge--china   { background:#7f1d1d; color:#fecaca; }
+    .trav-badge--arab    { background:#064e3b; color:#a7f3d0; }
+    .trav-badge--central { background:#0c4a6e; color:#bae6fd; }
+    .trav-badge--italy   { background:#4c1d95; color:#ddd6fe; }
+    .trav-badge--port    { background:#831843; color:#fbcfe8; }
+    .trav-badge--russia  { background:#1e3a8a; color:#bfdbfe; }
+    .trav-badge--persia  { background:#7c2d12; color:#fed7aa; }
+    .trav-badge--morocco { background:#3f3f46; color:#fef08a; }
+    .trav-badge--eng     { background:#0f766e; color:#99f6e4; }
+    .trav-badge--france  { background:#1e40af; color:#dbeafe; }
+    .trav-badge--date    { background:#475569; color:#e2e8f0; }
+    .trav-badge--add     { background:#422006; color:#fde68a; border:1px dashed #a16207; }
+
+    html[data-theme="light"] .trav-badge--greek   { background:#fef3c7; color:#78350f; }
+    html[data-theme="light"] .trav-badge--china   { background:#fee2e2; color:#991b1b; }
+    html[data-theme="light"] .trav-badge--arab    { background:#d1fae5; color:#065f46; }
+    html[data-theme="light"] .trav-badge--central { background:#e0f2fe; color:#075985; }
+    html[data-theme="light"] .trav-badge--italy   { background:#ede9fe; color:#5b21b6; }
+    html[data-theme="light"] .trav-badge--port    { background:#fce7f3; color:#9d174d; }
+    html[data-theme="light"] .trav-badge--russia  { background:#dbeafe; color:#1e40af; }
+    html[data-theme="light"] .trav-badge--persia  { background:#ffedd5; color:#9a3412; }
+    html[data-theme="light"] .trav-badge--morocco { background:#fef9c3; color:#713f12; }
+    html[data-theme="light"] .trav-badge--eng     { background:#ccfbf1; color:#115e59; }
+    html[data-theme="light"] .trav-badge--france  { background:#dbeafe; color:#1e40af; }
+    html[data-theme="light"] .trav-badge--date    { background:#e2e8f0; color:#334155; }
+    html[data-theme="light"] .trav-badge--add     { background:#fefce8; color:#854d0e; border-color:#ca8a04; }
+
+    .trav-tools { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0 6px; }
+    .trav-btn { background:#1e293b; color:#c7d2fe; border:1px solid #334155; border-radius:8px; padding:6px 14px; font-size:12.5px; font-weight:600; cursor:pointer; font-family:inherit; }
+    .trav-btn:hover { background:#334155; }
+    html[data-theme="light"] .trav-btn { background:#eef2ff; color:#3730a3; border-color:#c7d2fe; }
+    html[data-theme="light"] .trav-btn:hover { background:#e0e7ff; }
+
+    .trav-q { background:#0f172a; border-left:3px solid #6366f1; border-radius:8px; padding:12px 14px; margin:8px 0; cursor:pointer; }
+    .trav-q p { margin:0; color:#e2e8f0; font-weight:600; font-size:14.5px; line-height:1.45; }
+    .trav-ans { display:none; margin-top:9px; padding-top:9px; border-top:1px dashed #334155; color:#a5b4fc; font-size:14px; line-height:1.6; }
+    .trav-q.open .trav-ans { display:block; }
+    html[data-theme="light"] .trav-q { background:#ffffff; }
+    html[data-theme="light"] .trav-q p { color:#1e293b; }
+    html[data-theme="light"] .trav-ans { color:#4338ca; border-top-color:#e2e8f0; }
+
+    .trav-mnem { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; background:#1e1b4b; color:#a5b4fc; padding:2px 7px; border-radius:5px; font-size:13px; }
+    html[data-theme="light"] .trav-mnem { background:#e0e7ff; color:#3730a3; }
+
+    .trav-flag { background:#1c1917; border-left:3px solid #facc15; border-radius:8px; padding:10px 14px; margin:8px 0; color:#fde68a; font-size:13.5px; line-height:1.6; }
+    html[data-theme="light"] .trav-flag { background:#fefce8; color:#713f12; }
+  </style>
+</head>
+
+<body style="background: transparent; margin: 0;">
+  <main class="rev-page">
+
+    <h1>Foreign Travellers to India</h1>
+    <p class="rev-subtitle">c. 300 BCE → 1900 CE. The outside eye on India's polity, economy, society and religion — and the single most reliable source of Prelims one-liners in Ancient &amp; Medieval India.</p>
+
+    <div class="rev-note">
+      <strong>How to use this page:</strong> every card is <em>closed</em> by default. Tap it — or hit <strong>Reveal all</strong> — only <em>after</em> you have tried to recall the traveller, the ruler, and the book. Reading an open card teaches you nothing. Guessing first is what makes it stick.
+    </div>
+
+    <div class="rev-note">
+      <strong>The four ways this topic is asked.</strong> Almost every Prelims question on foreign travellers falls into one of these:
+      <br>① <em>Match the traveller to the ruler</em> (Ibn Battuta ↔ Muhammad bin Tughlaq)
+      <br>② <em>Match the traveller to the book</em> (Al-Biruni ↔ Kitab-ul-Hind)
+      <br>③ <em>Match the traveller to the nationality</em> (Abdur Razzaq ↔ Persia)
+      <br>④ <em>Chronological order</em> (who came first — Conti or Paes?)
+      <br>Build the card grid in your head so that any of the four queries hits a single fact.
+    </div>
+
+    <h2>1 · The ancients — Greeks and the Chinese trio (c. 300 BCE – 700 CE)</h2>
+    <p class="rev-subtitle">Not in the PDF tables, but in the timeline image — and asked far more often than you'd expect.</p>
+
+    <div class="trav-tools">
+      <button class="trav-btn" data-trav-all="open">Reveal all</button>
+      <button class="trav-btn" data-trav-all="close">Hide all</button>
+    </div>
+
+    <div class="trav-card">
+      <div class="trav-card__head">Megasthenes <span class="trav-badge trav-badge--greek">Greece</span> <span class="trav-badge trav-badge--date">c. 300 BCE</span></div>
+      <div class="trav-card__body">
+        <span class="trav-fact"><strong>Ruler / court:</strong> Chandragupta Maurya</span>
+        <span class="trav-fact"><strong>Book:</strong> <em>Indica</em></span>
+        <span class="trav-fact"><strong>Who he was:</strong> Ambassador of Seleucus Nicator at the Mauryan court — the first Greek eyewitness to India.</span>
+        <span class="trav-fact"><strong>Key observations:</strong></span>
+        <ul>
+          <li>Divided Indian society into <strong>seven classes</strong> (philosophers, farmers, herdsmen, artisans, soldiers, overseers, councillors)</li>
+          <li>Claimed there was <strong>no slavery in India</strong> — widely disputed by modern historians</li>
+          <li>Described a large standing army, a well-organised bureaucracy, and a land-revenue system</li>
+        </ul>
+        <span class="trav-fact"><strong>Exam keyword:</strong> The single most-quoted foreign source for Mauryan administration — even though much of it is hearsay.</span>
+      </div>
+    </div>
+
+    <div class="trav-card">
+      <div class="trav-card__head">Faxian (Fa-Hien) <span class="trav-badge trav-badge--china">China</span> <span class="trav-badge trav-badge--date">399–414 CE</span></div>
+      <div class="trav-card__body">
+        <span class="trav-fact"><strong>Ruler:</strong> Chandragupta II Vikramaditya (Gupta)</span>
+        <span class="trav-fact"><strong>Book:</strong> <em>Record of Buddhist Kingdoms</em> (Foguo Ji)</span>
+        <span class="trav-fact"><strong>Route:</strong> Came <em>overland</em> via Central Asia; returned by <em>sea</em> through Sri Lanka and Java.</span>
+        <span class="trav-fact"><strong>Key observations:</strong></span>
+        <ul>
+          <li>Gupta administration was <strong>mild and liberal</strong> — no capital punishment, no harsh penal code</li>
+          <li>Described flourishing Buddhist monasteries and the prosperity of the Gangetic plain</li>
+          <li>Noted the <strong>Chandals (untouchables)</strong> lived outside the city, and that vegetarianism was widespread</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="trav-card">
+      <div class="trav-card__head">Xuanzang (Hiuen Tsang) <span class="trav-badge trav-badge--china">China</span> <span class="trav-badge trav-badge--date">c. 629–645 CE</span></div>
+      <div class="trav-card__body">
+        <span class="trav-fact"><strong>Ruler:</strong> Harshavardhana</span>
+        <span class="trav-fact"><strong>Book:</strong> <em>Si-Yu-Ki</em> (Records of the Western Regions)</span>
+        <span class="trav-fact"><strong>Key facts:</strong></span>
+        <ul>
+          <li>Studied at <strong>Nalanda for 5 years</strong> under Acharya Shilabhadra</li>
+          <li>Carried <strong>657 Buddhist texts</strong> back to China — the largest single transfer of Sanskrit manuscripts</li>
+          <li>Described Harsha's court, the <strong>Prayag Assembly (Kumbha Mela)</strong>, Harsha's land grants to Nalanda, and the decline of Buddhism in parts of India</li>
+          <li>His account is the principal source for Harsha's reign — the Prayag assembly and Kanauj assembly are known mainly through him</li>
+        </ul>
+        <span class="trav-fact"><strong>Exam keyword:</strong> "Who described Harsha's assembly at Prayag?" — Xuanzang.</span>
+      </div>
+    </div>
+
+    <div class="trav-card">
+      <div class="trav-card__head">Yijing (I-Tsing) <span class="trav-badge trav-badge--china">China</span> <span class="trav-badge trav-badge--date">c. 671–695 CE</span></div>
+      <div class="trav-card__body">
+        <span class="trav-fact"><strong>Route:</strong> Sailed from China to India <strong>by sea</strong> — unlike Xuanzang, who came overland.</span>
+        <span class="trav-fact"><strong>Key facts:</strong></span>
+        <ul>
+          <li>Spent <strong>10 years at Nalanda</strong> (twice as long as Xuanzang)</li>
+          <li>Translated Sanskrit works into Chinese and vice versa</li>
+          <li>Book: <em>A Record of the Buddhist Religion as Practised in India and the Malay Archipelago</em></li>
+          <li>His account describes Nalanda's administration, the rules of monastic life, and the state of Buddhism in the late 7th century</li>
+        </ul>
+        <span class="trav-fact"><strong>Exam keyword:</strong> Xuanzang studied 5 years at Nalanda; Yijing stayed 10. Never mix them.</span>
+      </div>
+    </div>
+
+    <h2>2 · Early medieval — Arab merchants and the Central Asian scholar (851–1025 CE)</h2>
+    <p class="rev-subtitle">The Arab geographers tell us about the Gurjara-Pratiharas and Rashtrakutas. Al-Biruni tells us about almost everything else.</p>
+
+    <div class="trav-tools">
+      <button class="trav-btn" data-trav-all="open">Reveal all</button>
+      <button class="trav-btn" data-trav-all="close">Hide all</button>
+    </div>
+
+    <div class="trav-card">
+      <div class="trav-card__head">Sulaiman <span class="trav-badge trav-badge--arab">Arab</span> <span class="trav-badge trav-badge--date">c. 851 CE</span></div>
+      <div class="trav-card__body">
+        <span class="trav-fact"><strong>Rulers contemporary to him:</strong> Mihira Bhoja (Gurjara-Pratihara), Amoghavarsha (Rashtrakuta), Pala rulers in Bengal</span>
+        <span class="trav-fact"><strong>Book:</strong> <em>Kitab al-Masalik wa al-Mamalik</em> (Book of Roads and Kingdoms)</span>
+        <span class="trav-fact"><strong>Key observations:</strong></span>
+        <ul>
+          <li>An Arab merchant who described the <strong>political and commercial conditions of 9th-century India</strong></li>
+          <li>Called the Bengal region <strong>"Ruhma"</strong> (the Pala kingdom) and Rashtrakuta territory <strong>"Ruhimi"</strong></li>
+          <li>Named the <strong>Gurjara-Pratihara king as "Ballhara"</strong> — the most powerful sovereign of the time, a title Arab writers used for him</li>
+        </ul>
+        <span class="trav-fact"><strong>Exam keyword:</strong> "Ballhara" = the Pratihara king. A classic one-word answer.</span>
+      </div>
+    </div>
+
+    <div class="trav-card">
+      <div class="trav-card__head">Al-Biruni <span class="trav-badge trav-badge--central">Uzbekistan</span> <span class="trav-badge trav-badge--date">1017–1025 CE</span></div>
+      <div class="trav-card__body">
+        <span class="trav-fact"><strong>Ruler / patron:</strong> Mahmud of Ghazni</span>
+        <span class="trav-fact"><strong>Book:</strong> <em>Tahqiq-i-Hind</em> (also called <em>Kitab-ul-Hind</em>)</span>
+        <span class="trav-fact"><strong>Method — the part UPSC tests:</strong></span>
+        <ul>
+          <li>Learned <strong>Sanskrit</strong> and studied the Vedas, Puranas, astronomy, mathematics, and geography</li>
+          <li>Used a <strong>scientific, comparative method</strong> — highly objective, not a moralising travelogue</li>
+          <li>Explained Indian <strong>time-calculation, astronomy, and the caste system</strong></li>
+        </ul>
+        <span class="trav-fact"><strong>His two famous observations:</strong></span>
+        <ul>
+          <li>Hindus <strong>excel in science</strong> but are <strong>socially conservative</strong></li>
+          <li>Criticised the <strong>Brahmin reluctance to share knowledge</strong> with outsiders and lower castes</li>
+        </ul>
+        <span class="trav-fact"><strong>Exam keyword:</strong> Al-Biruni's <em>Kitab-ul-Hind</em> is the first genuinely scientific foreign account of India — not a merchant's logbook, not a pilgrim's diary.</span>
+      </div>
+    </div>
+
+    <h2>3 · Sultanate era — the two that matter most (1292–1347 CE)</h2>
+    <p class="rev-subtitle">Marco Polo sees the South. Ibn Battuta sees the court of the most controversial Sultan of Delhi.</p>
+
+    <div class="trav-tools">
+      <button class="trav-btn" data-trav-all="open">Reveal all</button>
+      <button class="trav-btn" data-trav-all="close">Hide all</button>
+    </div>
+
+    <div class="trav-card">
+      <div class="trav-card__head">Marco Polo <span class="trav-badge trav-badge--italy">Italy</span> <span class="trav-badge trav-badge--date">1292–1294 CE</span></div>
+      <div class="trav-card__body">
+        <span class="trav-fact"><strong>Region / rulers:</strong> Pandya kingdom and Kakatiya territory (South India)</span>
+        <span class="trav-fact"><strong>Book:</strong> <em>The Travels of Marco Polo</em> (Il Milione)</span>
+        <span class="trav-fact"><strong>Key observations:</strong></span>
+        <ul>
+          <li>Visited the <strong>Coromandel Coast</strong> (Pandya region) — not North India</li>
+          <li>Described <strong>pearl fisheries</strong>, the climate, and coastal social life</li>
+          <li>Also described the diamond mines of the Deccan and the prosperity of the South Indian ports</li>
+        </ul>
+        <span class="trav-fact"><strong>Exam trap:</strong> Marco Polo is often wrongly tied to the Delhi Sultanate. He only saw the South — he was on his way home from China.</span>
+      </div>
+    </div>
+
+    <div class="trav-card">
+      <div class="trav-card__head">Ibn Battuta <span class="trav-badge trav-badge--morocco">Morocco</span> <span class="trav-badge trav-badge--date">1333–1347 CE</span></div>
+      <div class="trav-card__body">
+        <span class="trav-fact"><strong>Ruler:</strong> Muhammad bin Tughlaq</span>
+        <span class="trav-fact"><strong>Book:</strong> <em>Rihla</em> ("The Travels")</span>
+        <span class="trav-fact"><strong>The single most-asked fact:</strong> He was appointed <strong>Qazi of Delhi</strong> by Muhammad bin Tughlaq — a foreigner given a senior judicial post.</span>
+        <span class="trav-fact"><strong>His observations on the Sultan:</strong></span>
+        <ul>
+          <li>Described Muhammad bin Tughlaq as <strong>capable but unpredictable</strong> — a ruler whose projects outran his means</li>
+          <li>Noted the <strong>harsh punishments</strong>, the <strong>token currency experiment</strong>, and the efficient <strong>postal system</strong> (both horse-post and foot-post)</li>
+        </ul>
+        <span class="trav-fact"><strong>Places he travelled:</strong> Delhi → Malabar Coast → Maldives → Ceylon</span>
+        <span class="trav-fact"><strong>Also recorded:</strong> the prevalence of <strong>slavery</strong> in India — a sobering contrast to Megasthenes' claim 1,600 years earlier.</span>
+      </div>
+    </div>
+
+    <h2>4 · Vijayanagara &amp; the Portuguese century (1419–1535 CE)</h2>
+    <p class="rev-subtitle">Six travellers, one empire. This is the highest-density cluster in the whole topic.</p>
+
+    <div class="trav-tools">
+      <button class="trav-btn" data-trav-all="open">Reveal all</button>
+      <button class="trav-btn" data-trav-all="close">Hide all</button>
+    </div>
+
+    <div class="trav-card">
+      <div class="trav-card__head">Niccolò Conti <span class="trav-badge trav-badge--italy">Italy</span> <span class="trav-badge trav-badge--date">1419–1439 CE</span></div>
+      <div class="trav-card__body">
+        <span class="trav-fact"><strong>Rulers:</strong> Deva Raya I and Deva Raya II (Vijayanagara)</span>
+        <span class="trav-fact"><strong>Key facts:</strong></span>
+        <ul>
+          <li>Travelled <strong>disguised as a Muslim merchant</strong> — an Italian in Arab dress to move safely through the Deccan</li>
+          <li>Visited Vijayanagara in the <strong>early 15th century, BEFORE the Portuguese arrived</strong></li>
+          <li>Provided a rare early European description of the city — its walls, markets, and the grandeur of the court</li>
+        </ul>
+        <span class="trav-fact"><strong>Exam keyword:</strong> "Which European visited Vijayanagara before the Portuguese?" — Niccolò Conti.</span>
+      </div>
+    </div>
+
+    <div class="trav-card">
+      <div class="trav-card__head">Abdur Razzaq <span class="trav-badge trav-badge--persia">Persia</span> <span class="trav-badge trav-badge--date">1442–1445 CE</span></div>
+      <div class="trav-card__body">
+        <span class="trav-fact"><strong>Rulers:</strong> Deva Raya II (Vijayanagara) and the Zamorin (Calicut)</span>
+        <span class="trav-fact"><strong>Book:</strong> <em>Matla-us-Sadain wa Majma-ul-Bahrain</em></span>
+        <span class="trav-fact"><strong>Key facts:</strong></span>
+        <ul>
+          <li><strong>First halted at Calicut</strong> under the Zamorin, then travelled to Vijayanagara</li>
+          <li>Sent as an envoy by Shah Rukh Mirza of Persia — a diplomatic mission, not a trade one</li>
+          <li>Described <strong>massive wealth, a large army, and elaborate court ritual</strong></li>
+          <li>Gave a <strong>detailed account of the royal procession and urban grandeur</strong> — his description of the Mahanavami Dibba festival is a primary source</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="trav-card">
+      <div class="trav-card__head">Afanasy Nikitin <span class="trav-badge trav-badge--russia">Russia</span> <span class="trav-badge trav-badge--date">1469–1472 CE</span></div>
+      <div class="trav-card__body">
+        <span class="trav-fact"><strong>Ruler / region:</strong> Bahmani Sultanate (Deccan)</span>
+        <span class="trav-fact"><strong>Book:</strong> <em>Voyage Beyond Three Seas</em> (Khozheniye za tri morya)</span>
+        <span class="trav-fact"><strong>Key fact:</strong> One of the <strong>earliest Russian accounts of India</strong> — a Tver merchant who reached the Deccan via the Caspian, Persian Gulf and Arabian Sea. His account is almost entirely about the Bahmani kingdom, not Vijayanagara.</span>
+      </div>
+    </div>
+
+    <div class="trav-card">
+      <div class="trav-card__head">Duarte Barbosa <span class="trav-badge trav-badge--port">Portugal</span> <span class="trav-badge trav-badge--date">1500–1516 CE</span></div>
+      <div class="trav-card__body">
+        <span class="trav-fact"><strong>Ruler:</strong> Vira Narasimha (Vijayanagara)</span>
+        <span class="trav-fact"><strong>Book:</strong> <em>Book of Duarte Barbosa</em></span>
+        <span class="trav-fact"><strong>Key observations:</strong></span>
+        <ul>
+          <li>Described <strong>coastal trade networks and society</strong> — the Malabar and Kanara ports in detail</li>
+          <li>Explicitly <strong>mentions diamond mines in the Vijayanagara region</strong> — the earliest European reference to them</li>
+        </ul>
+        <span class="trav-fact"><strong>Note:</strong> He was a Portuguese official in India, and Magellan's brother-in-law. Not to be confused with Domingo Paes.</span>
+      </div>
+    </div>
+
+    <div class="trav-card">
+      <div class="trav-card__head">Domingo Paes <span class="trav-badge trav-badge--port">Portugal</span> <span class="trav-badge trav-badge--date">1520–1522 CE</span></div>
+      <div class="trav-card__body">
+        <span class="trav-fact"><strong>Ruler:</strong> Krishnadeva Raya (Vijayanagara)</span>
+        <span class="trav-fact"><strong>Book:</strong> <em>Chronica dos reis de Bisnaga</em></span>
+        <span class="trav-fact"><strong>Key observations:</strong></span>
+        <ul>
+          <li>Compared <strong>Hampi to Rome</strong> in splendour — the most quoted line about Vijayanagara</li>
+          <li>Mentioned <strong>12,000 female royal guards</strong> — a rare detail about women in the Vijayanagara military</li>
+          <li>Noted <strong>military organisation, agriculture, and irrigation</strong> — the Tungabhadra canals</li>
+        </ul>
+        <span class="trav-fact"><strong>Exam keyword:</strong> "Which traveller compared Hampi to Rome?" — Domingo Paes. "Who described the 12,000 female guards?" — Domingo Paes.</span>
+      </div>
+    </div>
+
+    <div class="trav-card">
+      <div class="trav-card__head">Fernão Nunes <span class="trav-badge trav-badge--port">Portugal</span> <span class="trav-badge trav-badge--date">1535 CE</span> <span class="trav-badge trav-badge--add">From timeline</span></div>
+      <div class="trav-card__body">
+        <span class="trav-fact"><strong>Ruler:</strong> Achyuta Raya (Vijayanagara)</span>
+        <span class="trav-fact"><strong>Occupation:</strong> Worked as a writer, astrologer, and accountant in the Vijayanagara empire — a settler, not a passing visitor.</span>
+        <span class="trav-fact"><strong>Book:</strong> <em>Chronica dos reis de Bisnaga</em> — usually treated as a joint chronicle with Domingo Paes' account; Nunes continued it for later reigns.</span>
+        <span class="trav-fact"><strong>Exam keyword:</strong> If the question is about a Portuguese who <em>lived</em> in Vijayanagara as a professional, the answer is Fernão Nunes — not Paes.</span>
+      </div>
+    </div>
+
+    <h2>5 · Mughal era — the European embassy &amp; travel wave (1583–1668 CE)</h2>
+    <p class="rev-subtitle">Not in the PDF. Added because the Bernier–Tavernier–Roe cluster is a recurring Prelims favourite, especially for "oriental despotism" and the English embassy.</p>
+
+    <div class="trav-tools">
+      <button class="trav-btn" data-trav-all="open">Reveal all</button>
+      <button class="trav-btn" data-trav-all="close">Hide all</button>
+    </div>
+
+    <div class="trav-card">
+      <div class="trav-card__head">Ralph Fitch <span class="trav-badge trav-badge--eng">England</span> <span class="trav-badge trav-badge--date">1583–1591 CE</span> <span class="trav-badge trav-badge--add">Added</span></div>
+      <div class="trav-card__body">
+        <span class="trav-fact"><strong>Ruler:</strong> Akbar</span>
+        <span class="trav-fact"><strong>Key fact:</strong> The <strong>first English traveller to India</strong>. Visited Fatehpur Sikri, Agra, and Bengal. His report on the wealth of Indian trade is one of the triggers for the formation of the East India Company (1600).</span>
+      </div>
+    </div>
+
+    <div class="trav-card">
+      <div class="trav-card__head">William Hawkins <span class="trav-badge trav-badge--eng">England</span> <span class="trav-badge trav-badge--date">1608–1611 CE</span> <span class="trav-badge trav-badge--add">Added</span></div>
+      <div class="trav-card__body">
+        <span class="trav-fact"><strong>Ruler:</strong> Jahangir</span>
+        <span class="trav-fact"><strong>Key fact:</strong> The <strong>first English ambassador to the Mughal court</strong>, sent by the East India Company. Spoke Turkish and Persian; failed to secure the trading rights he sought. His embassy is the first formal English–Mughal contact.</span>
+      </div>
+    </div>
+
+    <div class="trav-card">
+      <div class="trav-card__head">Sir Thomas Roe <span class="trav-badge trav-badge--eng">England</span> <span class="trav-badge trav-badge--date">1615–1619 CE</span> <span class="trav-badge trav-badge--add">Added</span></div>
+      <div class="trav-card__body">
+        <span class="trav-fact"><strong>Ruler:</strong> Jahangir</span>
+        <span class="trav-fact"><strong>Key fact:</strong> Ambassador of <strong>King James I</strong> — the most famous English embassy to the Mughal court. He secured a limited <em>farman</em> for trade in Gujarat, but far less than the Company wanted. His journal is a primary source for Jahangir's court, the emperor's daily routine, and Mughal ceremonial.</span>
+      </div>
+    </div>
+
+    <div class="trav-card">
+      <div class="trav-card__head">François Bernier <span class="trav-badge trav-badge--france">France</span> <span class="trav-badge trav-badge--date">1656–1668 CE</span> <span class="trav-badge trav-badge--add">Added</span></div>
+      <div class="trav-card__body">
+        <span class="trav-fact"><strong>Rulers:</strong> Aurangzeb, and earlier Dara Shikoh</span>
+        <span class="trav-fact"><strong>Book:</strong> <em>Travels in the Mogul Empire</em> (Histoire de la grande guerre)</span>
+        <span class="trav-fact"><strong>Why he is famous:</strong></span>
+        <ul>
+          <li>His account is the source of the <strong>"oriental despotism"</strong> theory — the idea that the Mughal state owned all land and there was no private property</li>
+          <li>He argued that this absence of private property was the reason India had not developed like Europe — an argument later picked up by <strong>Montesquieu and Marx</strong></li>
+          <li>Described the Mughal court, the <em>mansabdari</em> system, the state of agriculture, and the devastating <strong>famine of 1660–61</strong></li>
+        </ul>
+        <span class="trav-fact"><strong>Exam keyword:</strong> Bernier = <em>oriental despotism</em> + <em>no private property in land</em>. This pairing is a permanent Prelims trap.</span>
+      </div>
+    </div>
+
+    <div class="trav-card">
+      <div class="trav-card__head">Jean-Baptiste Tavernier <span class="trav-badge trav-badge--france">France</span> <span class="trav-badge trav-badge--date">1638–1663 CE</span> <span class="trav-badge trav-badge--add">Added</span></div>
+      <div class="trav-card__body">
+        <span class="trav-fact"><strong>Rulers:</strong> Shah Jahan and Aurangzeb</span>
+        <span class="trav-fact"><strong>Book:</strong> <em>Les Six Voyages</em></span>
+        <span class="trav-fact"><strong>Key fact:</strong> A gem merchant who made <strong>six voyages to India</strong>. His account of the <strong>diamond trade</strong> — the Golconda mines, the great diamonds of the Mughal treasury — is unmatched by any other European source.</span>
+      </div>
+    </div>
+
+    <div class="trav-card">
+      <div class="trav-card__head">Niccolao Manucci <span class="trav-badge trav-badge--italy">Italy</span> <span class="trav-badge trav-badge--date">1656–1717 CE</span> <span class="trav-badge trav-badge--add">Added</span></div>
+      <div class="trav-card__body">
+        <span class="trav-fact"><strong>Ruler:</strong> Aurangzeb</span>
+        <span class="trav-fact"><strong>Book:</strong> <em>Storia do Mogor</em></span>
+        <span class="trav-fact"><strong>Key fact:</strong> A self-taught Venetian who arrived as a soldier and <strong>lived in India for over 60 years</strong>. His account of Aurangzeb's court, the Deccan wars, and the Mughal nobility is the most intimate of all the European travelogues.</span>
+      </div>
+    </div>
+
+    <h2>6 · The modern colonial gaze (1784 – 1900s)</h2>
+    <p class="rev-subtitle">Not in the PDF. Added because these are the writers who <em>created</em> the India that the freedom movement then had to argue with — and they appear in questions on colonial historiography.</p>
+
+    <div class="trav-tools">
+      <button class="trav-btn" data-trav-all="open">Reveal all</button>
+      <button class="trav-btn" data-trav-all="close">Hide all</button>
+    </div>
+
+    <div class="trav-card">
+      <div class="trav-card__head">William Jones <span class="trav-badge trav-badge--eng">England</span> <span class="trav-badge trav-badge--date">1784 CE</span> <span class="trav-badge trav-badge--add">Added</span></div>
+      <div class="trav-card__body">
+        <span class="trav-fact"><strong>Key fact:</strong> Founded the <strong>Asiatic Society of Bengal (Calcutta, 1784)</strong> — the institutional beginning of Orientalist scholarship in India.</span>
+        <span class="trav-fact"><strong>Translated:</strong> Shakuntala, Gita Govinda, and the Manusmriti (with Colebrooke). His work created the textual India that the West then argued about.</span>
+        <span class="trav-fact"><strong>Exam keyword:</strong> "Who founded the Asiatic Society?" — William Jones, 1784.</span>
+      </div>
+    </div>
+
+    <div class="trav-card">
+      <div class="trav-card__head">James Mill <span class="trav-badge trav-badge--eng">England</span> <span class="trav-badge trav-badge--date">1817 CE</span> <span class="trav-badge trav-badge--add">Added</span></div>
+      <div class="trav-card__body">
+        <span class="trav-fact"><strong>Book:</strong> <em>History of British India</em> (1817)</span>
+        <span class="trav-fact"><strong>The single most-asked fact:</strong> Mill <strong>never visited India</strong> — he wrote the book entirely from London, from other people's papers.</span>
+        <span class="trav-fact"><strong>Why he matters:</strong> Introduced the tripartite periodisation of Indian history into <strong>Hindu → Muslim → British</strong> periods. This periodisation was later adopted into Indian school textbooks and continues to be debated.</span>
+        <span class="trav-fact"><strong>Exam trap:</strong> The question usually asks who <em>introduced the periodisation of Indian history into Hindu–Muslim–British</em>. It is James Mill — not an Indian historian, and not a traveller who set foot in India.</span>
+      </div>
+    </div>
+
+    <div class="trav-card">
+      <div class="trav-card__head">James Prinsep <span class="trav-badge trav-badge--eng">England</span> <span class="trav-badge trav-badge--date">1837 CE</span> <span class="trav-badge trav-badge--add">Added</span></div>
+      <div class="trav-card__body">
+        <span class="trav-fact"><strong>Key fact:</strong> <strong>Deciphered Ashokan Brahmi and Kharosthi</strong> in 1837 — the single most important epigraphic breakthrough in Indian history.</span>
+        <span class="trav-fact"><strong>Why it matters:</strong> Before Prinsep, Ashoka was known only from Buddhist texts. After him, the Mauryan Empire became a documented period. Every question about the "rediscovery of Ashoka" ends at Prinsep.</span>
+      </div>
+    </div>
+
+    <div class="trav-card">
+      <div class="trav-card__head">Alexander Cunningham <span class="trav-badge trav-badge--eng">England</span> <span class="trav-badge trav-badge--date">1861 CE</span> <span class="trav-badge trav-badge--add">Added</span></div>
+      <div class="trav-card__body">
+        <span class="trav-fact"><strong>Key fact:</strong> First <strong>Director-General of the Archaeological Survey of India (ASI)</strong>, founded 1861. Known as the <strong>"Father of Indian Archaeology"</strong>.</span>
+        <span class="trav-fact"><strong>His work:</strong> Identified and documented Buddhist sites across northern India — Sanchi, Sarnath, Bodh Gaya — using Xuanzang's and Faxian's accounts as his guide. The Chinese pilgrims, 1,200 years later, helped the British find the sites.</span>
+      </div>
+    </div>
+
+    <div class="trav-card">
+      <div class="trav-card__head">Max Müller <span class="trav-badge trav-badge--eng">Germany / England</span> <span class="trav-badge trav-badge--date">1875 onward</span> <span class="trav-badge trav-badge--add">Added</span></div>
+      <div class="trav-card__body">
+        <span class="trav-fact"><strong>Key fact:</strong> Editor of the <strong><em>Sacred Books of the East</em></strong> (50 volumes) — the first systematic English translation of Indian, Persian, and Chinese religious texts.</span>
+        <span class="trav-fact"><strong>Also:</strong> Produced the first critical edition of the <strong>Rigveda with Sayana's commentary</strong>. His work shaped how the West — and, in reaction, the Indian reform movements — understood "Hinduism".</span>
+      </div>
+    </div>
+
+    <h2>7 · Memory tricks that save you</h2>
+
+    <div class="rev-note">
+      <strong>The two Chinese, in one line.</strong>
+      <span class="trav-mnem">"Xuanzang 5 up, Yijing 10 down"</span><br>
+      Xuanzang came <em>overland</em> ("up" through Central Asia), studied <strong>5</strong> years at Nalanda, carried <strong>657</strong> texts back. Yijing came <em>by sea</em> ("down" via the Bay of Bengal), stayed <strong>10</strong> years, and translated the texts. Five up, ten down — you'll never mix them again.
+    </div>
+
+    <div class="rev-note">
+      <strong>The Vijayanagara six, in chronological order.</strong>
+      <span class="trav-mnem">"Conti, Razzaq, Nikitin, Barbosa, Paes, Nunes"</span><br>
+      Read the years as a ladder: <code>1419 · 1442 · 1469 · 1500 · 1520 · 1535</code>. The three pre-Portuguese visitors are Conti (Italian, disguised), Razzaq (Persian envoy), and Nikitin (Russian merchant). The three Portuguese are Barbosa (diamonds), Paes (Rome comparison), Nunes (long-term resident). <em>Three before, three after — the Portuguese arrival in 1498 is the hinge.</em>
+    </div>
+
+    <div class="rev-note">
+      <strong>Ibn Battuta — the Qazi fact.</strong>
+      <span class="trav-mnem">"Battuta judged, Tughlaq ruled"</span><br>
+      Muhammad bin Tughlaq appointed a Moroccan as <em>Qazi of Delhi</em> — a foreigner running the Sultanate's judicial system. This one appointment is the single most-asked foreign-traveller fact in Indian history papers. If the question pairs a traveller with a job title, it is almost always this one.
+    </div>
+
+    <div class="rev-note">
+      <strong>Bernier vs Tavernier vs Manucci — the three French-era Europeans.</strong>
+      <span class="trav-mnem">"Bernier theorised, Tavernier traded, Manucci stayed"</span><br>
+      <strong>Bernier</strong> → <em>oriental despotism</em>, no private property, theories that fed Montesquieu and Marx. <strong>Tavernier</strong> → <em>Six Voyages</em>, the diamond trade, Golconda. <strong>Manucci</strong> → <em>Storia do Mogor</em>, 60 years in India, the intimate insider's view. Theory, trade, time — that's the sort.
+    </div>
+
+    <div class="rev-note">
+      <strong>Al-Biruni — the odd one out.</strong>
+      <span class="trav-mnem">"Biruni came with the conqueror, but wrote like a scholar"</span><br>
+      He arrived in Mahmud of Ghazni's baggage train — but his <em>Kitab-ul-Hind</em> is the only pre-modern foreign account that learned Sanskrit, studied the Vedas, and used a <strong>comparative method</strong>. Every other traveller of his era was a merchant or a pilgrim. That contrast <em>is</em> the exam point.
+    </div>
+
+    <div class="rev-note">
+      <strong>The English embassy sequence.</strong>
+      <span class="trav-mnem">"Fitch first, Hawkins half, Roe royal"</span><br>
+      <strong>Ralph Fitch</strong> (1583) — the first Englishman in India, under Akbar. <strong>William Hawkins</strong> (1608) — the first English ambassador, under Jahangir, half-successful. <strong>Sir Thomas Roe</strong> (1615) — ambassador of King James I, also under Jahangir, the famous one. Fitch first, Hawkins half, Roe royal.
+    </div>
+
+    <div class="rev-note">
+      <strong>James Mill — the trap that catches half the aspirants.</strong>
+      <span class="trav-mnem">"Mill never went to Mill-land"</span><br>
+      James Mill wrote the <em>History of British India</em> (1817) — the book that introduced the Hindu–Muslim–British periodisation — <strong>without ever visiting India</strong>. If a question asks "which of these travellers never visited India?", Mill is the answer. Do not confuse him with William Jones, who did come, founded the Asiatic Society, and translated Shakuntala.
+    </div>
+
+    <div class="trav-flag">
+      <strong>Two corrections to the notes you shared.</strong>
+      (1) <strong>Marco Polo's dates and location</strong> — he was in South India around <em>1292–1294</em>, at the Pandya court, on his way home from China. He did <em>not</em> visit the Delhi Sultanate.
+      (2) <strong>Fernão Nunes</strong> arrived in <em>1535</em> during the reign of <em>Achyuta Raya</em>, not Krishnadeva Raya. Krishnadeva Raya died in 1529. His chronicle <em>continues</em> Domingo Paes' <em>Chronica dos reis de Bisnaga</em>. Do not merge the two Portuguese visitors.
+    </div>
+
+    <h2>8 · Rapid Fire</h2>
+    <p class="rev-subtitle">Cover the whole page. Answer out loud <em>before</em> you tap.</p>
+
+    <div class="trav-tools">
+      <button class="trav-btn" data-trav-all="open">Reveal all</button>
+      <button class="trav-btn" data-trav-all="close">Hide all</button>
+    </div>
+
+    <div class="trav-q">
+      <p>1. Who was the first Greek eyewitness to India, and what did he write?</p>
+      <div class="trav-ans">Megasthenes — ambassador of Seleucus Nicator at Chandragupta Maurya's court, c. 300 BCE. Wrote <em>Indica</em>. Described seven classes and famously claimed there was no slavery in India.</div>
+    </div>
+
+    <div class="trav-q">
+      <p>2. Which Chinese pilgrim described the Gupta administration as mild and liberal, with no capital punishment?</p>
+      <div class="trav-ans">Faxian (Fa-Hien), 399–414 CE, during Chandragupta II Vikramaditya's reign. Book: <em>Record of Buddhist Kingdoms</em>.</div>
+    </div>
+
+    <div class="trav-q">
+      <p>3. How long did Xuanzang study at Nalanda, and how many texts did he carry back?</p>
+      <div class="trav-ans">5 years at Nalanda, carried 657 Buddhist texts to China. Book: <em>Si-Yu-Ki</em>. He described Harshavardhana's reign and the Prayag Assembly.</div>
+    </div>
+
+    <div class="trav-q">
+      <p>4. Which Chinese traveller came to India by sea and stayed 10 years at Nalanda?</p>
+      <div class="trav-ans">Yijing (I-Tsing), c. 671–695 CE. He translated Sanskrit works into Chinese. Xuanzang came overland and stayed 5 years; Yijing came by sea and stayed 10.</div>
+    </div>
+
+    <div class="trav-q">
+      <p>5. Which Arab traveller called the Gurjara-Pratihara king "Ballhara"?</p>
+      <div class="trav-ans">Sulaiman, c. 851 CE. Book: <em>Kitab al-Masalik wa al-Mamalik</em>. He called Bengal "Ruhma" (the Pala kingdom) and Rashtrakuta territory "Ruhimi".</div>
+    </div>
+
+    <div class="trav-q">
+      <p>6. Who wrote <em>Kitab-ul-Hind</em>, and under whose patronage?</p>
+      <div class="trav-ans">Al-Biruni (Uzbekistan, 1017–1025 CE), under Mahmud of Ghazni. He learned Sanskrit, studied the Vedas and Puranas, and used a scientific comparative method. He noted Hindus excelled in science but were socially conservative, and criticised the Brahmin reluctance to share knowledge.</div>
+    </div>
+
+    <div class="trav-q">
+      <p>7. Which traveller's account is the source of the "oriental despotism" theory, and when did he visit India?</p>
+      <div class="trav-ans">François Bernier (France), 1656–1668 CE, during Aurangzeb's reign. Book: <em>Travels in the Mogul Empire</em>. His argument that the Mughal state owned all land and there was no private property was later picked up by Montesquieu and Marx.</div>
+    </div>
+
+    <div class="trav-q">
+      <p>8. Who was appointed Qazi of Delhi by Muhammad bin Tughlaq, and what is his book called?</p>
+      <div class="trav-ans">Ibn Battuta (Morocco), 1333–1347 CE. Book: <em>Rihla</em>. He described the Sultan as capable but unpredictable, and noted harsh punishments, the token currency experiment, the postal system, and slavery.</div>
+    </div>
+
+    <div class="trav-q">
+      <p>9. Which traveller visited Vijayanagara <em>before</em> the Portuguese arrived, and how did he travel?</p>
+      <div class="trav-ans">Niccolò Conti (Italy), 1419–1439 CE, during Deva Raya I and II. He travelled <strong>disguised as a Muslim merchant</strong>. He gave a rare early European description of the city — well before the Portuguese reached India (1498).</div>
+    </div>
+
+    <div class="trav-q">
+      <p>10. Which Persian envoy described the Vijayanagara royal procession in detail, and what is his book?</p>
+      <div class="trav-ans">Abdur Razzaq, 1442–1445 CE, during Deva Raya II's reign. Book: <em>Matla-us-Sadain wa Majma-ul-Bahrain</em>. He first halted at Calicut under the Zamorin, then went on to Vijayanagara. Sent by Shah Rukh Mirza of Persia.</div>
+    </div>
+
+    <div class="trav-q">
+      <p>11. Which traveller compared Hampi to Rome, and what other detail is he famous for?</p>
+      <div class="trav-ans">Domingo Paes (Portugal), 1520–1522 CE, during Krishnadeva Raya's reign. He compared Hampi to Rome and mentioned <strong>12,000 female royal guards</strong>. He also described military organisation, agriculture, and irrigation.</div>
+    </div>
+
+    <div class="trav-q">
+      <p>12. Which Portuguese traveller explicitly mentioned the diamond mines of the Vijayanagara region?</p>
+      <div class="trav-ans">Duarte Barbosa, 1500–1516 CE, during Vira Narasimha's reign. Book: <em>Book of Duarte Barbosa</em>. He also described coastal trade networks and Malabar society.</div>
+    </div>
+
+    <div class="trav-q">
+      <p>13. Which Russian traveller came to the Bahmani Sultanate, and what is his account called?</p>
+      <div class="trav-ans">Afanasy Nikitin (1469–1472 CE). Book: <em>Voyage Beyond Three Seas</em>. One of the earliest Russian accounts of India.</div>
+    </div>
+
+    <div class="trav-q">
+      <p>14. What was Marco Polo's connection to India, and which region did he visit?</p>
+      <div class="trav-ans">He visited the Coromandel Coast (Pandya kingdom) in 1292–1294 CE, on his way home from China. Book: <em>The Travels of Marco Polo</em>. He described the pearl fisheries, climate, and coastal social life. He did <strong>not</strong> visit North India or the Delhi Sultanate.</div>
+    </div>
+
+    <div class="trav-q">
+      <p>15. Who was the first English traveller to India, and under which Mughal emperor?</p>
+      <div class="trav-ans">Ralph Fitch, 1583–1591 CE, under Akbar. He visited Fatehpur Sikri, Agra, and Bengal. His report helped trigger the formation of the East India Company in 1600.</div>
+    </div>
+
+    <div class="trav-q">
+      <p>16. Who was the first English ambassador to the Mughal court, and under which emperor?</p>
+      <div class="trav-ans">William Hawkins, 1608–1611 CE, under Jahangir. Sent by the East India Company; he failed to secure the trading rights he wanted.</div>
+    </div>
+
+    <div class="trav-q">
+      <p>17. Who was Sir Thomas Roe, and which king sent him to India?</p>
+      <div class="trav-ans">Roe was the ambassador of <strong>King James I</strong> to Jahangir's court (1615–1619 CE). He secured a limited farman for trade in Gujarat — the most famous English embassy to the Mughals.</div>
+    </div>
+
+    <div class="trav-q">
+      <p>18. Which French traveller made six voyages to India and wrote about the diamond trade?</p>
+      <div class="trav-ans">Jean-Baptiste Tavernier, 1638–1663 CE, during Shah Jahan's and Aurangzeb's reigns. Book: <em>Les Six Voyages</em>. His account of the Golconda diamond mines is unmatched.</div>
+    </div>
+
+    <div class="trav-q">
+      <p>19. Who wrote <em>Storia do Mogor</em>, and what makes his account unusual?</p>
+      <div class="trav-ans">Niccolao Manucci (Italy), 1656–1717 CE. He arrived as a soldier and lived in India for over 60 years — making his account the most intimate European record of Aurangzeb's court and the Deccan wars.</div>
+    </div>
+
+    <div class="trav-q">
+      <p>20. Who founded the Asiatic Society of Bengal, when, and where?</p>
+      <div class="trav-ans">William Jones, 1784, Calcutta. He translated Shakuntala, Gita Govinda, and the Manusmriti (with Colebrooke).</div>
+    </div>
+
+    <div class="trav-q">
+      <p>21. Who wrote the <em>History of British India</em>, and what is the most important thing to remember about him?</p>
+      <div class="trav-ans">James Mill, 1817 — and he <strong>never visited India</strong>. He introduced the tripartite periodisation of Indian history into Hindu → Muslim → British periods.</div>
+    </div>
+
+    <div class="trav-q">
+      <p>22. Who deciphered Ashokan Brahmi, and in which year?</p>
+      <div class="trav-ans">James Prinsep, 1837. This single breakthrough made the Mauryan Empire a documented historical period — before him, Ashoka was known only from Buddhist texts.</div>
+    </div>
+
+    <div class="trav-q">
+      <p>23. Who was the first Director-General of the Archaeological Survey of India, and what is he called?</p>
+      <div class="trav-ans">Alexander Cunningham, ASI founded 1861. Known as the "Father of Indian Archaeology". He used Xuanzang's and Faxian's accounts to locate Buddhist sites like Sanchi and Sarnath.</div>
+    </div>
+
+    <div class="trav-q">
+      <p>24. Who edited the <em>Sacred Books of the East</em>, and what else is he famous for?</p>
+      <div class="trav-ans">Max Müller. The <em>Sacred Books of the East</em> ran to 50 volumes. He also produced the first critical edition of the Rigveda with Sayana's commentary.</div>
+    </div>
+
+    <p class="rev-subtitle" style="margin-top:18px;">Closing tip: on the night before the exam, only read the <strong>Rapid Fire</strong> section. If you can answer 20 of 24 out loud without tapping, this page has done its job.</p>
+
+  </main>
+
+  <!-- Report true content height to the parent app.
+       Measures <main class="rev-page"> directly, NOT document.body. -->
+  <script>
+    (function () {
+      function sendHeight() {
+        var el = document.querySelector('.rev-page') || document.body;
+        var h = Math.ceil(el.getBoundingClientRect().height);
+        if (!h) h = el.scrollHeight || 0;
+        if (!h) return;
+        try {
+          window.parent.postMessage({ type: 'revision-height', height: h }, '*');
+        } catch (e) {}
+      }
+      window.addEventListener('load', sendHeight);
+      window.addEventListener('resize', sendHeight);
+      setTimeout(sendHeight, 0);
+      setTimeout(sendHeight, 50);
+      setTimeout(sendHeight, 300);
+      setTimeout(sendHeight, 1000);
+      if (window.ResizeObserver) {
+        new ResizeObserver(sendHeight).observe(document.body);
+      }
+    })();
+  </script>
+
+  <!-- Card + quiz interaction -->
+  <script>
+    (function () {
+      // Reveal-all / Hide-all toolbars — scoped to cards that follow them,
+      // stopping at the next toolbar or heading.
+      document.querySelectorAll('.trav-tools').forEach(function (tools) {
+        tools.addEventListener('click', function (e) {
+          var btn = e.target.closest('[data-trav-all]');
+          if (!btn) return;
+          var open = btn.getAttribute('data-trav-all') === 'open';
+          var node = tools.nextElementSibling;
+          while (node) {
+            if (node.classList && node.classList.contains('trav-tools')) break;
+            if (node.tagName === 'H2' || node.tagName === 'H3') break;
+            if (node.classList && (node.classList.contains('trav-card') || node.classList.contains('trav-q'))) {
+              node.classList.toggle('open', open);
+            }
+            node = node.nextElementSibling;
+          }
+        });
+      });
+
+      // Individual card / quiz tap.
+      document.addEventListener('click', function (e) {
+        var head = e.target.closest('.trav-card__head');
+        if (head) {
+          var card = head.closest('.trav-card');
+          if (card) card.classList.toggle('open');
+          return;
+        }
+        var q = e.target.closest('.trav-q');
+        if (q) q.classList.toggle('open');
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -273,7 +273,11 @@ html[data-theme="light"] .rev-img {
 .rev-img-wide { width: 100%; }        /* full width — good for maps, timelines */
 
 /* Optional caption wrapper. */
-.rev-figure { margin: 14px 0; }
+.rev-figure { 
+  margin: 14px 0; 
+  /*place-items: center;*/
+
+}
 .rev-figure figcaption {
   font-size: .75rem;
   color: #94a3b8;

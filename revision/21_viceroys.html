@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Viceroys of British India — Revision</title>
+
+  <!--
+    Revision page for "Viceroys of British India and their work".
+    Loaded inside the main app's iframe.
+    • Theme is passed via URL hash: #theme=dark or #theme=light
+    • Styles come from ../css/style.css
+  -->
+
+  <!-- Read theme from URL hash BEFORE paint (no flash). -->
+  <script>
+    (function () {
+      var m = location.hash.match(/theme=(light|dark)/);
+      document.documentElement.setAttribute('data-theme', m ? m[1] : 'dark');
+    })();
+  </script>
+
+  <!-- Shared app styles — this links the file to the MAIN stylesheet. -->
+  <link rel="stylesheet" href="../css/style.css">
+
+  <!-- Match the app's font stack. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Page-specific styles for Viceroys of British India. -->
+  <style>
+    .vic-card { background:#0f172a; border:1px solid #1e293b; border-radius:10px; margin:16px 0; }
+    .vic-card__head { display:flex; align-items:center; gap:12px; padding:16px 18px; cursor:pointer; font-weight:600; color:#e2e8f0; font-size:15px; line-height:1.5; flex-wrap:wrap; }
+    .vic-card__head::after { content:'▾'; margin-left:auto; color:#818cf8; transition:transform .2s; flex:0 0 auto; }
+    .vic-card.open .vic-card__head::after { transform:rotate(180deg); }
+    .vic-card__body { display:none; padding:0 18px 18px; color:#cbd5e1; font-size:14px; line-height:1.9; }
+    .vic-card.open .vic-card__body { display:block; }
+    .vic-card__body ul { margin:8px 0; padding-left:22px; }
+    .vic-card__body li { margin:6px 0; }
+    .vic-card__body .vic-fact { display:block; margin-bottom:10px; }
+
+    html[data-theme="light"] .vic-card { background:#ffffff; border-color:#e2e8f0; }
+    html[data-theme="light"] .vic-card__head { color:#1e293b; }
+    html[data-theme="light"] .vic-card__body { color:#475569; }
+
+    .vic-badge { display:inline-block; font-size:11px; padding:3px 10px; border-radius:999px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; white-space:nowrap; }
+    .vic-badge--canning { background:#7c2d12; color:#fed7aa; }
+    .vic-badge--ripon { background:#064e3b; color:#a7f3d0; }
+    .vic-badge--minto { background:#4c1d95; color:#ddd6fe; }
+    .vic-badge--chelmsford { background:#831843; color:#fbcfe8; }
+    .vic-badge--willingdon { background:#7f1d1d; color:#fecaca; }
+    .vic-badge--linlithgow { background:#0c4a6e; color:#bae6fd; }
+    .vic-badge--wavell { background:#1e3a8a; color:#bfdbfe; }
+    .vic-badge--mountbatten { background:#713f12; color:#fef08a; }
+    .vic-badge--date { background:#475569; color:#e2e8f0; }
+    .vic-badge--title { background:#3f3f46; color:#fef08a; border:1px solid #52525b; }
+    .vic-badge--vimp { background:#7f1d1d; color:#fecaca; border:1px dashed #ef4444; }
+    .vic-badge--vimp-gold { background:#422006; color:#fde68a; border:1px dashed #d97706; }
+
+    html[data-theme="light"] .vic-badge--canning { background:#ffedd5; color:#9a3412; }
+    html[data-theme="light"] .vic-badge--ripon { background:#d1fae5; color:#065f46; }
+    html[data-theme="light"] .vic-badge--minto { background:#ede9fe; color:#5b21b6; }
+    html[data-theme="light"] .vic-badge--chelmsford { background:#fce7f3; color:#9d174d; }
+    html[data-theme="light"] .vic-badge--willingdon { background:#fee2e2; color:#991b1b; }
+    html[data-theme="light"] .vic-badge--linlithgow { background:#e0f2fe; color:#075985; }
+    html[data-theme="light"] .vic-badge--wavell { background:#dbeafe; color:#1e40af; }
+    html[data-theme="light"] .vic-badge--mountbatten { background:#fef9c3; color:#713f12; }
+    html[data-theme="light"] .vic-badge--date { background:#e2e8f0; color:#334155; }
+    html[data-theme="light"] .vic-badge--title { background:#f4f4f5; color:#713f12; border-color:#d4d4d8; }
+    html[data-theme="light"] .vic-badge--vimp { background:#fee2e2; color:#991b1b; border-color:#dc2626; }
+    html[data-theme="light"] .vic-badge--vimp-gold { background:#fefce8; color:#854d0e; border-color:#ca8a04; }
+
+    .vic-tools { display:flex; gap:10px; flex-wrap:wrap; margin:16px 0 10px; }
+    .vic-btn { background:#1e293b; color:#c7d2fe; border:1px solid #334155; border-radius:8px; padding:8px 16px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; }
+    .vic-btn:hover { background:#334155; }
+    html[data-theme="light"] .vic-btn { background:#eef2ff; color:#3730a3; border-color:#c7d2fe; }
+    html[data-theme="light"] .vic-btn:hover { background:#e0e7ff; }
+
+    .vic-q { background:#0f172a; border-left:3px solid #6366f1; border-radius:8px; padding:16px 18px; margin:12px 0; cursor:pointer; }
+    .vic-q p { margin:0; color:#e2e8f0; font-weight:600; font-size:14.5px; line-height:1.6; }
+    .vic-ans { display:none; margin-top:12px; padding-top:12px; border-top:1px dashed #334155; color:#a5b4fc; font-size:14px; line-height:1.9; }
+    .vic-q.open .vic-ans { display:block; }
+    html[data-theme="light"] .vic-q { background:#ffffff; }
+    html[data-theme="light"] .vic-q p { color:#1e293b; }
+    html[data-theme="light"] .vic-ans { color:#4338ca; border-top-color:#e2e8f0; }
+
+    .vic-mnem { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; background:#1e1b4b; color:#a5b4fc; padding:3px 9px; border-radius:5px; font-size:13px; }
+    html[data-theme="light"] .vic-mnem { background:#e0e7ff; color:#3730a3; }
+
+    .vic-flag { background:#1c1917; border-left:3px solid #facc15; border-radius:8px; padding:14px 18px; margin:12px 0; color:#fde68a; font-size:13.5px; line-height:1.8; }
+    html[data-theme="light"] .vic-flag { background:#fefce8; color:#713f12; }
+
+    .vic-vimp { background:#1c0a0a; border-left:3px solid #dc2626; border-radius:8px; padding:14px 18px; margin:12px 0; color:#fca5a5; font-size:13.5px; line-height:1.8; }
+    html[data-theme="light"] .vic-vimp { background:#fef2f2; color:#991b1b; }
+
+    .vic-timeline { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:10px; margin:16px 0; }
+    .vic-tl { background:#0f172a; border:1px solid #1e293b; border-radius:8px; padding:12px 14px; }
+    .vic-tl__yr { font-size:12px; font-weight:800; color:#818cf8; letter-spacing:.05em; }
+    .vic-tl__ev { font-size:13px; color:#cbd5e1; margin-top:5px; line-height:1.5; }
+    html[data-theme="light"] .vic-tl { background:#ffffff; border-color:#e2e8f0; }
+    html[data-theme="light"] .vic-tl__ev { color:#475569; }
+
+    .vic-king { background:#111827; border:1px solid #1f2937; border-left:4px solid #f59e0b; border-radius:8px; padding:18px 22px; margin:16px 0; }
+    .vic-king__name { font-weight:700; color:#fbbf24; font-size:15.5px; margin-bottom:12px; line-height:1.5; }
+    .vic-king__facts { color:#cbd5e1; font-size:14px; line-height:1.9; }
+    .vic-king__facts strong { color:#e2e8f0; }
+    .vic-king__facts br { content: ""; display: block; margin-top: 12px; }
+
+    html[data-theme="light"] .vic-king { background:#fffbeb; border-color:#fde68a; border-left-color:#d97706; }
+    html[data-theme="light"] .vic-king__name { color:#92400e; }
+    html[data-theme="light"] .vic-king__facts { color:#475569; }
+    html[data-theme="light"] .vic-king__facts strong { color:#1e293b; }
+  </style>
+</head>
+
+<body style="background: transparent; margin: 0;">
+  <main class="rev-page">
+
+    <h1>Viceroys of British India &amp; Their Work</h1>
+    <p class="rev-subtitle">1858–1947. Eight Crown representatives who shaped the Raj, from the aftermath of the 1857 Revolt to the Radcliffe Line.</p>
+
+    <div class="rev-note">
+      <strong>How to use this page:</strong> every card is <em>closed</em> by default. Tap it — or hit <strong>Reveal all</strong> — only <em>after</em> you have tried to recall the Viceroy, the year, and the event. Reading an open card teaches you nothing. Guessing first is what makes it stick.
+    </div>
+
+    <div class="rev-note">
+      <strong>How this topic is actually asked.</strong> Almost every Prelims question falls into one of four buckets:
+      <br>① <em>Viceroy → Event</em> (Who passed the Ilbert Bill?)
+      <br>② <em>Event → Viceroy</em> (The Jallianwala Bagh massacre happened under whose tenure?)
+      <br>③ <em>Chronological order</em> (Who came first — Minto or Chelmsford?)
+      <br>④ <em>Act → Viceroy</em> (The Morley-Minto Reforms were passed under whom?)
+      <br>Cards below are built so any of those four queries hits a single fact, not a paragraph.
+    </div>
+
+    <div class="vic-timeline">
+      <div class="vic-tl"><div class="vic-tl__yr">1858–62</div><div class="vic-tl__ev">Lord Canning</div></div>
+      <div class="vic-tl"><div class="vic-tl__yr">1880–84</div><div class="vic-tl__ev">Lord Ripon</div></div>
+      <div class="vic-tl"><div class="vic-tl__yr">1905–10</div><div class="vic-tl__ev">Lord Minto II</div></div>
+      <div class="vic-tl"><div class="vic-tl__yr">1916–21</div><div class="vic-tl__ev">Lord Chelmsford</div></div>
+      <div class="vic-tl"><div class="vic-tl__yr">1931–36</div><div class="vic-tl__ev">Lord Willingdon</div></div>
+      <div class="vic-tl"><div class="vic-tl__yr">1936–43</div><div class="vic-tl__ev">Lord Linlithgow</div></div>
+      <div class="vic-tl"><div class="vic-tl__yr">1943–47</div><div class="vic-tl__ev">Lord Wavell</div></div>
+      <div class="vic-tl"><div class="vic-tl__yr">1947</div><div class="vic-tl__ev">Lord Mountbatten</div></div>
+    </div>
+
+    <h2>1 · The Crown Takes Over — Lord Canning (1858–1862)</h2>
+    <p class="rev-subtitle">The first Viceroy. The man who inherited the rubble of 1857 and laid the foundation of the Raj.</p>
+
+    <div class="vic-tools">
+      <button class="vic-btn" data-vic-all="open">Reveal all</button>
+      <button class="vic-btn" data-vic-all="close">Hide all</button>
+    </div>
+
+    <div class="vic-card">
+      <div class="vic-card__head">Lord Canning <span class="vic-badge vic-badge--canning">First Viceroy</span> <span class="vic-badge vic-badge--date">1858–1862</span></div>
+      <div class="vic-card__body">
+        <span class="vic-fact"><strong>① First Viceroy of India</strong> — the Crown took over from the East India Company under the Government of India Act 1858. Canning had been Governor-General since 1856, but became the first Viceroy in 1858.</span>
+        <span class="vic-fact"><strong>② Aftermath of 1857:</strong> Oversaw the suppression of the revolt, the exile of Bahadur Shah Zafar, and the policy of <em>clemency</em> towards the rebels who surrendered.</span>
+        <span class="vic-fact"><strong>③ Indian Councils Act, 1861:</strong> Introduced the <strong>portfolio system</strong> (each member of the Viceroy's Council got a department) and began the association of Indians with law-making.</span>
+        <span class="vic-fact"><strong>④ Queen Victoria's Proclamation (1858):</strong> Read out at Allahabad, promising non-interference in religion and equal treatment of Indians in government service.</span>
+        <span class="vic-fact"><strong>⑤ Universities of Bombay, Madras, and Calcutta (1857):</strong> Established based on Charles Wood's Despatch of 1854.</span>
+      </div>
+    </div>
+
+    <h2>2 · The Age of Reform — Lord Ripon (1880–1884)</h2>
+    <p class="rev-subtitle">The most liberal Viceroy of the 19th century — and the one who made the British nervous.</p>
+
+    <div class="vic-tools">
+      <button class="vic-btn" data-vic-all="open">Reveal all</button>
+      <button class="vic-btn" data-vic-all="close">Hide all</button>
+    </div>
+
+    <div class="vic-card">
+      <div class="vic-card__head">Lord Ripon <span class="vic-badge vic-badge--ripon">Reformer</span> <span class="vic-badge vic-badge--date">1880–1884</span></div>
+      <div class="vic-card__body">
+        <span class="vic-fact"><strong>① Local Self-Government (1882):</strong> Called the <strong>"Father of Local Self-Government in India"</strong>. His resolution of 1882 laid the foundation of elected municipal and district boards.</span>
+        <span class="vic-fact"><strong>② Ilbert Bill (1883):</strong> Sought to allow Indian judges to try European offenders. The <em>white backlash</em> against the bill forced a compromise — the "concordat" of 1883. This is the single most-asked fact about Ripon.</span>
+        <span class="vic-fact"><strong>③ Repealed the Vernacular Press Act (1882):</strong> The Act had been passed by Lord Lytton in 1878 to gag Indian-language newspapers. Ripon repealed it — a landmark for press freedom.</span>
+        <span class="vic-fact"><strong>④ First Factory Act (1881):</strong> Regulated child labour — prohibited employment of children under 7 and limited working hours for those aged 7–12.</span>
+        <span class="vic-fact"><strong>⑤ Hunter Commission (1882):</strong> Appointed to review the state of education in India, especially primary and secondary education.</span>
+      </div>
+    </div>
+
+    <div class="vic-vimp">
+      <strong>V.Imp — Ripon's legacy:</strong> Ripon is remembered as the most <em>pro-Indian</em> Viceroy. His Ilbert Bill attempted to remove racial discrimination in the judiciary. The backlash from the European community in India was so fierce that the bill had to be watered down. This is the classic question of "who tried to give Indian judges power over Europeans?" — Lord Ripon.
+    </div>
+
+    <h2>3 · The Communal Divide — Lord Minto II (1905–1910)</h2>
+    <p class="rev-subtitle">The Viceroy who institutionalised separate electorates and set India on the road to Partition.</p>
+
+    <div class="vic-tools">
+      <button class="vic-btn" data-vic-all="open">Reveal all</button>
+      <button class="vic-btn" data-vic-all="close">Hide all</button>
+    </div>
+
+    <div class="vic-card">
+      <div class="vic-card__head">Lord Minto II <span class="vic-badge vic-badge--minto">Communal</span> <span class="vic-badge vic-badge--date">1905–1910</span></div>
+      <div class="vic-card__body">
+        <span class="vic-fact"><strong>① Morley-Minto Reforms (Indian Councils Act, 1909):</strong> Introduced <strong>separate electorates for Muslims</strong> — the single most consequential reform of the pre-Gandhian era. This institutionalised the communal divide.</span>
+        <span class="vic-fact"><strong>② Muslim League formation (1906):</strong> Founded at Dacca (Dhaka) in December 1906. The British encouraged it as a counterweight to the Congress.</span>
+        <span class="vic-fact"><strong>③ Surat Split (1907):</strong> The Congress split into Moderates and Extremists at Surat. Minto's tenure saw the Congress at its weakest.</span>
+        <span class="vic-fact"><strong>④ Newspapers Act (1908):</strong> Used to suppress nationalist newspapers. Tilak was tried for sedition and sentenced to six years' transportation (Mandalay).</span>
+        <span class="vic-fact"><strong>⑤ Indian Councils Act 1909:</strong> Also enlarged the legislative councils and allowed Indians to be associated with the executive councils. But the separate electorate clause is what Prelims remembers.</span>
+      </div>
+    </div>
+
+    <div class="vic-vimp">
+      <strong>V.Imp — Separate Electorates:</strong> The Morley-Minto Reforms (1909) introduced separate electorates for Muslims. This was later extended to Sikhs, Indian Christians, Anglo-Indians, and Europeans — and finally to the depressed classes under the Communal Award (1932). The seed of Partition is planted in 1909.
+    </div>
+
+    <h2>4 · War &amp; Mass Movements — Lord Chelmsford (1916–1921)</h2>
+    <p class="rev-subtitle">The Viceroy of the Jallianwala Bagh massacre, the Montagu-Chelmsford Reforms, and the first all-India mass movement.</p>
+
+    <div class="vic-tools">
+      <button class="vic-btn" data-vic-all="open">Reveal all</button>
+      <button class="vic-btn" data-vic-all="close">Hide all</button>
+    </div>
+
+    <div class="vic-card">
+      <div class="vic-card__head">Lord Chelmsford <span class="vic-badge vic-badge--chelmsford">War &amp; Mass</span> <span class="vic-badge vic-badge--date">1916–1921</span></div>
+      <div class="vic-card__body">
+        <span class="vic-fact"><strong>① Montagu-Chelmsford Reforms (1919):</strong> Introduced <strong>dyarchy</strong> in the provinces — subjects divided into <em>transferred</em> (run by Indian ministers) and <em>reserved</em> (run by the Governor).</span>
+        <span class="vic-fact"><strong>② Rowlatt Act (1919):</strong> Officially the Anarchical and Revolutionary Crimes Act. Allowed detention without trial. Gandhi called it the "Black Act".</span>
+        <span class="vic-fact"><strong>③ Jallianwala Bagh Massacre (13 April 1919):</strong> General Dyer ordered firing on a peaceful gathering in Amritsar. Officially 379 killed. The Hunter Committee (1919) investigated.</span>
+        <span class="vic-fact"><strong>④ Khilafat &amp; Non-Cooperation Movement (1919–22):</strong> Gandhi supported the Khilafat Movement, and the Non-Cooperation Movement was launched in 1920. It was withdrawn in 1922 after Chauri Chaura.</span>
+        <span class="vic-fact"><strong>⑤ Government of India Act, 1919:</strong> Also introduced direct elections, separated central and provincial budgets, and provided for a Central Public Service Commission (established 1926).</span>
+      </div>
+    </div>
+
+    <h2>5 · The Communal Award &amp; Poona Pact — Lord Willingdon (1931–1936)</h2>
+    <p class="rev-subtitle">The Viceroy who crushed the Civil Disobedience Movement and presided over the Gandhi–Ambedkar negotiation.</p>
+
+    <div class="vic-tools">
+      <button class="vic-btn" data-vic-all="open">Reveal all</button>
+      <button class="vic-btn" data-vic-all="close">Hide all</button>
+    </div>
+
+    <div class="vic-card">
+      <div class="vic-card__head">Lord Willingdon <span class="vic-badge vic-badge--willingdon">Repression</span> <span class="vic-badge vic-badge--date">1931–1936</span></div>
+      <div class="vic-card__body">
+        <span class="vic-fact"><strong>① Second Round Table Conference (1931):</strong> Held in London. Gandhi was the sole representative of the Congress. Deadlock over the communal question — Gandhi rejected separate electorates for the depressed classes; Ambedkar insisted on them.</span>
+        <span class="vic-fact"><strong>② Crushed the Civil Disobedience Movement:</strong> After the failure of the Second RTC, the movement was relaunched (1932) and then withdrawn in 1934. Willingdon's government arrested Gandhi and thousands of others.</span>
+        <span class="vic-fact"><strong>③ Communal Award (16 August 1932):</strong> Announced by Ramsay MacDonald — extended separate electorates to the <strong>depressed classes</strong> (Dalits).</span>
+        <span class="vic-fact"><strong>④ Poona Pact (24 September 1932):</strong> Between Gandhi and Ambedkar. Separate electorates were withdrawn; reserved seats in joint electorates were increased (from 71 to 147 in provincial legislatures).</span>
+        <span class="vic-fact"><strong>⑤ Government of India Act, 1935:</strong> Passed during his tenure — introduced <strong>provincial autonomy</strong> (replacing dyarchy in provinces), dyarchy at the centre, an All-India Federation (never implemented), and a Federal Court.</span>
+      </div>
+    </div>
+
+    <div class="vic-vimp">
+      <strong>V.Imp — The Poona Pact:</strong> The Communal Award (1932) gave separate electorates to the depressed classes. Gandhi began a fast unto death. The Poona Pact (24 Sep 1932) between Gandhi and Ambedkar withdrew separate electorates for Dalits and increased reserved seats in joint electorates from 71 to 147. This is a permanent Prelims question.
+    </div>
+
+    <h2>6 · The Endgame Begins — Lord Linlithgow (1936–1943)</h2>
+    <p class="rev-subtitle">The longest-serving Viceroy. The man who took India into World War II without consulting Indians — and faced Quit India.</p>
+
+    <div class="vic-tools">
+      <button class="vic-btn" data-vic-all="open">Reveal all</button>
+      <button class="vic-btn" data-vic-all="close">Hide all</button>
+    </div>
+
+    <div class="vic-card">
+      <div class="vic-card__head">Lord Linlithgow <span class="vic-badge vic-badge--linlithgow">War &amp; Quit India</span> <span class="vic-badge vic-badge--date">1936–1943</span></div>
+      <div class="vic-card__body">
+        <span class="vic-fact"><strong>① August Offer (8 August 1940):</strong> Promised dominion status as the objective, expansion of the Executive Council with more Indians, a constituent assembly after the war, and minority safeguards. Rejected by both Congress and the Muslim League.</span>
+        <span class="vic-fact"><strong>② Individual Satyagraha (1940–41):</strong> Launched by Gandhi. <strong>Acharya Vinoba Bhave</strong> was the first satyagrahi; <strong>Jawaharlal Nehru</strong> was the second.</span>
+        <span class="vic-fact"><strong>③ Cripps Mission (March 1942):</strong> Led by Sir Stafford Cripps. Offered dominion status after the war and an option for provinces to stay out of the Union. Rejected by both Congress and the League.</span>
+        <span class="vic-fact"><strong>④ Quit India Movement (8 August 1942):</strong> Launched at Gowalia Tank Maidan, Bombay. Gandhi's slogan: <em>"Do or Die"</em>. The entire Congress leadership was arrested within hours.</span>
+        <span class="vic-fact"><strong>⑤ Famine of Bengal (1943):</strong> The Bengal famine occurred during his tenure — over 2 million deaths. A permanent stain on his record.</span>
+      </div>
+    </div>
+
+    <h2>7 · The Final Act — Lord Wavell (1943–1947) &amp; Lord Mountbatten (1947)</h2>
+    <p class="rev-subtitle">Two men, four years, and the end of the Raj.</p>
+
+    <div class="vic-tools">
+      <button class="vic-btn" data-vic-all="open">Reveal all</button>
+      <button class="vic-btn" data-vic-all="close">Hide all</button>
+    </div>
+
+    <div class="vic-card">
+      <div class="vic-card__head">Lord Wavell <span class="vic-badge vic-badge--wavell">Endgame</span> <span class="vic-badge vic-badge--date">1943–1947</span></div>
+      <div class="vic-card__body">
+        <span class="vic-fact"><strong>① Wavell Plan (June 1945):</strong> Proposed a reconstituted Executive Council with all members Indians except the Viceroy and Commander-in-Chief. Failed over the Muslim League's demand to nominate all Muslim members.</span>
+        <span class="vic-fact"><strong>② Simla Conference (1945):</strong> Called by Wavell to agree on the Executive Council. Failed because of the Congress–League deadlock.</span>
+        <span class="vic-fact"><strong>③ Cabinet Mission (1946):</strong> Three British cabinet ministers (Pethick-Lawrence, Cripps, Alexander) proposed a union of India with a weak centre. Collapsed over the grouping issue.</span>
+        <span class="vic-fact"><strong>④ Interim Government (2 September 1946):</strong> Formed with Jawaharlal Nehru as Vice-President of the Executive Council (effectively Prime Minister).</span>
+        <span class="vic-fact"><strong>⑤ Constituent Assembly (9 December 1946):</strong> First met in New Delhi. Dr. Rajendra Prasad was elected permanent President on 11 December 1946.</span>
+      </div>
+    </div>
+
+    <div class="vic-card">
+      <div class="vic-card__head">Lord Mountbatten <span class="vic-badge vic-badge--mountbatten">Last Viceroy</span> <span class="vic-badge vic-badge--date">1947</span></div>
+      <div class="vic-card__body">
+        <span class="vic-fact"><strong>① Last Viceroy of India</strong> — March to August 1947. Also the <strong>first Governor-General of independent India</strong> (1947–48).</span>
+        <span class="vic-fact"><strong>② Mountbatten Plan (3 June 1947):</strong> Partition of India into two dominions. Provincial assemblies to decide their future. A Boundary Commission under Sir Cyril Radcliffe.</span>
+        <span class="vic-fact"><strong>③ Indian Independence Act (18 July 1947):</strong> Passed by the British Parliament. Created two independent dominions — India and Pakistan — from 15 August 1947. Abolished the office of the Secretary of State for India.</span>
+        <span class="vic-fact"><strong>④ Partition of India:</strong> The Radcliffe Line was published on 17 August 1947 — two days after independence. Displaced 14–15 million people; deaths estimated between 200,000 and 2 million.</span>
+        <span class="vic-fact"><strong>⑤ "Jai Hind":</strong> Popularised by Subhas Chandra Bose and the INA. Coined by Major Abid Hasan Safrani.</span>
+      </div>
+    </div>
+
+    <h2>8 · What was missing — the V.V.Imp additions for UPSC</h2>
+    <p class="rev-subtitle">Two Viceroys who are not in your notes but appear in almost every other Prelims paper.</p>
+
+    <div class="vic-tools">
+      <button class="vic-btn" data-vic-all="open">Reveal all</button>
+      <button class="vic-btn" data-vic-all="close">Hide all</button>
+    </div>
+
+    <div class="vic-king">
+      <div class="vic-king__name">Lord Curzon (1899–1905) <span class="vic-badge vic-badge--vimp">V.Imp</span></div>
+      <div class="vic-king__facts">
+        <strong>① Partition of Bengal (1905):</strong> The most controversial act of his tenure. Split Bengal into Eastern Bengal and Assam (Muslim-majority) and West Bengal (Hindu-majority). Annulled in 1911.<br>
+        <strong>② Indian Universities Act (1904):</strong> Tightened government control over universities — increased official nomination and put conditions on affiliation.<br>
+        <strong>③ Ancient Monuments Preservation Act (1904):</strong> A landmark in heritage conservation. Appointed the first Archaeological Survey of India Director-General.<br>
+        <strong>④ Delhi Durbar (1903):</strong> Held to commemorate the coronation of Edward VII. The capital was shifted from Calcutta to Delhi in 1911 — under Curzon's successor.<br>
+        <strong>⑤ Curzon is called the "Father of the Indian Archaeological Survey"</strong> for his conservation efforts — but his Partition of Bengal sparked the Swadeshi Movement.
+      </div>
+    </div>
+
+    <div class="vic-king">
+      <div class="vic-king__name">Lord Irwin (1926–1931) <span class="vic-badge vic-badge--vimp">V.Imp</span></div>
+      <div class="vic-king__facts">
+        <strong>① Simon Commission (1927):</strong> Appointed under his tenure. All seven members were British — no Indian was included. Boycotted under the slogan "Simon Go Back".<br>
+        <strong>② Nehru Report (1928):</strong> The first Indian-drafted constitution — chaired by Motilal Nehru. Recommended dominion status, not complete independence.<br>
+        <strong>③ Lahore Session (December 1929):</strong> Purna Swaraj adopted; Jawaharlal Nehru presided. 26 January 1930 was declared the first Independence Day.<br>
+        <strong>④ Dandi March (12 March 1930):</strong> Gandhi began the Salt Satyagraha from Sabarmati Ashram. Picked up salt at Dandi on 6 April 1930, launching the Civil Disobedience Movement.<br>
+        <strong>⑤ Gandhi-Irwin Pact (5 March 1931):</strong> Congress called off Civil Disobedience; British released political prisoners and allowed personal salt-making.
+      </div>
+    </div>
+
+    <h2>9 · Memory tricks that save you</h2>
+
+    <div class="rev-note">
+      <strong>The Viceroys in order — by role.</strong>
+      <span class="vic-mnem">"Canning Crowns, Ripon Reforms, Minto Divides, Chelmsford Represses, Willingdon Punishes, Linlithgow Defends, Wavell Warns, Mountbatten Wounds"</span><br>
+      <strong>Canning</strong> = Crown takes over. <strong>Ripon</strong> = reforms (Ilbert Bill, Local Self-Government). <strong>Minto</strong> = divides (separate electorates). <strong>Chelmsford</strong> = represses (Jallianwala Bagh, Rowlatt Act). <strong>Willingdon</strong> = punishes (Communal Award, Poona Pact). <strong>Linlithgow</strong> = defends (Quit India, August Offer). <strong>Wavell</strong> = warns (Wavell Plan, Simla Conference). <strong>Mountbatten</strong> = wounds (Partition).
+    </div>
+
+    <div class="rev-note">
+      <strong>The Acts — by year and Viceroy.</strong>
+      <span class="vic-mnem">"1861 Councils, 1882 Local, 1909 Separate, 1919 Dyarchy, 1935 Autonomy"</span><br>
+      <strong>1861</strong> — Indian Councils Act (Canning). <strong>1882</strong> — Local Self-Government (Ripon). <strong>1909</strong> — Morley-Minto Reforms (Minto II) — separate electorates. <strong>1919</strong> — Montagu-Chelmsford Reforms (Chelmsford) — dyarchy in provinces. <strong>1935</strong> — Government of India Act (Willingdon) — provincial autonomy. Five acts, five dates, five Viceroys.
+    </div>
+
+    <div class="rev-note">
+      <strong>The three Round Table Conferences — who attended.</strong>
+      <span class="vic-mnem">"First no Congress, Second only Gandhi, Third no Gandhi"</span><br>
+      <strong>1st RTC (Nov 1930, under Irwin):</strong> Congress boycotted — its leaders in jail. <strong>2nd RTC (Sep 1931, under Willingdon):</strong> Gandhi the sole Congress delegate. <strong>3rd RTC (Nov 1932, under Willingdon):</strong> Gandhi back in India, Congress not represented. The Congress did not attend the 3rd RTC.
+    </div>
+
+    <div class="rev-note">
+      <strong>The three British plans — in order.</strong>
+      <span class="vic-mnem">"Cripps, Wavell, Cabinet"</span><br>
+      <strong>Cripps Mission (March 1942, under Linlithgow):</strong> Dominion status after the war; rejected by both Congress and League; triggered Quit India. <strong>Wavell Plan (June 1945):</strong> All-Indian Executive Council; failed over Muslim nomination. <strong>Cabinet Mission (1946):</strong> Three-tier federal union with groupings; collapsed over the grouping issue. Three plans, three failures, one road to Partition.
+    </div>
+
+    <div class="rev-note">
+      <strong>The last Viceroy and the last Governor-General.</strong>
+      <span class="vic-mnem">"Mountbatten the last Viceroy, Rajagopalachari the last Governor-General"</span><br>
+      <strong>Lord Mountbatten</strong> = last Viceroy (March–August 1947) AND the first Governor-General of independent India (1947–48). <strong>C. Rajagopalachari</strong> = the last Governor-General (1948–1950) and the first Indian to hold the post. If the question asks "who was the last Governor-General", the answer is Rajaji — not Mountbatten.
+    </div>
+
+    <div class="rev-note">
+      <strong>The two most-confused Viceroys.</strong>
+      <span class="vic-mnem">"Minto divides, Chelmsford represses"</span><br>
+      <strong>Minto II</strong> (1905–10) = Morley-Minto Reforms, separate electorates, Muslim League formation. <strong>Chelmsford</strong> (1916–21) = Montagu-Chelmsford Reforms, Rowlatt Act, Jallianwala Bagh, Khilafat, Non-Cooperation. Minto is the communal divider; Chelmsford is the wartime repressor.
+    </div>
+
+    <div class="vic-flag">
+      <strong>Two corrections to the notes you shared.</strong>
+      (1) <strong>Repealed Vernacular Press Act (1882)</strong> — this was <em>Lord Ripon</em>, not Lord Canning. The Act was passed by Lord Lytton in 1878 and repealed by Ripon in 1882.
+      (2) <strong>Wavell Plan (1945) &amp; Simla Conference (1945)</strong> — these were under <em>Lord Wavell</em> (1943–47), not Lord Linlithgow. Linlithgow's tenure ended in 1943. The Wavell Plan and Simla Conference belong to Wavell's viceroyalty.
+    </div>
+
+    <h2>10 · Rapid Fire</h2>
+    <p class="rev-subtitle">Cover the whole page. Answer out loud <em>before</em> you tap.</p>
+
+    <div class="vic-tools">
+      <button class="vic-btn" data-vic-all="open">Reveal all</button>
+      <button class="vic-btn" data-vic-all="close">Hide all</button>
+    </div>
+
+    <div class="vic-q">
+      <p>1. Who was the first Viceroy of India, and under which Act did the Crown take over?</p>
+      <div class="vic-ans">Lord Canning (1858–1862). The Government of India Act, 1858 abolished the East India Company and transferred power to the British Crown.</div>
+    </div>
+
+    <div class="vic-q">
+      <p>2. Which Viceroy introduced the portfolio system, and in which year?</p>
+      <div class="vic-ans">Lord Canning — Indian Councils Act, 1861. Each member of the Viceroy's Executive Council was given charge of a department.</div>
+    </div>
+
+    <div class="vic-q">
+      <p>3. Who is called the "Father of Local Self-Government in India"?</p>
+      <div class="vic-ans">Lord Ripon — his resolution of 1882 laid the foundation of elected municipal and district boards.</div>
+    </div>
+
+    <div class="vic-q">
+      <p>4. What was the Ilbert Bill, and under which Viceroy was it passed?</p>
+      <div class="vic-ans">Ilbert Bill (1883), under Lord Ripon. It sought to allow Indian judges to try European offenders. The white backlash forced a compromise — the "concordat" of 1883.</div>
+    </div>
+
+    <div class="vic-q">
+      <p>5. Who repealed the Vernacular Press Act, and in which year?</p>
+      <div class="vic-ans">Lord Ripon, in 1882. The Act had been passed by Lord Lytton in 1878 to gag Indian-language newspapers.</div>
+    </div>
+
+    <div class="vic-q">
+      <p>6. Which Viceroy introduced separate electorates for Muslims, and under which Act?</p>
+      <div class="vic-ans">Lord Minto II — Morley-Minto Reforms (Indian Councils Act, 1909). This institutionalised the communal divide.</div>
+    </div>
+
+    <div class="vic-q">
+      <p>7. When was the Muslim League founded, and under which Viceroy?</p>
+      <div class="vic-ans">30 December 1906, Dacca (Dhaka), under Lord Minto II. Moved by Nawab Salimullah Khan.</div>
+    </div>
+
+    <div class="vic-q">
+      <p>8. What happened at Jallianwala Bagh, when, and under which Viceroy?</p>
+      <div class="vic-ans">13 April 1919, Amritsar, under Lord Chelmsford. General Reginald Dyer ordered firing on a peaceful gathering. Officially 379 killed. The Hunter Committee (1919) investigated.</div>
+    </div>
+
+    <div class="vic-q">
+      <p>9. Which Act introduced dyarchy in the provinces, and under which Viceroy?</p>
+      <div class="vic-ans">Montagu-Chelmsford Reforms (Government of India Act, 1919), under Lord Chelmsford. Subjects divided into <em>transferred</em> (run by Indian ministers) and <em>reserved</em> (run by the Governor).</div>
+    </div>
+
+    <div class="vic-q">
+      <p>10. What was the Rowlatt Act, and why was it called the "Black Act"?</p>
+      <div class="vic-ans">Officially the Anarchical and Revolutionary Crimes Act, 1919 — under Lord Chelmsford. It allowed detention without trial, trials without jury, and press restrictions. Gandhi called it the "Black Act".</div>
+    </div>
+
+    <div class="vic-q">
+      <p>11. Which Viceroy presided over the Second Round Table Conference, and who represented the Congress?</p>
+      <div class="vic-ans">Lord Willingdon (1931). Gandhi was the sole representative of the Congress. Deadlock over the communal question — Gandhi rejected separate electorates for the depressed classes.</div>
+    </div>
+
+    <div class="vic-q">
+      <p>12. What was the Communal Award, who announced it, and what was the Poona Pact?</p>
+      <div class="vic-ans">Communal Award — 16 August 1932, by Ramsay MacDonald; extended separate electorates to the depressed classes. The Poona Pact (24 Sep 1932) between Gandhi and Ambedkar withdrew separate electorates for Dalits and increased reserved seats in joint electorates from 71 to 147.</div>
+    </div>
+
+    <div class="vic-q">
+      <p>13. When was the Government of India Act 1935 passed, and what was its most important feature?</p>
+      <div class="vic-ans">1935, under Lord Willingdon. Introduced <strong>provincial autonomy</strong> (replacing dyarchy in provinces), dyarchy at the centre, an All-India Federation (never implemented), and a Federal Court.</div>
+    </div>
+
+    <div class="vic-q">
+      <p>14. What was the August Offer, when was it made, and by whom?</p>
+      <div class="vic-ans">8 August 1940, by Lord Linlithgow. Promised dominion status as the objective, expansion of the Executive Council, a constituent assembly after the war, and minority safeguards. Rejected by both Congress and the Muslim League.</div>
+    </div>
+
+    <div class="vic-q">
+      <p>15. Who was the first individual satyagrahi in 1940, and who was the second?</p>
+      <div class="vic-ans">Acharya Vinoba Bhave was the first; Jawaharlal Nehru was the second. Over 25,000 satyagrahis were arrested. Under Lord Linlithgow.</div>
+    </div>
+
+    <div class="vic-q">
+      <p>16. When and where was the Quit India Movement launched, and what was Gandhi's slogan?</p>
+      <div class="vic-ans">8 August 1942, Gowalia Tank Maidan (August Kranti Maidan), Bombay — under Lord Linlithgow. Gandhi's slogan was "Do or Die" (Karo ya Maro).</div>
+    </div>
+
+    <div class="vic-q">
+      <p>17. What was the Wavell Plan, when was it proposed, and what was the Simla Conference?</p>
+      <div class="vic-ans">Wavell Plan — June 1945, under Lord Wavell. Proposed a reconstituted Executive Council with all members Indians except the Viceroy and Commander-in-Chief. The Simla Conference (1945) was called to discuss it. Failed over the Muslim League's demand to nominate all Muslim members.</div>
+    </div>
+
+    <div class="vic-q">
+      <p>18. What was the Cabinet Mission, who were its members, and what did it propose?</p>
+      <div class="vic-ans">1946 — three British cabinet ministers: Pethick-Lawrence (Chairman), Stafford Cripps, and A. V. Alexander. Proposed a union of India with a weak centre, grouping of provinces, a constituent assembly, and an interim government. Collapsed over the grouping issue.</div>
+    </div>
+
+    <div class="vic-q">
+      <p>19. Who was the last Viceroy of India, and who was the last Governor-General?</p>
+      <div class="vic-ans">Lord Mountbatten was the last Viceroy (March–August 1947) and the first Governor-General of independent India (1947–48). C. Rajagopalachari was the last Governor-General (1948–1950).</div>
+    </div>
+
+    <div class="vic-q">
+      <p>20. What did the Indian Independence Act 1947 do, and when did it receive royal assent?</p>
+      <div class="vic-ans">Passed 18 July 1947 — created two independent dominions (India and Pakistan) from 15 August 1947, with the right to secede from the Commonwealth. Abolished the office of the Secretary of State for India and ended British suzerainty over the princely states.</div>
+    </div>
+
+    <div class="vic-q">
+      <p>21. Who drew the Radcliffe Line, when was it published, and what was its consequence?</p>
+      <div class="vic-ans">Sir Cyril Radcliffe — a British lawyer who had never been to India. The line was published 17 August 1947, two days after independence. It displaced 14–15 million people; deaths are estimated between 200,000 and 2 million.</div>
+    </div>
+
+    <div class="vic-q">
+      <p>22. Who partitioned Bengal, in which year, and when was it annulled?</p>
+      <div class="vic-ans">Lord Curzon, in 1905. Annulled in 1911 at the Delhi Durbar of George V — when the capital was also shifted from Calcutta to Delhi.</div>
+    </div>
+
+    <div class="vic-q">
+      <p>23. Who was the Viceroy during the Simon Commission boycott, and what was the slogan?</p>
+      <div class="vic-ans">Lord Irwin (1926–1931). The Simon Commission (1927) was boycotted because all seven members were British — no Indian was included. Slogan: "Simon Go Back".</div>
+    </div>
+
+    <div class="vic-q">
+      <p>24. What was the Gandhi-Irwin Pact, when was it signed, and what did each side concede?</p>
+      <div class="vic-ans">5 March 1931, between Gandhi and Lord Irwin. Congress agreed to call off Civil Disobedience and attend the 2nd RTC. British agreed to release political prisoners (except those convicted of violence), allow personal salt-making, and return confiscated property.</div>
+    </div>
+
+    <p class="rev-subtitle" style="margin-top:18px;">Closing tip: on the night before the exam, only read the <strong>Rapid Fire</strong> section. If you can answer 20 of 24 out loud without tapping, this page has done its job.</p>
+
+  </main>
+
+  <!-- Report true content height to the parent app.
+       Measures <main class="rev-page"> directly, NOT document.body. -->
+  <script>
+    (function () {
+      function sendHeight() {
+        var el = document.querySelector('.rev-page') || document.body;
+        var h = Math.ceil(el.getBoundingClientRect().height);
+        if (!h) h = el.scrollHeight || 0;
+        if (!h) return;
+        try {
+          window.parent.postMessage({ type: 'revision-height', height: h }, '*');
+        } catch (e) {}
+      }
+      window.addEventListener('load', sendHeight);
+      window.addEventListener('resize', sendHeight);
+      setTimeout(sendHeight, 0);
+      setTimeout(sendHeight, 50);
+      setTimeout(sendHeight, 300);
+      setTimeout(sendHeight, 1000);
+      if (window.ResizeObserver) {
+        new ResizeObserver(sendHeight).observe(document.body);
+      }
+    })();
+  </script>
+
+  <!-- Card + quiz interaction -->
+  <script>
+    (function () {
+      // Reveal-all / Hide-all toolbars — scoped to cards that follow them,
+      // stopping at the next toolbar or heading.
+      document.querySelectorAll('.vic-tools').forEach(function (tools) {
+        tools.addEventListener('click', function (e) {
+          var btn = e.target.closest('[data-vic-all]');
+          if (!btn) return;
+          var open = btn.getAttribute('data-vic-all') === 'open';
+          var node = tools.nextElementSibling;
+          while (node) {
+            if (node.classList && node.classList.contains('vic-tools')) break;
+            if (node.tagName === 'H2' || node.tagName === 'H3') break;
+            if (node.classList && (node.classList.contains('vic-card') || node.classList.contains('vic-q'))) {
+              node.classList.toggle('open', open);
+            }
+            node = node.nextElementSibling;
+          }
+        });
+      });
+
+      // Individual card / quiz tap.
+      document.addEventListener('click', function (e) {
+        var head = e.target.closest('.vic-card__head');
+        if (head) {
+          var card = head.closest('.vic-card');
+          if (card) card.classList.toggle('open');
+          return;
+        }
+        var q = e.target.closest('.vic-q');
+        if (q) q.classList.toggle('open');
+      });
+    })();
+  </script>
+</body>
+</html>

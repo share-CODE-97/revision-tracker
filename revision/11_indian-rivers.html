@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Indian Rivers — Revision</title>
+
+  <!--
+    Revision page for "Indian Rivers".
+    Loaded inside the main app's iframe.
+    • Theme is passed via URL hash: #theme=dark or #theme=light
+    • Styles come from ../css/style.css
+  -->
+
+  <!-- Read theme from URL hash BEFORE paint (no flash). -->
+  <script>
+    (function () {
+      var m = location.hash.match(/theme=(light|dark)/);
+      document.documentElement.setAttribute('data-theme', m ? m[1] : 'dark');
+    })();
+  </script>
+
+  <!-- Shared app styles — this links the file to the MAIN stylesheet. -->
+  <link rel="stylesheet" href="../css/style.css">
+
+  <!-- Match the app's font stack. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Page-specific styles for Indian Rivers (namespace: .riv-) -->
+  <style>
+    .riv-tools{ display:flex; gap:10px; flex-wrap:wrap; margin:14px 0 6px; }
+    .riv-btn{
+      font:inherit; font-size:.78rem; font-weight:700; letter-spacing:.02em;
+      padding:7px 14px; border-radius:999px; cursor:pointer;
+      border:1px solid #475569; background:transparent; color:#cbd5e1;
+      transition:border-color .15s, color .15s;
+    }
+    .riv-btn:hover{ border-color:#6366f1; color:#a5b4fc; }
+
+    /* River-family banner cards */
+    .riv-fam{
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+      gap:12px; margin:16px 0 8px;
+    }
+    .riv-fam-card{
+      border:1px solid #334155; border-radius:14px; padding:14px 16px;
+      background:#0f172a; border-top-width:4px;
+    }
+    .riv-fam-card h3{ margin:0 0 6px; font-size:1rem; color:#e2e8f0; }
+    .riv-fam-card p{ margin:0; font-size:.85rem; line-height:1.55; color:#94a3b8; }
+    .riv-fam-card--himalaya{ border-top-color:#38bdf8; }
+    .riv-fam-card--penin{ border-top-color:#34d399; }
+    .riv-fam-card--inland{ border-top-color:#f59e0b; }
+    html[data-theme="light"] .riv-fam-card{ background:#ffffff; border-color:#e2e8f0; }
+    html[data-theme="light"] .riv-fam-card h3{ color:#1e293b; }
+    html[data-theme="light"] .riv-fam-card p{ color:#475569; }
+
+    /* Tap-to-reveal cards */
+    .riv-card{
+      border:1px solid #334155; border-radius:12px; background:#0f172a;
+      padding:12px 15px; margin:10px 0; cursor:pointer;
+      transition:border-color .15s, background .15s;
+    }
+    .riv-card:hover{ border-color:#6366f1; }
+    .riv-card.is-open{ border-color:#6366f1; background:#131c33; }
+    .riv-card__head{
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
+      font-weight:700; font-size:.95rem; color:#e2e8f0;
+    }
+    .riv-card__head::after{ content:'+'; color:#6366f1; font-weight:800; }
+    .riv-card.is-open .riv-card__head::after{ content:'–'; }
+    .riv-card__body{ display:none; margin-top:10px; font-size:.88rem; line-height:1.6; color:#cbd5e1; }
+    .riv-card.is-open .riv-card__body{ display:block; }
+
+    .riv-badge{
+      display:inline-block; font-size:.68rem; font-weight:700; letter-spacing:.04em;
+      text-transform:uppercase; padding:2px 8px; border-radius:999px;
+      background:#1e293b; color:#a5b4fc; margin-left:6px; vertical-align:middle;
+    }
+    .riv-badge--left{ background:#1e3a8a; color:#bfdbfe; }
+    .riv-badge--right{ background:#7c2d12; color:#fed7aa; }
+    .riv-badge--dist{ background:#365314; color:#d9f99d; }
+
+    /* Confluence strip */
+    .riv-conf{
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+      gap:10px; margin:14px 0 8px;
+    }
+    .riv-conf-item{
+      border-left:3px solid #6366f1; border-radius:0 10px 10px 0;
+      background:#0f172a; padding:9px 12px;
+    }
+    .riv-conf-item strong{ display:block; font-size:.88rem; color:#e2e8f0; }
+    .riv-conf-item span{ font-size:.78rem; color:#94a3b8; }
+    html[data-theme="light"] .riv-conf-item{ background:#f8fafc; }
+    html[data-theme="light"] .riv-conf-item strong{ color:#1e293b; }
+    html[data-theme="light"] .riv-conf-item span{ color:#64748b; }
+
+    /* Mnemonic highlight */
+    .riv-mnem{
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      font-weight:700; color:#a5b4fc; letter-spacing:.03em;
+    }
+
+    /* Quiz */
+    .riv-q{
+      border-left:3px solid #6366f1; border-radius:0 10px 10px 0;
+      background:#0f172a; padding:11px 15px; margin:12px 0; cursor:pointer;
+    }
+    .riv-q p{ margin:0; font-weight:600; font-size:.92rem; color:#e2e8f0; }
+    .riv-q .riv-ans{ display:none; margin-top:8px; font-size:.88rem; color:#a5b4fc; font-weight:600; }
+    .riv-q.is-open .riv-ans{ display:block; }
+
+    html[data-theme="light"] .riv-btn{ border-color:#cbd5e1; color:#334155; }
+    html[data-theme="light"] .riv-btn:hover{ border-color:#6366f1; color:#4338ca; }
+    html[data-theme="light"] .riv-card{ background:#ffffff; border-color:#e2e8f0; }
+    html[data-theme="light"] .riv-card.is-open{ background:#eef2ff; border-color:#6366f1; }
+    html[data-theme="light"] .riv-card__head{ color:#1e293b; }
+    html[data-theme="light"] .riv-card__body{ color:#475569; }
+    html[data-theme="light"] .riv-badge{ background:#e0e7ff; color:#4338ca; }
+    html[data-theme="light"] .riv-badge--left{ background:#dbeafe; color:#1e40af; }
+    html[data-theme="light"] .riv-badge--right{ background:#ffedd5; color:#9a3412; }
+    html[data-theme="light"] .riv-badge--dist{ background:#ecfccb; color:#3f6212; }
+    html[data-theme="light"] .riv-q{ background:#f8fafc; }
+    html[data-theme="light"] .riv-q p{ color:#1e293b; }
+    html[data-theme="light"] .riv-q .riv-ans{ color:#4338ca; }
+    html[data-theme="light"] .riv-mnem{ color:#4338ca; }
+  </style>
+</head>
+
+<body style="background: transparent; margin: 0;">
+  <main class="rev-page">
+
+    <h1>Indian Rivers</h1>
+    <p class="rev-subtitle">Sources · tributaries · confluences · memory tricks — tap any card to reveal.</p>
+
+    <div class="rev-note">
+      <strong>The one rule that solves half the paper:</strong> a river's <em>bank</em> is decided by its <strong>direction of flow</strong>.
+      Ganga flows <strong>west → east</strong>, so anything joining from the north = <strong>LEFT bank</strong>,
+      anything joining from the south = <strong>RIGHT bank</strong>.
+      If you can picture the map in your head, the bank labels write themselves.
+    </div>
+
+    <h2>1 · The Three Families</h2>
+
+    <div class="riv-fam">
+      <div class="riv-fam-card riv-fam-card--himalaya">
+        <h3>Himalayan Rivers</h3>
+        <p><strong>Perennial</strong> — snow + rain fed, water all year. Young, deep gorges, meanders, big deltas.<br>
+        Examples: Indus, Ganga, Brahmaputra.</p>
+      </div>
+      <div class="riv-fam-card riv-fam-card--penin">
+        <h3>Peninsular Rivers</h3>
+        <p><strong>Seasonal</strong> — mostly rain-fed, dry in summer. Old, shallow valleys, fixed courses.<br>
+        East-flowing → Bay of Bengal. West-flowing → Arabian Sea.</p>
+      </div>
+      <div class="riv-fam-card riv-fam-card--inland">
+        <h3>Inland Rivers</h3>
+        <p><strong>Never reach the sea.</strong> Drain into desert / salt lakes.<br>
+        Example: Luni (Rajasthan) — drains into the Rann of Kutch.</p>
+      </div>
+    </div>
+    <hr>
+
+<div>
+<!--
+  IMAGE SNIPPET — paste inside <main class="rev-page"> at the spot you want it.
+  • src   : ../images/<lowercase-hyphenated-filename>.<png|jpg|svg|webp>
+  • class : rev-img-sm    (≤320px — icon, portrait, small symbol)
+            rev-img-md    (≤480px — single diagram, illustration)
+            rev-img-wide  (full width — map, timeline, comparison, chart)
+  • alt   : short description, required for accessibility
+-->
+
+<figure class="rev-figure">
+  <img src="../images/11_04_indian-rivers.JPG"
+       class="rev-img rev-img-wide"
+       alt="MIND MAP OF 3 RIVER SYSTEMS IN INDIA: Himalayan, Peninsular, Inland.">
+  <figcaption>MIND MAP OF RIVER SYSTEMS IN INDIA</figcaption>
+</figure>
+
+
+</div>
+
+
+
+
+
+
+
+
+    <h2>2 · Himalayan Rivers — the three giants</h2>
+    <p>Tap each to reveal source, route and tributaries.</p>
+
+    <div class="riv-tools">
+      <button class="riv-btn" data-riv-all="open">Reveal all</button>
+      <button class="riv-btn" data-riv-all="close">Hide all</button>
+    </div>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Indus River</div>
+      <div class="riv-card__body">
+        <p><strong>Source:</strong> Near Lake Mansarovar (Tibet), flows through Ladakh → Pakistan → Arabian Sea.</p>
+        <p><strong>Tributaries (the famous five):</strong> Jhelum, Chenab, Ravi, Beas, Sutlej.</p>
+        <p><strong>Mnemonic:</strong> <span class="riv-mnem">"J-C-R-B-S"</span> — <em>Just Come, Right Bank Sutlej</em>.</p>
+      </div>
+    </div>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Brahmaputra River</div>
+      <div class="riv-card__body">
+        <p><strong>Upper course in Tibet:</strong> called <code>Tsangpo</code>.</p>
+        <p><strong>Tributaries:</strong> Dibang, Lohit, Subansiri, Manas.</p>
+        <p><strong>Note:</strong> In Bangladesh it is called <code>Jamuna</code>; it merges with the Ganga to form the <strong>Sundarbans delta</strong>.</p>
+      </div>
+    </div>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Ganga River</div>
+      <div class="riv-card__body">
+        <p><strong>Source:</strong> Gangotri Glacier → Bhagirathi → meets Alaknanda at <strong>Devprayag</strong> → becomes <strong>Ganga</strong>.</p>
+        <p><strong>Direction:</strong> West → East. <strong>Falls into:</strong> Bay of Bengal (Sundarbans delta).</p>
+        <p><em>Full detail in the next section.</em></p>
+      </div>
+    </div>
+
+    <h2>3 · Ganga River System — the heart of the paper</h2>
+
+    <div class="rev-note">
+      <strong>The origin story:</strong> Bhagirathi (from Gangotri Glacier) + Alaknanda meet at <strong>Devprayag</strong> → the river is now called <strong>Ganga</strong>.
+      At <strong>Prayagraj (Allahabad)</strong> it meets the Yamuna — this is the <strong>Triveni Sangam</strong>
+      (the invisible third river is the mythical Saraswati).
+    </div>
+
+    <h3>Major confluences on the way</h3>
+
+    <div class="riv-conf">
+      <div class="riv-conf-item">
+        <strong>Devprayag</strong>
+        <span>Bhagirathi + Alaknanda → Ganga</span>
+      </div>
+      <div class="riv-conf-item">
+        <strong>Prayagraj</strong>
+        <span>Ganga + Yamuna (Triveni Sangam)</span>
+      </div>
+      <div class="riv-conf-item">
+        <strong>Bihar</strong>
+        <span>Ganga enters the plains — Gandak, Kosi, Son, Ghaghara join here</span>
+      </div>
+      <div class="riv-conf-item">
+        <strong>West Bengal</strong>
+        <span>Splits into Hooghly + Padma (distributaries)</span>
+      </div>
+    </div>
+
+    <h3>Left Bank tributaries (north side)</h3>
+    <p>Tap to reveal each — remember, they all come from the <strong>Himalayas</strong>.</p>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Ramganga <span class="riv-badge riv-badge--left">Left</span></div>
+      <div class="riv-card__body">Rises in Uttarakhand, joins Ganga near Kannauj (UP). Not to be confused with the Ramganga of the Kosi system.</div>
+    </div>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Gomti <span class="riv-badge riv-badge--left">Left</span></div>
+      <div class="riv-card__body">Rises near Pilibhit (UP), passes through <strong>Lucknow</strong>, joins Ganga near Ghazipur. Not Himalayan — a plains river.</div>
+    </div>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Ghaghara <span class="riv-badge riv-badge--left">Left</span></div>
+      <div class="riv-card__body">
+        <p>Rises in <strong>Tibet</strong> (from Mapchachungo glacier), known as <em>Karnali</em> in Nepal.</p>
+        <p>Joins Ganga at <strong>Chapra (Bihar)</strong>.</p>
+        <p>Its own tributary is the <strong>Sharda (Mahakali)</strong> — <em>Sharda is NOT a direct tributary of the Ganga.</em></p>
+      </div>
+    </div>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Gandak <span class="riv-badge riv-badge--left">Left</span></div>
+      <div class="riv-card__body">Rises in Nepal (near Tibet border), also called <em>Narayani</em>. Joins Ganga at <strong>Sonepur (Bihar)</strong>. Forms the famous <strong>Sonepur cattle fair</strong> area.</div>
+    </div>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Kosi <span class="riv-badge riv-badge--left">Left</span></div>
+      <div class="riv-card__body">Rises in Nepal (Mount Everest region). Famous as the <strong>"Sorrow of Bihar"</strong> — changes course often, causes massive floods. Joins Ganga near <strong>Katihar (Bihar)</strong>.</div>
+    </div>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Sharda (Mahakali) <span class="riv-badge riv-badge--left">→ Ghaghara</span></div>
+      <div class="riv-card__body">Rises in the Pithoragarh region (Kumaon Himalayas). Forms the India–Nepal border for a stretch. <strong>Joins the Ghaghara, NOT the Ganga directly.</strong></div>
+    </div>
+
+    <h3>Right Bank tributaries (south side)</h3>
+    <p>These come from the <strong>Peninsular plateau</strong> — older, seasonal, mostly rain-fed.</p>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Yamuna <span class="riv-badge riv-badge--right">Right</span></div>
+      <div class="riv-card__body">
+        <p><strong>Source:</strong> Yamunotri Glacier.</p>
+        <p><strong>Tributaries:</strong> Chambal, Betwa, Banas — these three together form the <strong>Yamuna System</strong>.</p>
+        <p>Longest tributary of the Ganga. Joins at <strong>Prayagraj</strong>.</p>
+      </div>
+    </div>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Chambal <span class="riv-badge riv-badge--right">Right (via Yamuna)</span></div>
+      <div class="riv-card__body">Rises in the Vindhyas (MP). Famous for its <strong>ravines (badlands)</strong>. Flows through MP, Rajasthan, UP.</div>
+    </div>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Betwa <span class="riv-badge riv-badge--right">Right (via Yamuna)</span></div>
+      <div class="riv-card__body">Rises in MP, passes through Orchha (famous for the Betwa riverfront). Joins Yamuna in UP.</div>
+    </div>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Banas <span class="riv-badge riv-badge--right">Right (via Chambal)</span></div>
+      <div class="riv-card__body">Rises in the Aravallis (Rajasthan). Joins the <strong>Chambal</strong>, not the Yamuna directly. Note the chain: <em>Banas → Chambal → Yamuna → Ganga</em>.</div>
+    </div>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Son <span class="riv-badge riv-badge--right">Right</span></div>
+      <div class="riv-card__body">Rises near <strong>Amarkantak</strong> (MP). Largest <em>southern</em> tributary of the Ganga. Joins near <strong>Patna (Bihar)</strong>.</div>
+    </div>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Damodar <span class="riv-badge riv-badge--right">Right</span></div>
+      <div class="riv-card__body">Rises in Chotanagpur plateau (Jharkhand). Known as the <strong>"Sorrow of Bengal"</strong>. Joins the <strong>Hooghly</strong> (a distributary of Ganga), not the Ganga directly.</div>
+    </div>
+
+    <h3>The distributary</h3>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Hooghly <span class="riv-badge riv-badge--dist">Distributary</span></div>
+      <div class="riv-card__body">The westernmost distributary of the Ganga. The Damodar joins it. Flows past Kolkata into the Bay of Bengal. The other main distributary is the <strong>Padma</strong> (which goes into Bangladesh).</div>
+    </div>
+<hr>
+
+<div>
+<!--
+  IMAGE SNIPPET — paste inside <main class="rev-page"> at the spot you want it.
+  • src   : ../images/<lowercase-hyphenated-filename>.<png|jpg|svg|webp>
+  • class : rev-img-sm    (≤320px — icon, portrait, small symbol)
+            rev-img-md    (≤480px — single diagram, illustration)
+            rev-img-wide  (full width — map, timeline, comparison, chart)
+  • alt   : short description, required for accessibility
+-->
+
+
+
+<figure class="rev-figure">
+  <img src="../images/11_02_indian-rivers.JPG"
+       class="rev-img rev-img-wide"
+       alt="GANGA RIVER SYSTEM: Himalayan tributaries (left bank) + Peninsular tributaries (right bank) + distributary Hooghly.">
+  <figcaption>GANGA RIVER SYSTEM</figcaption>
+</figure>
+
+</div>
+
+
+
+
+
+
+    <h2>4 · The two memory tricks that save you</h2>
+
+    <div class="rev-note">
+      <strong>Trick 1 — Left vs Right bank.</strong><br>
+      Ganga flows W → E. So when you face downstream (west to east):<br>
+      • <strong>Left hand</strong> points north → Left bank = Himalayan rivers.<br>
+      • <strong>Right hand</strong> points south → Right bank = Peninsular rivers.
+    </div>
+
+    <div class="rev-note">
+      <strong>Trick 2 — Left bank mnemonic:</strong><br>
+      <span class="riv-mnem">"RaGoGhaGaKo"</span> → <strong>Ra</strong>mganga, <strong>Go</strong>mti, <strong>Gha</strong>ghara, <strong>Ga</strong>ndak, <strong>Ko</strong>si.<br>
+      Right bank mnemonic: <span class="riv-mnem">"Ya-So-Da"</span> → <strong>Ya</strong>muna, <strong>So</strong>n, <strong>Da</strong>modar.
+    </div>
+
+    <h2>5 · Peninsular Rivers</h2>
+
+    <h3>East-flowing (→ Bay of Bengal)</h3>
+    <p>These form <strong>deltas</strong> — like the Ganga.</p>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Godavari</div>
+      <div class="riv-card__body">Largest peninsular river — called <strong>"Dakshin Ganga"</strong>. Source: Trimbakeshwar (Nashik, Maharashtra). Tributaries: <strong>Pranhita, Indravati</strong>. Delta: Coringa.</div>
+    </div>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Krishna</div>
+      <div class="riv-card__body">Source: Mahabaleshwar (Maharashtra). Tributaries: <strong>Bhima, Tungabhadra</strong>.</div>
+    </div>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Mahanadi</div>
+      <div class="riv-card__body">Source: Chhattisgarh (Sihawa). Tributaries: <strong>Seonath, Hasdeo</strong>. Delta in Odisha (Paradip port).</div>
+    </div>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Cauvery</div>
+      <div class="riv-card__body">Source: Talakaveri (Karnataka, Brahmagiri hills). Tributaries: <strong>Hemavati, Bhavani, Kabini</strong>. Flows through Karnataka → Tamil Nadu.</div>
+    </div>
+
+    <h3>West-flowing (→ Arabian Sea)</h3>
+    <p>These form <strong>estuaries</strong> — NOT deltas (because of fast flow + hard rock).</p>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Narmada</div>
+      <div class="riv-card__body">Source: <strong>Amarkantak</strong> (MP). Flows through a rift valley. <strong>No major tributaries.</strong> Famous for the <em>Narmada Bachao Andolan</em>.</div>
+    </div>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Tapi (Tapti)</div>
+      <div class="riv-card__body">Also rises near Amarkantak. Flows through a parallel rift valley. <strong>No major tributaries.</strong></div>
+    </div>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Mahi</div>
+      <div class="riv-card__body">Rises in MP, flows through Gujarat and Rajasthan. <strong>No major tributaries.</strong> Crosses the Tropic of Cancer twice.</div>
+    </div>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Sabarmati</div>
+      <div class="riv-card__body">Rises in the Aravallis (Rajasthan), flows through Ahmedabad (Gujarat). <strong>No major tributaries.</strong> Site of Sabarmati Ashram.</div>
+    </div>
+
+    <h2>6 · Inland Rivers</h2>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Luni</div>
+      <div class="riv-card__body">The only major <strong>inland river of Rajasthan</strong>. Rises near Ajmer (Naga Hills / Aravallis). Flows into the <strong>Rann of Kutch</strong> — does <em>not</em> reach the sea. Its water is mostly saline in the lower course.</div>
+    </div>
+
+    <h2>7 · Rivers of Bihar — special focus</h2>
+
+    <div class="rev-note">
+      <strong>Bihar is a "river state"</strong> — the Ganga cuts right through it, and almost every major north Indian river passes through.
+      If a question asks about Bihar's rivers, picture the Ganga running across the middle, with Himalayan rivers joining from the north and Peninsular ones from the south.
+    </div>
+
+    <p><strong>Rivers flowing through Bihar</strong> (tap each to check):</p>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Ganga</div>
+      <div class="riv-card__body">Enters Bihar near Chausa (Buxar), flows west → east, exits into West Bengal near Rajmahal hills. Length in Bihar ≈ 445 km.</div>
+    </div>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Ghaghara</div>
+      <div class="riv-card__body">Joins Ganga at <strong>Chapra (Saran district)</strong>. Also called <em>Karnali</em> in Nepal.</div>
+    </div>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Gandak</div>
+      <div class="riv-card__body">Joins Ganga at <strong>Sonepur (Saran district)</strong>. Also called <em>Narayani</em>.</div>
+    </div>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Kosi</div>
+      <div class="riv-card__body">The <strong>"Sorrow of Bihar"</strong>. Joins Ganga near <strong>Katihar / Kursela</strong>. Known for shifting its course by miles every few years.</div>
+    </div>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Son</div>
+      <div class="riv-card__body">Joins Ganga near <strong>Patna (Danapur)</strong>. Rises at Amarkantak. Its tributaries include the <em>North Koel</em> and <em>South Koel</em>.</div>
+    </div>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Punpun</div>
+      <div class="riv-card__body">Rises in the Chotanagpur plateau (Jharkhand), flows through Patna district, joins the <strong>Son</strong>. Ancient name: <em>Punpun</em>.</div>
+    </div>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Phalgu</div>
+      <div class="riv-card__body">Flows through <strong>Gaya</strong> (famous for the Phalgu at Bodh Gaya). Joins the Punpun.</div>
+    </div>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Kiul</div>
+      <div class="riv-card__body">Rises in the Chotanagpur plateau, flows through Lakhisarai district, joins the <strong>Ganga</strong> near Munger.</div>
+    </div>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Bagmati</div>
+      <div class="riv-card__body">Rises in Nepal (Shivapuri hills), flows through north Bihar (Muzaffarpur, Darbhanga), joins the <strong>Kosi</strong>. Known for severe floods.</div>
+    </div>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Burhi Gandak</div>
+      <div class="riv-card__body">Rises in Nepal, flows parallel to the Gandak, joins the <strong>Ganga</strong> near Khagaria. Not to be confused with the Gandak itself.</div>
+    </div>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Karmanasa</div>
+      <div class="riv-card__body">Forms the border between <strong>Bihar (Kaimur) and UP (Chandauli)</strong>. Joins the Ganga near Buxar.</div>
+    </div>
+
+    <div class="riv-card">
+      <div class="riv-card__head">Sone (as a whole)</div>
+      <div class="riv-card__body">Rises at Amarkantak (MP), flows through MP, UP, Jharkhand, and joins Ganga near Patna. Its valley is one of India's richest mineral belts (coal, bauxite, limestone).</div>
+    </div>
+<hr>
+
+<div>
+<!--
+  IMAGE SNIPPET — paste inside <main class="rev-page"> at the spot you want it.
+  • src   : ../images/<lowercase-hyphenated-filename>.<png|jpg|svg|webp>
+  • class : rev-img-sm    (≤320px — icon, portrait, small symbol)
+            rev-img-md    (≤480px — single diagram, illustration)
+            rev-img-wide  (full width — map, timeline, comparison, chart)
+  • alt   : short description, required for accessibility
+-->
+
+<figure class="rev-figure">
+  <img src="../images/11_01_indian-rivers.jpg"
+       class="rev-img rev-img-wide"
+       alt="GANGA RIVER SYSTEM IN BIHAR AND IT'S TRIBUTARIES: Ghaghara, Gandak, Kosi, Son, Punpun, Phalgu, Kiul, Bagmati, Burhi Gandak, Karmanasa.">
+  <figcaption>MAJOR RIVER SYSTEM OF BIHAR</figcaption>
+</figure>
+
+
+</div>
+
+
+
+
+
+
+    <h3>Bihar-specific memory hooks</h3>
+
+    <ul>
+      <li><strong>Kosi = Sorrow of Bihar</strong> — remember by its frequent course changes.</li>
+      <li><strong>Gandak joins at Sonepur</strong> — remember the <em>Sonepur Cattle Fair</em> held at the confluence.</li>
+      <li><strong>Ghaghara joins at Chapra</strong> — "Cha" in Chapra rhymes with "Gha" in Ghaghara.</li>
+      <li><strong>Son joins near Patna</strong> — <em>Son</em> rises from <em>Amarkantak</em>, the same place as the Narmada.</li>
+      <li><strong>Bagmati + Burhi Gandak + Kosi</strong> = the flood trio of north Bihar.</li>
+    </ul>
+
+    <h2>8 · Rapid Fire</h2>
+    <p>Answer out loud, then tap to check.</p>
+
+    <div class="riv-q">
+      <p>Source of the Bhagirathi?</p>
+      <div class="riv-ans">Gangotri Glacier</div>
+    </div>
+
+    <div class="riv-q">
+      <p>At which confluence do the Bhagirathi and Alaknanda meet?</p>
+      <div class="riv-ans">Devprayag</div>
+    </div>
+
+    <div class="riv-q">
+      <p>Where does the Yamuna meet the Ganga, and what is this confluence called?</p>
+      <div class="riv-ans">Prayagraj (Allahabad) — Triveni Sangam</div>
+    </div>
+
+    <div class="riv-q">
+      <p>Which river is called the "Sorrow of Bihar"?</p>
+      <div class="riv-ans">Kosi</div>
+    </div>
+
+    <div class="riv-q">
+      <p>Which river is called the "Sorrow of Bengal"?</p>
+      <div class="riv-ans">Damodar</div>
+    </div>
+
+    <div class="riv-q">
+      <p>Largest peninsular river of India?</p>
+      <div class="riv-ans">Godavari — also called Dakshin Ganga</div>
+    </div>
+
+    <div class="riv-q">
+      <p>Which two rivers flow through rift valleys and have no major tributaries?</p>
+      <div class="riv-ans">Narmada and Tapi</div>
+    </div>
+
+    <div class="riv-q">
+      <p>Which peninsular river flows through a rift valley, rises at Amarkantak, and is famous for the Narmada Bachao Andolan?</p>
+      <div class="riv-ans">Narmada</div>
+    </div>
+
+    <div class="riv-q">
+      <p>On which river is the Hirakud Dam built?</p>
+      <div class="riv-ans">Mahanadi (Odisha)</div>
+    </div>
+
+    <div class="riv-q">
+      <p>Sharda (Mahakali) is a tributary of which river — Ganga or Ghaghara?</p>
+      <div class="riv-ans">Ghaghara (not the Ganga directly)</div>
+    </div>
+
+    <div class="riv-q">
+      <p>Banas is a tributary of which river — Yamuna or Chambal?</p>
+      <div class="riv-ans">Chambal</div>
+    </div>
+
+    <div class="riv-q">
+      <p>Which is the only major inland river of Rajasthan?</p>
+      <div class="riv-ans">Luni — drains into the Rann of Kutch</div>
+    </div>
+
+    <div class="riv-q">
+      <p>Ganga enters Bihar near which town, and exits near which hills?</p>
+      <div class="riv-ans">Enters near Chausa (Buxar); exits near Rajmahal hills</div>
+    </div>
+
+    <div class="riv-q">
+      <p>At which towns do the Ghaghara, Gandak and Kosi join the Ganga?</p>
+      <div class="riv-ans">Ghaghara → Chapra; Gandak → Sonepur; Kosi → Katihar/Kursela</div>
+    </div>
+
+    <div class="riv-q">
+      <p>Which two distributaries does the Ganga split into in West Bengal/Bangladesh?</p>
+      <div class="riv-ans">Hooghly (west, in India) and Padma (east, into Bangladesh)</div>
+    </div>
+
+    <hr>
+
+    <p class="rev-subtitle">Use "Hide all" before a session, then "Reveal all" to check. Best of luck — the map is your best friend.</p>
+
+  </main>
+
+  <!-- Tap-to-reveal behaviour for this page. -->
+  <script>
+    (function () {
+      document.addEventListener('click', function (e) {
+        if (e.target.closest('.riv-btn')) return;
+        var el = e.target.closest('.riv-card, .riv-q');
+        if (!el) return;
+        el.classList.toggle('is-open');
+      });
+
+      document.querySelectorAll('.riv-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var open = btn.getAttribute('data-riv-all') === 'open';
+          document.querySelectorAll('.riv-card, .riv-q').forEach(function (el) {
+            el.classList.toggle('is-open', open);
+          });
+        });
+      });
+    })();
+  </script>
+
+  <!-- Report true content height to the parent app.
+       Measures <main class="rev-page"> directly, NOT document.body. -->
+  <script>
+    (function () {
+      function sendHeight() {
+        var el = document.querySelector('.rev-page') || document.body;
+        var h = Math.ceil(el.getBoundingClientRect().height);
+        if (!h) h = el.scrollHeight || 0;
+        if (!h) return;
+        try {
+          window.parent.postMessage({ type: 'revision-height', height: h }, '*');
+        } catch (e) {}
+      }
+      window.addEventListener('load', sendHeight);
+      window.addEventListener('resize', sendHeight);
+      setTimeout(sendHeight, 0);
+      setTimeout(sendHeight, 50);
+      setTimeout(sendHeight, 300);
+      setTimeout(sendHeight, 1000);
+      if (window.ResizeObserver) {
+        new ResizeObserver(sendHeight).observe(document.body);
+      }
+    })();
+  </script>
+</body>
+</html>

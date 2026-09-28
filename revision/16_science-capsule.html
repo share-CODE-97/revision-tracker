@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Science Capsule: Chemistry &amp; Physics — Revision</title>
+
+  <!--
+    Revision page for "Science Capsule: Chemistry & Physics".
+    Loaded inside the main app's iframe.
+    • Theme is passed via URL hash: #theme=dark or #theme=light
+    • Styles come from ../css/style.css
+  -->
+
+  <!-- Read theme from URL hash BEFORE paint (no flash). -->
+  <script>
+    (function () {
+      var m = location.hash.match(/theme=(light|dark)/);
+      document.documentElement.setAttribute('data-theme', m ? m[1] : 'dark');
+    })();
+  </script>
+
+  <!-- Shared app styles — this links the file to the MAIN stylesheet. -->
+  <link rel="stylesheet" href="../css/style.css">
+
+  <!-- Match the app's font stack. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Page-specific styles for Science Capsule (namespace: .sc-) -->
+  <style>
+    .sc-tools{ display:flex; gap:10px; flex-wrap:wrap; margin:14px 0 6px; }
+    .sc-btn{
+      font:inherit; font-size:.78rem; font-weight:700; letter-spacing:.02em;
+      padding:7px 14px; border-radius:999px; cursor:pointer;
+      border:1px solid #475569; background:transparent; color:#cbd5e1;
+      transition:border-color .15s, color .15s;
+    }
+    .sc-btn:hover{ border-color:#6366f1; color:#a5b4fc; }
+
+    /* Tap-to-reveal cards */
+    .sc-card{
+      border:1px solid #334155; border-radius:12px; background:#0f172a;
+      padding:12px 15px; margin:10px 0; cursor:pointer;
+      transition:border-color .15s, background .15s;
+    }
+    .sc-card:hover{ border-color:#6366f1; }
+    .sc-card.is-open{ border-color:#6366f1; background:#131c33; }
+    .sc-card__head{
+      display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;
+      font-weight:700; font-size:.95rem; color:#e2e8f0;
+    }
+    .sc-card__head::after{ content:'+'; color:#6366f1; font-weight:800; margin-left:auto; }
+    .sc-card.is-open .sc-card__head::after{ content:'–'; }
+    .sc-card__body{ display:none; margin-top:10px; font-size:.88rem; line-height:1.6; color:#cbd5e1; }
+    .sc-card.is-open .sc-card__body{ display:block; }
+
+    /* Badges */
+    .sc-badge{
+      display:inline-block; font-size:.66rem; font-weight:700; letter-spacing:.04em;
+      text-transform:uppercase; padding:2px 8px; border-radius:999px;
+      background:#1e293b; color:#a5b4fc; margin-left:6px; vertical-align:middle;
+    }
+    .sc-badge--chem{ background:#831843; color:#fbcfe8; }
+    .sc-badge--phy{ background:#065f46; color:#a7f3d0; }
+    .sc-badge--bio{ background:#7c2d12; color:#fed7aa; }
+    .sc-badge--radio{ background:#7f1d1d; color:#fecaca; }
+
+    /* Grid */
+    .sc-grid{
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+      gap:12px; margin:16px 0 8px;
+    }
+    .sc-grid-item{
+      border:1px solid #334155; border-radius:14px; padding:14px 16px;
+      background:#0f172a; border-left-width:4px;
+    }
+    .sc-grid-item h3{ margin:0 0 6px; font-size:1rem; color:#e2e8f0; }
+    .sc-grid-item p{ margin:0; font-size:.85rem; line-height:1.55; color:#94a3b8; }
+    .sc-grid-item--chem{ border-left-color:#f472b6; }
+    .sc-grid-item--phy{ border-left-color:#34d399; }
+    .sc-grid-item--bio{ border-left-color:#fb923c; }
+    html[data-theme="light"] .sc-grid-item{ background:#ffffff; border-color:#e2e8f0; }
+    html[data-theme="light"] .sc-grid-item h3{ color:#1e293b; }
+    html[data-theme="light"] .sc-grid-item p{ color:#475569; }
+
+    /* Mnemonic */
+    .sc-mnem{
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      font-weight:700; color:#a5b4fc; letter-spacing:.03em;
+    }
+
+    /* Quiz */
+    .sc-q{
+      border-left:3px solid #6366f1; border-radius:0 10px 10px 0;
+      background:#0f172a; padding:11px 15px; margin:12px 0; cursor:pointer;
+    }
+    .sc-q p{ margin:0; font-weight:600; font-size:.92rem; color:#e2e8f0; }
+    .sc-q .sc-ans{ display:none; margin-top:8px; font-size:.88rem; color:#a5b4fc; font-weight:600; }
+    .sc-q.is-open .sc-ans{ display:block; }
+
+    /* Highlight box */
+    .sc-hl{
+      border-left:4px solid #f97316; border-radius:0 12px 12px 0;
+      background:#1c1917; padding:14px 16px; margin:14px 0;
+    }
+    .sc-hl strong{ color:#fdba74; }
+    .sc-hl p{ margin:6px 0; color:#e2e8f0; font-size:.9rem; line-height:1.6; }
+    html[data-theme="light"] .sc-hl{ background:#fff7ed; }
+    html[data-theme="light"] .sc-hl strong{ color:#c2410c; }
+    html[data-theme="light"] .sc-hl p{ color:#1e293b; }
+
+    /* Equation display */
+    .sc-eq{
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      font-size:.92rem; font-weight:700; color:#86efac;
+      background:#0f1f1a; border-radius:8px; padding:8px 12px; margin:6px 0;
+      text-align:center; letter-spacing:.02em;
+    }
+    html[data-theme="light"] .sc-eq{ background:#ecfdf5; color:#065f46; }
+
+    html[data-theme="light"] .sc-btn{ border-color:#cbd5e1; color:#334155; }
+    html[data-theme="light"] .sc-btn:hover{ border-color:#6366f1; color:#4338ca; }
+    html[data-theme="light"] .sc-card{ background:#ffffff; border-color:#e2e8f0; }
+    html[data-theme="light"] .sc-card.is-open{ background:#eef2ff; border-color:#6366f1; }
+    html[data-theme="light"] .sc-card__head{ color:#1e293b; }
+    html[data-theme="light"] .sc-card__body{ color:#475569; }
+    html[data-theme="light"] .sc-badge{ background:#e0e7ff; color:#4338ca; }
+    html[data-theme="light"] .sc-badge--chem{ background:#fce7f3; color:#9d174d; }
+    html[data-theme="light"] .sc-badge--phy{ background:#d1fae5; color:#065f46; }
+    html[data-theme="light"] .sc-badge--bio{ background:#ffedd5; color:#9a3412; }
+    html[data-theme="light"] .sc-badge--radio{ background:#fee2e2; color:#991b1b; }
+    html[data-theme="light"] .sc-q{ background:#f8fafc; }
+    html[data-theme="light"] .sc-q p{ color:#1e293b; }
+    html[data-theme="light"] .sc-q .sc-ans{ color:#4338ca; }
+    html[data-theme="light"] .sc-mnem{ color:#4338ca; }
+  </style>
+</head>
+
+<body style="background: transparent; margin: 0;">
+  <main class="rev-page">
+
+    <h1>Science Capsule — Chemistry &amp; Physics</h1>
+    <p class="rev-subtitle">Atomic structure · Periodic table · Oxides · Ores · Radioactivity · Colloids · Lenses — tap to reveal.</p>
+
+    <div class="rev-note">
+      <strong>What's inside:</strong> A single, ordered page of the most-asked science facts from your notes.
+      Order goes from the <em>smallest</em> (sub-atomic particles) → <em>elements</em> → <em>compounds</em> → <em>ores</em> → <em>radioactivity</em> → <em>light/optics</em>.
+      Read the question, say the answer out loud, then tap to check.
+    </div>
+
+    <h2>1 · Atomic Structure — Who Discovered What</h2>
+    <p>Tap each scientist to reveal their discovery.</p>
+
+    <div class="sc-tools">
+      <button class="sc-btn" data-sc-all="open">Reveal all</button>
+      <button class="sc-btn" data-sc-all="close">Hide all</button>
+    </div>
+
+    <div class="sc-card">
+      <div class="sc-card__head">J. J. Thomson <span class="sc-badge sc-badge--chem">Chemistry</span></div>
+      <div class="sc-card__body"><strong>Discovered the Electron</strong> — using cathode ray tubes. Also proposed the "plum pudding" model of the atom.</div>
+    </div>
+
+    <div class="sc-card">
+      <div class="sc-card__head">E. Goldstein <span class="sc-badge sc-badge--chem">Chemistry</span></div>
+      <div class="sc-card__body"><strong>Discovered the Proton</strong> — observed canal rays (positive rays) in a discharge tube.</div>
+    </div>
+
+    <div class="sc-card">
+      <div class="sc-card__head">James Chadwick <span class="sc-badge sc-badge--chem">Chemistry</span></div>
+      <div class="sc-card__body"><strong>Discovered the Neutron</strong> — a neutral particle in the nucleus. Awarded Nobel Prize in 1935.</div>
+    </div>
+
+    <div class="sc-card">
+      <div class="sc-card__head">Ernest Rutherford <span class="sc-badge sc-badge--phy">Physics</span></div>
+      <div class="sc-card__body">
+        <strong>Discovered the Nucleus</strong> — through the gold foil experiment (α-particle scattering).
+        Also proposed the <em>nuclear model of the atom</em> and proved that most of the atom is <em>empty space</em>.
+      </div>
+    </div>
+
+    <div class="rev-note">
+      <strong>Mnemonic — "T-G-C-R"</strong><br>
+      <span class="sc-mnem">Thomson → Electron · Goldstein → Proton · Chadwick → Neutron · Rutherford → Nucleus</span>
+    </div>
+
+    <h2>2 · Subatomic Particles &amp; Their Charge</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Particle</th>
+          <th>Discovered by</th>
+          <th>Charge</th>
+          <th>Deflection in fields?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Electron</td><td>J. J. Thomson</td><td>Negative (−)</td><td>Deflected</td></tr>
+        <tr><td>Proton</td><td>Goldstein</td><td>Positive (+)</td><td>Deflected</td></tr>
+        <tr><td>Neutron</td><td>Chadwick</td><td>Neutral (0)</td><td>Not deflected</td></tr>
+      </tbody>
+    </table>
+
+    <h2>3 · Radioactivity — Alpha, Beta &amp; Gamma Rays</h2>
+    <p>Tap to reveal how each ray behaves in electric and magnetic fields.</p>
+
+    <div class="sc-card">
+      <div class="sc-card__head">Alpha (α) Rays <span class="sc-badge sc-badge--radio">Radioactive</span></div>
+      <div class="sc-card__body">Positively charged (+). <strong>Deflected</strong> by electric and magnetic fields. Heavy — least penetrating, most ionising.</div>
+    </div>
+
+    <div class="sc-card">
+      <div class="sc-card__head">Beta (β) Rays <span class="sc-badge sc-badge--radio">Radioactive</span></div>
+      <div class="sc-card__body">Negatively charged (−). <strong>Deflected</strong> by electric and magnetic fields (in the opposite direction to alpha). Medium penetration.</div>
+    </div>
+
+    <div class="sc-card">
+      <div class="sc-card__head">Gamma (γ) Rays <span class="sc-badge sc-badge--radio">Radioactive</span></div>
+      <div class="sc-card__body">Neutral — no charge. <strong>Not deflected</strong> by electric or magnetic fields. Pure electromagnetic radiation, highest penetration, lowest ionising power.</div>
+    </div>
+
+    <div class="rev-note">
+      <strong>Trick to remember deflection:</strong> Only <em>charged</em> particles deflect. Alpha (+) and Beta (−) deflect — Gamma (0) doesn't.
+      <em>"Charged → deflects; neutral → straight through."</em>
+    </div>
+
+    <h2>4 · Radioisotopes &amp; Their Uses</h2>
+
+    <div class="sc-card">
+      <div class="sc-card__head">Iodine-131 <span class="sc-badge sc-badge--bio">Medical</span></div>
+      <div class="sc-card__body">Used in the treatment of <strong>thyroid diseases</strong> (including thyroid cancer). The thyroid gland absorbs iodine.</div>
+    </div>
+
+    <div class="sc-card">
+      <div class="sc-card__head">Cobalt-60 <span class="sc-badge sc-badge--bio">Medical</span></div>
+      <div class="sc-card__body">Used in the treatment of <strong>cancer (radiotherapy)</strong>. Also used to sterilise medical equipment.</div>
+    </div>
+
+    <div class="sc-card">
+      <div class="sc-card__head">Uranium-235 <span class="sc-badge sc-badge--phy">Nuclear</span></div>
+      <div class="sc-card__body">Used as <strong>nuclear reactor fuel</strong> and in nuclear weapons. Undergoes fission with slow neutrons.</div>
+    </div>
+
+    <div class="sc-hl">
+      <strong>Exam tip:</strong>
+      <p>If the question asks "which radioisotope is used for thyroid?" → <strong>Iodine-131</strong>.</p>
+      <p>If it asks "for cancer treatment?" → <strong>Cobalt-60</strong>.</p>
+      <p>If it asks "for nuclear reactors?" → <strong>Uranium-235</strong>.</p>
+    </div>
+
+    <h2>5 · Periodic Table — f-block Elements</h2>
+
+    <div class="sc-card">
+      <div class="sc-card__head">f-block Elements</div>
+      <div class="sc-card__body">
+        <p><strong>Lanthanides (Z = 57 – 71)</strong> — also called <em>rare earth metals</em>. Belong to the f-block.</p>
+        <p><strong>Actinides (Z = 89 – 103)</strong> — all radioactive. Also called <em>inner transition elements</em>.</p>
+        <p><strong>Note:</strong> Elements with atomic number <code>71 to 103</code> are mostly f-block (actinides).</p>
+      </div>
+    </div>
+
+    <div class="rev-note">
+      <strong>Quick fact:</strong> Lanthanides + Actinides together = f-block = inner transition elements. Positioned separately at the bottom of the periodic table.
+    </div>
+
+    <h2>6 · Metals &amp; Non-metals — Special Cases</h2>
+
+    <div class="sc-card">
+      <div class="sc-card__head">Liquid Metal <span class="sc-badge sc-badge--chem">Metal</span></div>
+      <div class="sc-card__body">
+        <strong>Mercury (Hg)</strong> — the only metal that is liquid at room temperature. Also called <em>"quick silver"</em>.
+        (Gallium melts at 29.5°C — it becomes liquid above room temperature, so it's not the standard answer.)
+      </div>
+    </div>
+
+    <div class="sc-card">
+      <div class="sc-card__head">Liquid Non-metal <span class="sc-badge sc-badge--chem">Non-metal</span></div>
+      <div class="sc-card__body"><strong>Bromine (Br)</strong> — the only non-metal that is liquid at room temperature. Reddish-brown, volatile.</div>
+    </div>
+
+    <div class="sc-card">
+      <div class="sc-card__head">Best Conductors of Electricity (in order) <span class="sc-badge sc-badge--phy">Physics</span></div>
+      <div class="sc-card__body">
+        <div class="sc-eq">Ag &gt; Cu &gt; Au &gt; Al</div>
+        <p><strong>Silver (Ag)</strong> is the best conductor, but <strong>Copper (Cu)</strong> is used in wires because it's cheaper and more abundant.</p>
+      </div>
+    </div>
+
+    <div class="rev-note">
+      <strong>Mnemonic:</strong> <span class="sc-mnem">"Silver, Copper, Gold, Aluminium"</span> — remember them in order <em>Ag-Cu-Au-Al</em>.
+    </div>
+
+    <h2>7 · Oxides — Acidic, Basic &amp; Amphoteric</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Type of Oxide</th>
+          <th>Nature</th>
+          <th>Example</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Metal oxide</td><td><strong>Basic</strong></td><td>Na₂O, MgO, CaO</td></tr>
+        <tr><td>Non-metal oxide</td><td><strong>Acidic</strong></td><td>CO₂, SO₂, NO₂</td></tr>
+        <tr><td>Amphoteric oxide</td><td>Reacts with <strong>both</strong> acids and bases</td><td>Al₂O₃, ZnO, PbO</td></tr>
+      </tbody>
+    </table>
+
+    <div class="rev-note">
+      <strong>Memory rule:</strong><br>
+      <span class="sc-mnem">"Metal → Basic; Non-metal → Acidic; Amphoteric → Both."</span><br>
+      Common amphoteric oxides: <strong>Al₂O₃, ZnO, PbO, SnO</strong>.
+    </div>
+
+    <h2>8 · Important Chemicals</h2>
+
+    <div class="sc-card">
+      <div class="sc-card__head">Sulphuric Acid (H₂SO₄) <span class="sc-badge sc-badge--chem">Chemical</span></div>
+      <div class="sc-card__body">
+        Called the <strong>"King of Chemicals"</strong> because it is the most widely used industrial chemical — in fertilisers, batteries, detergents, dyes, petroleum refining, etc.
+      </div>
+    </div>
+
+    <div class="sc-card">
+      <div class="sc-card__head">Galvanization <span class="sc-badge sc-badge--chem">Process</span></div>
+      <div class="sc-card__body">
+        <strong>Galvanization</strong> prevents the rusting of iron by coating it with a protective layer of <strong>zinc (Zn)</strong>.
+        Zinc acts as a sacrificial metal — it corrodes first, protecting the iron underneath.
+      </div>
+    </div>
+
+    <h2>9 · Ores &amp; Their Metals</h2>
+    <p>Tap each ore to reveal its metal. Note: some entries in your notes were corrected below.</p>
+
+    <div class="sc-tools">
+      <button class="sc-btn" data-sc-all="open">Reveal all</button>
+      <button class="sc-btn" data-sc-all="close">Hide all</button>
+    </div>
+
+    <div class="sc-card">
+      <div class="sc-card__head">Bauxite</div>
+      <div class="sc-card__body"><strong>Aluminium (Al)</strong> — the main ore of aluminium. Formula: <code>Al₂O₃·2H₂O</code>.</div>
+    </div>
+
+    <div class="sc-card">
+      <div class="sc-card__head">Cassiterite</div>
+      <div class="sc-card__body"><strong>Tin (Sn)</strong> — <em>not copper.</em> Formula: <code>SnO₂</code>.</div>
+    </div>
+
+    <div class="sc-card">
+      <div class="sc-card__head">Cinnabar</div>
+      <div class="sc-card__body"><strong>Mercury (Hg)</strong> — <em>not zinc.</em> Formula: <code>HgS</code>. Bright red mineral.</div>
+    </div>
+
+    <div class="sc-card">
+      <div class="sc-card__head">Galena</div>
+      <div class="sc-card__body"><strong>Lead (Pb)</strong> — <em>not gold.</em> Formula: <code>PbS</code>. The main ore of lead.</div>
+    </div>
+
+    <div class="sc-hl">
+      <strong>⚠ Common mix-ups to remember:</strong>
+      <p>• Cassiterite → <strong>Tin</strong> (not Copper — that's Copper pyrite)</p>
+      <p>• Cinnabar → <strong>Mercury</strong> (not Zinc — that's Zinc blende)</p>
+      <p>• Galena → <strong>Lead</strong> (not Gold — that's Calaverite)</p>
+    </div>
+
+    <h2>10 · Colloids — Dispersion Medium &amp; Dispersed Phase</h2>
+    <p>Read the combination → say the type → tap to check.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Dispersion Medium</th>
+          <th>Dispersed Phase</th>
+          <th>Type</th>
+          <th>Examples</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Gas</td><td>Liquid</td><td><strong>Aerosol</strong></td><td>Fog, clouds</td></tr>
+        <tr><td>Gas</td><td>Solid</td><td><strong>Aerosol</strong></td><td>Smoke</td></tr>
+        <tr><td>Liquid</td><td>Gas</td><td><strong>Foam</strong></td><td>Shaving cream</td></tr>
+        <tr><td>Liquid</td><td>Liquid</td><td><strong>Emulsion</strong></td><td>Milk, face cream</td></tr>
+        <tr><td>Liquid</td><td>Solid</td><td><strong>Sol</strong></td><td>Mud</td></tr>
+        <tr><td>Solid</td><td>Gas</td><td><strong>Foam</strong></td><td>Sponge, foam rubber</td></tr>
+        <tr><td>Solid</td><td>Liquid</td><td><strong>Gel</strong></td><td>Jelly, cheese, butter</td></tr>
+        <tr><td>Solid</td><td>Solid</td><td><strong>Solid sol</strong></td><td>Some coloured gems</td></tr>
+      </tbody>
+    </table>
+
+    <div class="rev-note">
+      <strong>Pattern to remember:</strong><br>
+      <span class="sc-mnem">"Gas + Liquid/Solid → Aerosol · Liquid + Gas → Foam · Liquid + Liquid → Emulsion · Liquid + Solid → Sol · Solid + Liquid → Gel"</span><br>
+      The <strong>first</strong> column is the medium (the "sea"), the <strong>second</strong> is the phase (the "fish").
+    </div>
+
+    <h2>11 · Lenses — Ray Diagrams at a Glance</h2>
+    <p>The two tables below answer <em>every</em> image-position question for lenses.</p>
+
+    <h3>Convex (Converging) Lens</h3>
+    <div class="gphy-table-wrap" style="overflow-x:auto;">
+      <table class="sc-table" style="width:100%;border-collapse:collapse;font-size:.85rem;">
+        <thead>
+          <tr>
+            <th style="background:#1e293b;color:#e2e8f0;padding:8px 10px;text-align:left;border:1px solid #334155;">Position of Object</th>
+            <th style="background:#1e293b;color:#e2e8f0;padding:8px 10px;text-align:left;border:1px solid #334155;">Position of Image</th>
+            <th style="background:#1e293b;color:#e2e8f0;padding:8px 10px;text-align:left;border:1px solid #334155;">Size</th>
+            <th style="background:#1e293b;color:#e2e8f0;padding:8px 10px;text-align:left;border:1px solid #334155;">Nature</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">At infinity</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">At focus F₂</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Highly diminished, point-sized</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Real and inverted</td></tr>
+          <tr><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Beyond 2F₁</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Between F₂ and 2F₂</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Diminished</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Real and inverted</td></tr>
+          <tr><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">At 2F₁</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">At 2F₂</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Same size</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Real and inverted</td></tr>
+          <tr><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Between F₁ and 2F₁</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Beyond 2F₂</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Enlarged</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Real and inverted</td></tr>
+          <tr><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">At focus F₁</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">At infinity</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Infinitely large</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Real and inverted</td></tr>
+          <tr><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Between F₁ and O</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Same side as object</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Enlarged</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Virtual and erect</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Concave (Diverging) Lens</h3>
+    <div style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:.85rem;">
+        <thead>
+          <tr>
+            <th style="background:#1e293b;color:#e2e8f0;padding:8px 10px;text-align:left;border:1px solid #334155;">Position of Object</th>
+            <th style="background:#1e293b;color:#e2e8f0;padding:8px 10px;text-align:left;border:1px solid #334155;">Position of Image</th>
+            <th style="background:#1e293b;color:#e2e8f0;padding:8px 10px;text-align:left;border:1px solid #334155;">Size</th>
+            <th style="background:#1e293b;color:#e2e8f0;padding:8px 10px;text-align:left;border:1px solid #334155;">Nature</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">At infinity</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">At focus F₁ (same side)</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Highly diminished</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Virtual and erect</td></tr>
+          <tr><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Beyond 2F₁</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Between O and F₁</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Diminished</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Virtual and erect</td></tr>
+          <tr><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">At 2F₁</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Between O and F₁</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Diminished</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Virtual and erect</td></tr>
+          <tr><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Between F₁ and 2F₁</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Between O and F₁</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Diminished</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Virtual and erect</td></tr>
+          <tr><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">At focus F₁</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Between O and F₁</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Diminished</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Virtual and erect</td></tr>
+          <tr><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Between F₁ and O</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Between O and F₁</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Diminished</td><td style="padding:8px 10px;border:1px solid #334155;color:#cbd5e1;">Virtual and erect</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="rev-note">
+      <strong>Key difference in one line:</strong><br>
+      • <strong>Convex lens</strong> → forms both real and virtual images (real when object is beyond F).<br>
+      • <strong>Concave lens</strong> → <em>always</em> forms a virtual, erect, diminished image. No exceptions.
+    </div>
+
+    <h2>12 · Rapid Fire</h2>
+    <p>Answer out loud, then tap to check.</p>
+
+    <div class="sc-q">
+      <p>Who discovered the electron?</p>
+      <div class="sc-ans">J. J. Thomson</div>
+    </div>
+
+    <div class="sc-q">
+      <p>Who discovered the neutron?</p>
+      <div class="sc-ans">James Chadwick</div>
+    </div>
+
+    <div class="sc-q">
+      <p>Who discovered the nucleus?</p>
+      <div class="sc-ans">Ernest Rutherford</div>
+    </div>
+
+    <div class="sc-q">
+      <p>Which radioisotope is used to treat thyroid disease?</p>
+      <div class="sc-ans">Iodine-131</div>
+    </div>
+
+    <div class="sc-q">
+      <p>Which radioisotope is used to treat cancer?</p>
+      <div class="sc-ans">Cobalt-60</div>
+    </div>
+
+    <div class="sc-q">
+      <p>Which radioisotope is used in nuclear reactors?</p>
+      <div class="sc-ans">Uranium-235</div>
+    </div>
+
+    <div class="sc-q">
+      <p>Which rays are NOT deflected by electric or magnetic fields?</p>
+      <div class="sc-ans">Gamma rays (they are neutral)</div>
+    </div>
+
+    <div class="sc-q">
+      <p>Which is the only liquid metal at room temperature?</p>
+      <div class="sc-ans">Mercury (Hg) — "quick silver"</div>
+    </div>
+
+    <div class="sc-q">
+      <p>Which is the only liquid non-metal?</p>
+      <div class="sc-ans">Bromine (Br)</div>
+    </div>
+
+    <div class="sc-q">
+      <p>Arrange Ag, Cu, Au, Al in decreasing order of electrical conductivity.</p>
+      <div class="sc-ans">Ag &gt; Cu &gt; Au &gt; Al</div>
+    </div>
+
+    <div class="sc-q">
+      <p>Which acid is called the "King of Chemicals"?</p>
+      <div class="sc-ans">Sulphuric acid (H₂SO₄)</div>
+    </div>
+
+    <div class="sc-q">
+      <p>Galvanization prevents rusting of iron by coating it with which metal?</p>
+      <div class="sc-ans">Zinc (Zn)</div>
+    </div>
+
+    <div class="sc-q">
+      <p>Which ore is the source of Aluminium?</p>
+      <div class="sc-ans">Bauxite</div>
+    </div>
+
+    <div class="sc-q">
+      <p>Which ore is the source of Tin?</p>
+      <div class="sc-ans">Cassiterite (SnO₂)</div>
+    </div>
+
+    <div class="sc-q">
+      <p>Which ore is the source of Mercury?</p>
+      <div class="sc-ans">Cinnabar (HgS)</div>
+    </div>
+
+    <div class="sc-q">
+      <p>Which ore is the source of Lead?</p>
+      <div class="sc-ans">Galena (PbS)</div>
+    </div>
+
+    <div class="sc-q">
+      <p>What type of colloid is fog?</p>
+      <div class="sc-ans">Aerosol (Gas + Liquid)</div>
+    </div>
+
+    <div class="sc-q">
+      <p>What type of colloid is milk?</p>
+      <div class="sc-ans">Emulsion (Liquid + Liquid)</div>
+    </div>
+
+    <div class="sc-q">
+      <p>What type of colloid is jelly?</p>
+      <div class="sc-ans">Gel (Solid + Liquid)</div>
+    </div>
+
+    <div class="sc-q">
+      <p>What type of image does a concave lens always form?</p>
+      <div class="sc-ans">Virtual, erect, diminished</div>
+    </div>
+
+    <div class="sc-q">
+      <p>When an object is at infinity, where does a convex lens form the image?</p>
+      <div class="sc-ans">At focus F₂ — real, inverted, highly diminished</div>
+    </div>
+
+    <hr>
+
+    <p class="rev-subtitle">Tip: Use "Hide all" before a session, then "Reveal all" to check. The ores, radioisotopes and lens tables are the most heavily tested — go through the rapid-fire twice.</p>
+
+  </main>
+
+  <!-- Tap-to-reveal behaviour for this page. -->
+  <script>
+    (function () {
+      document.addEventListener('click', function (e) {
+        if (e.target.closest('.sc-btn')) return;
+        var el = e.target.closest('.sc-card, .sc-q');
+        if (!el) return;
+        el.classList.toggle('is-open');
+      });
+
+      document.querySelectorAll('.sc-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var open = btn.getAttribute('data-sc-all') === 'open';
+          document.querySelectorAll('.sc-card, .sc-q').forEach(function (el) {
+            el.classList.toggle('is-open', open);
+          });
+        });
+      });
+    })();
+  </script>
+
+  <!-- Report true content height to the parent app.
+       Measures <main class="rev-page"> directly, NOT document.body. -->
+  <script>
+    (function () {
+      function sendHeight() {
+        var el = document.querySelector('.rev-page') || document.body;
+        var h = Math.ceil(el.getBoundingClientRect().height);
+        if (!h) h = el.scrollHeight || 0;
+        if (!h) return;
+        try {
+          window.parent.postMessage({ type: 'revision-height', height: h }, '*');
+        } catch (e) {}
+      }
+      window.addEventListener('load', sendHeight);
+      window.addEventListener('resize', sendHeight);
+      setTimeout(sendHeight, 0);
+      setTimeout(sendHeight, 50);
+      setTimeout(sendHeight, 300);
+      setTimeout(sendHeight, 1000);
+      if (window.ResizeObserver) {
+        new ResizeObserver(sendHeight).observe(document.body);
+      }
+    })();
+  </script>
+</body>
+</html>

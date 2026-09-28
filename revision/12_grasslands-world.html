@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Major Grasslands of the World — Revision</title>
+
+  <!--
+    Revision page for "Major Grasslands of the World".
+    Loaded inside the main app's iframe.
+    • Theme is passed via URL hash: #theme=dark or #theme=light
+    • Styles come from ../css/style.css
+  -->
+
+  <!-- Read theme from URL hash BEFORE paint (no flash). -->
+  <script>
+    (function () {
+      var m = location.hash.match(/theme=(light|dark)/);
+      document.documentElement.setAttribute('data-theme', m ? m[1] : 'dark');
+    })();
+  </script>
+
+  <!-- Shared app styles — this links the file to the MAIN stylesheet. -->
+  <link rel="stylesheet" href="../css/style.css">
+
+  <!-- Match the app's font stack. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Page-specific styles for Grasslands (namespace: .grs-) -->
+  <style>
+    .grs-tools{ display:flex; gap:10px; flex-wrap:wrap; margin:14px 0 6px; }
+    .grs-btn{
+      font:inherit; font-size:.78rem; font-weight:700; letter-spacing:.02em;
+      padding:7px 14px; border-radius:999px; cursor:pointer;
+      border:1px solid #475569; background:transparent; color:#cbd5e1;
+      transition:border-color .15s, color .15s;
+    }
+    .grs-btn:hover{ border-color:#22c55e; color:#86efac; }
+
+    /* Continent banner cards */
+    .grs-cont{
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+      gap:12px; margin:16px 0 8px;
+    }
+    .grs-cont-card{
+      border:1px solid #334155; border-radius:14px; padding:14px 16px;
+      background:#0f172a; border-top-width:4px;
+    }
+    .grs-cont-card h3{ margin:0 0 6px; font-size:1rem; color:#e2e8f0; }
+    .grs-cont-card p{ margin:0; font-size:.85rem; line-height:1.55; color:#94a3b8; }
+    .grs-cont-card--na{ border-top-color:#38bdf8; }
+    .grs-cont-card--sa{ border-top-color:#facc15; }
+    .grs-cont-card--eu{ border-top-color:#a78bfa; }
+    .grs-cont-card--af{ border-top-color:#fb923c; }
+    .grs-cont-card--as{ border-top-color:#f472b6; }
+    .grs-cont-card--oc{ border-top-color:#34d399; }
+    html[data-theme="light"] .grs-cont-card{ background:#ffffff; border-color:#e2e8f0; }
+    html[data-theme="light"] .grs-cont-card h3{ color:#1e293b; }
+    html[data-theme="light"] .grs-cont-card p{ color:#475569; }
+
+    /* Tap-to-reveal cards */
+    .grs-card{
+      border:1px solid #334155; border-radius:12px; background:#0f172a;
+      padding:12px 15px; margin:10px 0; cursor:pointer;
+      transition:border-color .15s, background .15s;
+    }
+    .grs-card:hover{ border-color:#22c55e; }
+    .grs-card.is-open{ border-color:#22c55e; background:#0f1f1a; }
+    .grs-card__head{
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
+      font-weight:700; font-size:.95rem; color:#e2e8f0;
+    }
+    .grs-card__head::after{ content:'+'; color:#22c55e; font-weight:800; }
+    .grs-card.is-open .grs-card__head::after{ content:'–'; }
+    .grs-card__body{ display:none; margin-top:10px; font-size:.88rem; line-height:1.6; color:#cbd5e1; }
+    .grs-card.is-open .grs-card__body{ display:block; }
+
+    .grs-badge{
+      display:inline-block; font-size:.68rem; font-weight:700; letter-spacing:.04em;
+      text-transform:uppercase; padding:2px 8px; border-radius:999px;
+      background:#1e293b; color:#86efac; margin-left:6px; vertical-align:middle;
+    }
+    .grs-badge--na{ background:#0c4a6e; color:#bae6fd; }
+    .grs-badge--sa{ background:#713f12; color:#fde68a; }
+    .grs-badge--eu{ background:#4c1d95; color:#ddd6fe; }
+    .grs-badge--af{ background:#7c2d12; color:#fed7aa; }
+    .grs-badge--as{ background:#831843; color:#fbcfe8; }
+    .grs-badge--oc{ background:#065f46; color:#a7f3d0; }
+
+    /* Mnemonic highlight */
+    .grs-mnem{
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      font-weight:700; color:#86efac; letter-spacing:.03em;
+    }
+
+    /* Quiz */
+    .grs-q{
+      border-left:3px solid #22c55e; border-radius:0 10px 10px 0;
+      background:#0f172a; padding:11px 15px; margin:12px 0; cursor:pointer;
+    }
+    .grs-q p{ margin:0; font-weight:600; font-size:.92rem; color:#e2e8f0; }
+    .grs-q .grs-ans{ display:none; margin-top:8px; font-size:.88rem; color:#86efac; font-weight:600; }
+    .grs-q.is-open .grs-ans{ display:block; }
+
+    /* Rank table styling */
+    .grs-rank{
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:10px; margin:14px 0 8px;
+    }
+    .grs-rank-item{
+      border-left:3px solid #22c55e; border-radius:0 10px 10px 0;
+      background:#0f172a; padding:10px 13px;
+    }
+    .grs-rank-item strong{ display:block; font-size:.9rem; color:#e2e8f0; }
+    .grs-rank-item span{ font-size:.78rem; color:#94a3b8; }
+    html[data-theme="light"] .grs-rank-item{ background:#f8fafc; }
+    html[data-theme="light"] .grs-rank-item strong{ color:#1e293b; }
+    html[data-theme="light"] .grs-rank-item span{ color:#64748b; }
+
+    html[data-theme="light"] .grs-btn{ border-color:#cbd5e1; color:#334155; }
+    html[data-theme="light"] .grs-btn:hover{ border-color:#16a34a; color:#15803d; }
+    html[data-theme="light"] .grs-card{ background:#ffffff; border-color:#e2e8f0; }
+    html[data-theme="light"] .grs-card.is-open{ background:#f0fdf4; border-color:#16a34a; }
+    html[data-theme="light"] .grs-card__head{ color:#1e293b; }
+    html[data-theme="light"] .grs-card__body{ color:#475569; }
+    html[data-theme="light"] .grs-badge{ background:#dcfce7; color:#166534; }
+    html[data-theme="light"] .grs-badge--na{ background:#dbeafe; color:#1e40af; }
+    html[data-theme="light"] .grs-badge--sa{ background:#fef3c7; color:#92400e; }
+    html[data-theme="light"] .grs-badge--eu{ background:#ede9fe; color:#5b21b6; }
+    html[data-theme="light"] .grs-badge--af{ background:#ffedd5; color:#9a3412; }
+    html[data-theme="light"] .grs-badge--as{ background:#fce7f3; color:#9d174d; }
+    html[data-theme="light"] .grs-badge--oc{ background:#d1fae5; color:#065f46; }
+    html[data-theme="light"] .grs-q{ background:#f8fafc; }
+    html[data-theme="light"] .grs-q p{ color:#1e293b; }
+    html[data-theme="light"] .grs-q .grs-ans{ color:#15803d; }
+    html[data-theme="light"] .grs-mnem{ color:#15803d; }
+  </style>
+</head>
+
+<body style="background: transparent; margin: 0;">
+  <main class="rev-page">
+
+    <h1>Major Grasslands of the the World</h1>
+    <p class="rev-subtitle">Names · Continents · Countries — tap any card to reveal.</p>
+
+    <div class="rev-note">
+      <strong>One-line definition:</strong> A <em>grassland</em> is a region where rainfall is
+      <strong>too low for forests</strong> but <strong>too high for deserts</strong> — so the dominant plant life is grass.
+      They are called by <em>different names</em> on different continents, and UPSC/Bihar PCS loves asking
+      "Prairies are in which country?" or "Velds are the grasslands of which country?".
+    </div>
+
+    <div class="rev-note">
+      <strong>The one map you must fix in your head:</strong>
+      <ul>
+        <li><strong>Americas</strong> → Prairies (North), Pampas / Llanos / Campos (South)</li>
+        <li><strong>Europe</strong> → Puszta (Hungary), Steppes (Eurasia)</li>
+        <li><strong>Asia</strong> → Steppes (Russia/Central Asia), Manchuria (China)</li>
+        <li><strong>Africa</strong> → Savanna (whole continent), Velds (South Africa)</li>
+        <li><strong>Australia</strong> → Downs</li>
+        <li><strong>New Zealand</strong> → Canterbury</li>
+      </ul>
+    </div>
+
+    <h2>1 · The five big ones (most asked)</h2>
+    <p>Read the name → say the continent + country → tap to check.</p>
+
+    <div class="grs-tools">
+      <button class="grs-btn" data-grs-all="open">Reveal all</button>
+      <button class="grs-btn" data-grs-all="close">Hide all</button>
+    </div>
+
+    <div class="grs-card">
+      <div class="grs-card__head">Prairies <span class="grs-badge grs-badge--na">North America</span></div>
+      <div class="grs-card__body">
+        <p><strong>Country:</strong> USA and Canada (the Great Plains region).</p>
+        <p><strong>Climate:</strong> Temperate grassland. Hot summers, cold winters, moderate rainfall.</p>
+        <p><strong>Famous for:</strong> <em>Wheat basket of the world</em> — the biggest wheat-growing belt on Earth. Also called the <em>"Granary of the World"</em>.</p>
+        <p><strong>Wildlife:</strong> Bison, prairie dogs, coyotes.</p>
+      </div>
+    </div>
+
+    <div class="grs-card">
+      <div class="grs-card__head">Steppes <span class="grs-badge grs-badge--eu">Europe</span><span class="grs-badge grs-badge--as">Asia</span></div>
+      <div class="grs-card__body">
+        <p><strong>Region:</strong> The <strong>Eurasian Steppe</strong> — stretching from Ukraine/Russia, through Central Asia (Kazakhstan, Mongolia), into China.</p>
+        <p><strong>Climate:</strong> Continental, semi-arid. Cold winters, hot summers.</p>
+        <p><strong>Famous for:</strong> Horse-rearing (the historic "Steppe nomads" — Mongols, Scythians).</p>
+        <p><strong>Wildlife:</strong> Antelopes, saiga, wild horses.</p>
+      </div>
+    </div>
+
+    <div class="grs-card">
+      <div class="grs-card__head">Pampas <span class="grs-badge grs-badge--sa">South America</span></div>
+      <div class="grs-card__body">
+        <p><strong>Country:</strong> <strong>Argentina</strong> (also parts of Uruguay and Brazil).</p>
+        <p><strong>Climate:</strong> Temperate grassland — mild winters, warm summers, good rainfall.</p>
+        <p><strong>Famous for:</strong> The <em>Gauchos</em> (cowboys) — Argentina's cattle-ranching culture. Also called the "Wheat bowl of South America".</p>
+        <p><strong>Wildlife:</strong> Pampas deer, armadillos, rhea.</p>
+      </div>
+    </div>
+
+    <div class="grs-card">
+      <div class="grs-card__head">Velds <span class="grs-badge grs-badge--af">Africa</span></div>
+      <div class="grs-card__body">
+        <p><strong>Country:</strong> <strong>South Africa</strong>.</p>
+        <p><strong>Climate:</strong> Subtropical — warm and dry. Divided into Highveld, Middleveld, Lowveld, Bushveld.</p>
+        <p><strong>Famous for:</strong> Gold and diamond mining region (Johannesburg = "City of Gold" in the Highveld).</p>
+        <p><strong>Wildlife:</strong> Zebra, wildebeest, antelopes — big game safaris (Kruger National Park area).</p>
+      </div>
+    </div>
+
+    <div class="grs-card">
+      <div class="grs-card__head">Savanna <span class="grs-badge grs-badge--af">Africa</span></div>
+      <div class="grs-card__body">
+        <p><strong>Region:</strong> Most of <strong>Africa</strong> (the classic "African grassland"), also parts of South America, Australia, India (Indian savanna = the Terai and parts of the Deccan).</p>
+        <p><strong>Climate:</strong> Tropical — <em>two seasons</em>: wet and dry. Tall grasses + scattered trees (acacia, baobab).</p>
+        <p><strong>Famous for:</strong> The African savanna is home to the "Big Five" — lion, leopard, elephant, rhino, buffalo.</p>
+        <p><strong>Not to confuse:</strong> Savanna = <em>tropical</em>, Prairies/Steppes/Pampas/Velds = <em>temperate</em>.</p>
+      </div>
+    </div>
+
+    <h2>2 · The rest of the world (equally exam-worthy)</h2>
+
+    <div class="grs-card">
+      <div class="grs-card__head">Llanos <span class="grs-badge grs-badge--sa">South America</span></div>
+      <div class="grs-card__body">
+        <p><strong>Country:</strong> <strong>Venezuela</strong> (also eastern Colombia).</p>
+        <p><strong>Climate:</strong> Tropical savanna — flooded in the rainy season, parched in the dry season.</p>
+        <p><strong>Famous for:</strong> Huge cattle-ranching plains. The Llaneros are Venezuela's cowboys.</p>
+      </div>
+    </div>
+
+    <div class="grs-card">
+      <div class="grs-card__head">Campos <span class="grs-badge grs-badge--sa">South America</span></div>
+      <div class="grs-card__body">
+        <p><strong>Country:</strong> <strong>Brazil</strong> (mainly the southern highlands).</p>
+        <p><strong>Climate:</strong> Subtropical to tropical.</p>
+        <p><strong>Famous for:</strong> Cattle, sheep grazing. Not the Amazon — that's rainforest.</p>
+      </div>
+    </div>
+
+    <div class="grs-card">
+      <div class="grs-card__head">Puszta <span class="grs-badge grs-badge--eu">Europe</span></div>
+      <div class="grs-card__body">
+        <p><strong>Country:</strong> <strong>Hungary</strong>.</p>
+        <p><strong>Climate:</strong> Temperate grassland on the Hungarian Plain (Pannonian Basin).</p>
+        <p><strong>Famous for:</strong> A classic example of a European grassland — often asked as "Puszta is in which country?" Answer: <strong>Hungary</strong>.</p>
+      </div>
+    </div>
+
+    <div class="grs-card">
+      <div class="grs-card__head">Manchuria <span class="grs-badge grs-badge--as">Asia</span></div>
+      <div class="grs-card__body">
+        <p><strong>Country:</strong> <strong>China</strong> (northeast region — also historically called Manchuria).</p>
+        <p><strong>Climate:</strong> Cold temperate.</p>
+        <p><strong>Famous for:</strong> Soybean and maize cultivation; also the historic homeland of the Manchu people.</p>
+      </div>
+    </div>
+
+    <div class="grs-card">
+      <div class="grs-card__head">Downs <span class="grs-badge grs-badge--oc">Australia</span></div>
+      <div class="grs-card__body">
+        <p><strong>Country:</strong> <strong>Australia</strong> (Queensland, New South Wales, Victoria).</p>
+        <p><strong>Climate:</strong> Temperate grassland — mild, with reliable rainfall.</p>
+        <p><strong>Famous for:</strong> Sheep and cattle grazing — Australia is one of the world's largest wool producers.</p>
+      </div>
+    </div>
+
+    <div class="grs-card">
+      <div class="grs-card__head">Canterbury <span class="grs-badge grs-badge--oc">Oceania</span></div>
+      <div class="grs-card__body">
+        <p><strong>Country:</strong> <strong>New Zealand</strong> (Canterbury Plains, South Island).</p>
+        <p><strong>Climate:</strong> Temperate, moist.</p>
+        <p><strong>Famous for:</strong> Sheep farming, dairy, and lamb exports. The Canterbury Plains are New Zealand's most productive farmland.</p>
+      </div>
+    </div>
+
+    <h2>3 · The one glance table</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Grassland</th>
+          <th>Continent</th>
+          <th>Country</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Prairies</strong></td><td>North America</td><td>USA, Canada</td></tr>
+        <tr><td><strong>Pampas</strong></td><td>South America</td><td>Argentina</td></tr>
+        <tr><td><strong>Llanos</strong></td><td>South America</td><td>Venezuela</td></tr>
+        <tr><td><strong>Campos</strong></td><td>South America</td><td>Brazil</td></tr>
+        <tr><td><strong>Puszta</strong></td><td>Europe</td><td>Hungary</td></tr>
+        <tr><td><strong>Steppes</strong></td><td>Europe + Asia</td><td>Russia, Central Asia, China</td></tr>
+        <tr><td><strong>Manchuria</strong></td><td>Asia</td><td>China</td></tr>
+        <tr><td><strong>Savanna</strong></td><td>Africa</td><td>Many (Africa-wide)</td></tr>
+        <tr><td><strong>Velds</strong></td><td>Africa</td><td>South Africa</td></tr>
+        <tr><td><strong>Downs</strong></td><td>Australia</td><td>Australia</td></tr>
+        <tr><td><strong>Canterbury</strong></td><td>Oceania</td><td>New Zealand</td></tr>
+      </tbody>
+    </table>
+    <hr>
+
+    <div>
+      <!--
+  IMAGE SNIPPET — paste inside <main class="rev-page"> at the spot you want it.
+  • src   : ../images/<lowercase-hyphenated-filename>.<png|jpg|svg|webp>
+  • class : rev-img-sm    (≤320px — icon, portrait, small symbol)
+            rev-img-md    (≤480px — single diagram, illustration)
+            rev-img-wide  (full width — map, timeline, comparison, chart)
+  • alt   : short description, required for accessibility
+-->
+
+
+
+<figure class="rev-figure">
+  <img src="../images/12_01_grasslands-world.JPG"
+       class="rev-img rev-img-wide"
+       alt="Map showing the major grasslands of the world, including Prairies, Pampas, Llanos, Campos, Puszta, Steppes, Manchuria, Savanna, Velds, Downs, and Canterbury.">
+  <figcaption>Major Grasslands of the World</figcaption>
+</figure>
+
+
+
+</div>
+
+
+
+    <hr>
+
+    <h2>4 · Memory tricks that save you</h2>
+
+    <div class="rev-note">
+      <strong>Trick 1 — The "P" family in South America.</strong><br>
+      <span class="grs-mnem">"PAMPAS, LLANOS, CAMPOS"</span><br>
+      • <strong>P</strong>ampas → Argentina (biggest, cattle + wheat)<br>
+      • <strong>L</strong>lanos → Venezuela (cattle)<br>
+      • <strong>C</strong>ampos → Brazil (grazing)<br>
+      Remember: <em>all three are in South America</em>. Not one of them is in Europe.
+    </div>
+
+    <div class="rev-note">
+      <strong>Trick 2 — The two "Steppes" of the world.</strong><br>
+      <span class="grs-mnem">"Steppe = Russia; Manchuria = China"</span><br>
+      Steppes cover the world's <em>largest</em> continuous grassland — from Ukraine all the way to Mongolia.
+      Manchuria is China's <em>own</em> grassland, in the northeast corner.
+    </div>
+
+    <div class="rev-note">
+      <strong>Trick 3 — Africa has two names.</strong><br>
+      <span class="grs-mnem">"S for Savanna = Spread across all Africa; V for Velds = Very south (South Africa)"</span><br>
+      Savanna is tropical (has trees); Velds are temperate (mostly open grass).
+    </div>
+
+    <div class="rev-note">
+      <strong>Trick 4 — The two "P" + Europe one.</strong><br>
+      <span class="grs-mnem">"PUSZTA = Hungary"</span> — the only famous grassland in Europe proper.
+      Remember "Puszta and Paprika" — both are Hungarian.
+    </div>
+
+    <div class="rev-note">
+      <strong>Trick 5 — Two "D" / "C" for Oceania.</strong><br>
+      <span class="grs-mnem">"Downs are Down Under (Australia); Canterbury is in NEW Zealand"</span><br>
+      Downs → Australia.<br>
+      Canterbury → New Zealand (also a famous English city — don't mix the two).
+    </div>
+
+    <h2>5 · Rank the "famous four" (asked as "largest / granary")</h2>
+
+    <div class="grs-rank">
+      <div class="grs-rank-item">
+        <strong>Prairies</strong>
+        <span>Granary of the World (wheat)</span>
+      </div>
+      <div class="grs-rank-item">
+        <strong>Pampas</strong>
+        <span>Wheat + cattle of Argentina</span>
+      </div>
+      <div class="grs-rank-item">
+        <strong>Steppes</strong>
+        <span>Largest continuous grassland</span>
+      </div>
+      <div class="grs-rank-item">
+        <strong>Savanna</strong>
+        <span>Africa's Big Five zone</span>
+      </div>
+    </div>
+
+    <h2>6 · Temperate vs Tropical — the silent distinction</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Temperate Grassland</th>
+          <th>Tropical Grassland (Savanna)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Location</td><td>Mid-latitudes (30°–55° N/S)</td><td>Near the equator (10°–30° N/S)</td></tr>
+        <tr><td>Rainfall</td><td>Moderate, spread through the year</td><td>Two seasons — wet + dry</td></tr>
+        <tr><td>Trees</td><td>Almost none — pure grass</td><td>Scattered trees (acacia, baobab)</td></tr>
+        <tr><td>Grass height</td><td>Short to medium</td><td>Tall</td></tr>
+        <tr><td>Examples</td><td>Prairies, Pampas, Steppes, Velds, Downs, Puszta, Campos, Llanos, Canterbury, Manchuria</td><td>African Savanna</td></tr>
+      </tbody>
+    </table>
+
+    <div class="rev-note">
+      <strong>Exam tip:</strong> Almost all the world's grasslands are <strong>temperate</strong> — only the
+      African Savanna is the classic <strong>tropical</strong> grassland. If a question says "tropical grassland",
+      the answer is almost certainly <strong>Savanna</strong>.
+    </div>
+
+    <h2>7 · Rapid Fire</h2>
+    <p>Answer in your head, then tap the question to check.</p>
+
+    <div class="grs-q">
+      <p>Prairies are the grasslands of which country?</p>
+      <div class="grs-ans">USA and Canada (North America)</div>
+    </div>
+
+    <div class="grs-q">
+      <p>Pampas are the grasslands of which country?</p>
+      <div class="grs-ans">Argentina</div>
+    </div>
+
+    <div class="grs-q">
+      <p>Llanos are the grasslands of which country?</p>
+      <div class="grs-ans">Venezuela</div>
+    </div>
+
+    <div class="grs-q">
+      <p>Campos are the grasslands of which country?</p>
+      <div class="grs-ans">Brazil</div>
+    </div>
+
+    <div class="grs-q">
+      <p>Puszta is the grassland of which country?</p>
+      <div class="grs-ans">Hungary</div>
+    </div>
+
+    <div class="grs-q">
+      <p>Velds are the grasslands of which country?</p>
+      <div class="grs-ans">South Africa</div>
+    </div>
+
+    <div class="grs-q">
+      <p>Downs are the grasslands of which country?</p>
+      <div class="grs-ans">Australia</div>
+    </div>
+
+    <div class="grs-q">
+      <p>Canterbury Plains are in which country?</p>
+      <div class="grs-ans">New Zealand</div>
+    </div>
+
+    <div class="grs-q">
+      <p>Manchuria is the grassland of which country?</p>
+      <div class="grs-ans">China</div>
+    </div>
+
+    <div class="grs-q">
+      <p>Which grassland is called the "Granary of the World"?</p>
+      <div class="grs-ans">Prairies (North America) — famous for wheat</div>
+    </div>
+
+    <div class="grs-q">
+      <p>Which is the classic tropical grassland of the world?</p>
+      <div class="grs-ans">Savanna (Africa)</div>
+    </div>
+
+    <div class="grs-q">
+      <p>Steppes stretch across which two continents?</p>
+      <div class="grs-ans">Europe and Asia (the Eurasian Steppe)</div>
+    </div>
+
+    <div class="grs-q">
+      <p>Which grasslands are associated with gold and diamond mining?</p>
+      <div class="grs-ans">Velds (South Africa — Johannesburg's Highveld)</div>
+    </div>
+
+    <div class="grs-q">
+      <p>Which grassland is home to the "Gauchos"?</p>
+      <div class="grs-ans">Pampas (Argentina)</div>
+    </div>
+
+    <div class="grs-q">
+      <p>Which grassland is home to the "Big Five" wildlife of Africa?</p>
+      <div class="grs-ans">Savanna</div>
+    </div>
+
+    <hr>
+
+    <p class="rev-subtitle">Tip: use "Hide all" before a revision session, then "Reveal all" to check your answers at the end. Best of luck — fix the world map in your head and every question becomes easy.</p>
+
+  </main>
+
+  <!-- Tap-to-reveal behaviour for this page. -->
+  <script>
+    (function () {
+      document.addEventListener('click', function (e) {
+        if (e.target.closest('.grs-btn')) return;
+        var el = e.target.closest('.grs-card, .grs-q');
+        if (!el) return;
+        el.classList.toggle('is-open');
+      });
+
+      document.querySelectorAll('.grs-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var open = btn.getAttribute('data-grs-all') === 'open';
+          document.querySelectorAll('.grs-card, .grs-q').forEach(function (el) {
+            el.classList.toggle('is-open', open);
+          });
+        });
+      });
+    })();
+  </script>
+
+  <!-- Report true content height to the parent app.
+       Measures <main class="rev-page"> directly, NOT document.body. -->
+  <script>
+    (function () {
+      function sendHeight() {
+        var el = document.querySelector('.rev-page') || document.body;
+        var h = Math.ceil(el.getBoundingClientRect().height);
+        if (!h) h = el.scrollHeight || 0;
+        if (!h) return;
+        try {
+          window.parent.postMessage({ type: 'revision-height', height: h }, '*');
+        } catch (e) {}
+      }
+      window.addEventListener('load', sendHeight);
+      window.addEventListener('resize', sendHeight);
+      setTimeout(sendHeight, 0);
+      setTimeout(sendHeight, 50);
+      setTimeout(sendHeight, 300);
+      setTimeout(sendHeight, 1000);
+      if (window.ResizeObserver) {
+        new ResizeObserver(sendHeight).observe(document.body);
+      }
+    })();
+  </script>
+</body>
+</html>

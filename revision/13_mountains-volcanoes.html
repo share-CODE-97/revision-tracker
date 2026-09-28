@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mountains &amp; Volcanoes — Revision</title>
+
+  <!--
+    Revision page for "Mountains & Volcanoes".
+    Loaded inside the main app's iframe.
+    • Theme is passed via URL hash: #theme=dark or #theme=light
+    • Styles come from ../css/style.css
+  -->
+
+  <!-- Read theme from URL hash BEFORE paint (no flash). -->
+  <script>
+    (function () {
+      var m = location.hash.match(/theme=(light|dark)/);
+      document.documentElement.setAttribute('data-theme', m ? m[1] : 'dark');
+    })();
+  </script>
+
+  <!-- Shared app styles — this links the file to the MAIN stylesheet. -->
+  <link rel="stylesheet" href="../css/style.css">
+
+  <!-- Match the app's font stack. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Page-specific styles for Mountains & Volcanoes (namespace: .mtn-) -->
+  <style>
+    .mtn-tools{ display:flex; gap:10px; flex-wrap:wrap; margin:14px 0 6px; }
+    .mtn-btn{
+      font:inherit; font-size:.78rem; font-weight:700; letter-spacing:.02em;
+      padding:7px 14px; border-radius:999px; cursor:pointer;
+      border:1px solid #475569; background:transparent; color:#cbd5e1;
+      transition:border-color .15s, color .15s;
+    }
+    .mtn-btn:hover{ border-color:#6366f1; color:#a5b4fc; }
+
+    /* Tap-to-reveal cards */
+    .mtn-card{
+      border:1px solid #334155; border-radius:12px; background:#0f172a;
+      padding:12px 15px; margin:10px 0; cursor:pointer;
+      transition:border-color .15s, background .15s;
+    }
+    .mtn-card:hover{ border-color:#6366f1; }
+    .mtn-card.is-open{ border-color:#6366f1; background:#131c33; }
+    .mtn-card__head{
+      display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;
+      font-weight:700; font-size:.95rem; color:#e2e8f0;
+    }
+    .mtn-card__head::after{ content:'+'; color:#6366f1; font-weight:800; margin-left:auto; }
+    .mtn-card.is-open .mtn-card__head::after{ content:'–'; }
+    .mtn-card__body{ display:none; margin-top:10px; font-size:.88rem; line-height:1.6; color:#cbd5e1; }
+    .mtn-card.is-open .mtn-card__body{ display:block; }
+
+    /* Continent / type badges */
+    .mtn-badge{
+      display:inline-block; font-size:.66rem; font-weight:700; letter-spacing:.04em;
+      text-transform:uppercase; padding:2px 8px; border-radius:999px;
+      background:#1e293b; color:#a5b4fc; margin-left:6px; vertical-align:middle;
+    }
+    .mtn-badge--asia{ background:#831843; color:#fbcfe8; }
+    .mtn-badge--eu{ background:#4c1d95; color:#ddd6fe; }
+    .mtn-badge--af{ background:#7c2d12; color:#fed7aa; }
+    .mtn-badge--na{ background:#0c4a6e; color:#bae6fd; }
+    .mtn-badge--sa{ background:#713f12; color:#fde68a; }
+    .mtn-badge--au{ background:#065f46; color:#a7f3d0; }
+    .mtn-badge--an{ background:#155e75; color:#a5f3fc; }
+
+    .mtn-badge--active{ background:#7f1d1d; color:#fecaca; }
+    .mtn-badge--dormant{ background:#78350f; color:#fde68a; }
+    .mtn-badge--extinct{ background:#334155; color:#cbd5e1; }
+
+    /* Continent banner cards */
+    .mtn-cont{
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+      gap:12px; margin:16px 0 8px;
+    }
+    .mtn-cont-card{
+      border:1px solid #334155; border-radius:14px; padding:14px 16px;
+      background:#0f172a; border-top-width:4px;
+    }
+    .mtn-cont-card h3{ margin:0 0 6px; font-size:1rem; color:#e2e8f0; }
+    .mtn-cont-card p{ margin:0; font-size:.85rem; line-height:1.55; color:#94a3b8; }
+    .mtn-cont-card--asia{ border-top-color:#f472b6; }
+    .mtn-cont-card--eu{ border-top-color:#a78bfa; }
+    .mtn-cont-card--af{ border-top-color:#fb923c; }
+    .mtn-cont-card--na{ border-top-color:#38bdf8; }
+    .mtn-cont-card--sa{ border-top-color:#facc15; }
+    .mtn-cont-card--au{ border-top-color:#34d399; }
+    .mtn-cont-card--an{ border-top-color:#22d3ee; }
+    html[data-theme="light"] .mtn-cont-card{ background:#ffffff; border-color:#e2e8f0; }
+    html[data-theme="light"] .mtn-cont-card h3{ color:#1e293b; }
+    html[data-theme="light"] .mtn-cont-card p{ color:#475569; }
+
+    /* Volcano family banner cards */
+    .mtn-vfam{
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+      gap:12px; margin:16px 0 8px;
+    }
+    .mtn-vfam-card{
+      border:1px solid #334155; border-radius:14px; padding:14px 16px;
+      background:#0f172a; border-top-width:4px;
+    }
+    .mtn-vfam-card h3{ margin:0 0 6px; font-size:1rem; color:#e2e8f0; }
+    .mtn-vfam-card p{ margin:0; font-size:.85rem; line-height:1.55; color:#94a3b8; }
+    .mtn-vfam-card--active{ border-top-color:#ef4444; }
+    .mtn-vfam-card--dormant{ border-top-color:#f59e0b; }
+    .mtn-vfam-card--extinct{ border-top-color:#94a3b8; }
+    html[data-theme="light"] .mtn-vfam-card{ background:#ffffff; border-color:#e2e8f0; }
+    html[data-theme="light"] .mtn-vfam-card h3{ color:#1e293b; }
+    html[data-theme="light"] .mtn-vfam-card p{ color:#475569; }
+
+    /* Mnemonic highlight */
+    .mtn-mnem{
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      font-weight:700; color:#a5b4fc; letter-spacing:.03em;
+    }
+
+    /* Quiz */
+    .mtn-q{
+      border-left:3px solid #6366f1; border-radius:0 10px 10px 0;
+      background:#0f172a; padding:11px 15px; margin:12px 0; cursor:pointer;
+    }
+    .mtn-q p{ margin:0; font-weight:600; font-size:.92rem; color:#e2e8f0; }
+    .mtn-q .mtn-ans{ display:none; margin-top:8px; font-size:.88rem; color:#a5b4fc; font-weight:600; }
+    .mtn-q.is-open .mtn-ans{ display:block; }
+
+    /* India callout */
+    .mtn-india{
+      border-left:4px solid #f97316; border-radius:0 12px 12px 0;
+      background:#1c1917; padding:14px 16px; margin:14px 0;
+    }
+    .mtn-india strong{ color:#fdba74; }
+    .mtn-india p{ margin:6px 0; color:#e2e8f0; font-size:.9rem; line-height:1.6; }
+    html[data-theme="light"] .mtn-india{ background:#fff7ed; }
+    html[data-theme="light"] .mtn-india strong{ color:#c2410c; }
+    html[data-theme="light"] .mtn-india p{ color:#1e293b; }
+
+    html[data-theme="light"] .mtn-btn{ border-color:#cbd5e1; color:#334155; }
+    html[data-theme="light"] .mtn-btn:hover{ border-color:#6366f1; color:#4338ca; }
+    html[data-theme="light"] .mtn-card{ background:#ffffff; border-color:#e2e8f0; }
+    html[data-theme="light"] .mtn-card.is-open{ background:#eef2ff; border-color:#6366f1; }
+    html[data-theme="light"] .mtn-card__head{ color:#1e293b; }
+    html[data-theme="light"] .mtn-card__body{ color:#475569; }
+    html[data-theme="light"] .mtn-badge{ background:#e0e7ff; color:#4338ca; }
+    html[data-theme="light"] .mtn-badge--asia{ background:#fce7f3; color:#9d174d; }
+    html[data-theme="light"] .mtn-badge--eu{ background:#ede9fe; color:#5b21b6; }
+    html[data-theme="light"] .mtn-badge--af{ background:#ffedd5; color:#9a3412; }
+    html[data-theme="light"] .mtn-badge--na{ background:#dbeafe; color:#1e40af; }
+    html[data-theme="light"] .mtn-badge--sa{ background:#fef3c7; color:#92400e; }
+    html[data-theme="light"] .mtn-badge--au{ background:#d1fae5; color:#065f46; }
+    html[data-theme="light"] .mtn-badge--an{ background:#cffafe; color:#155e75; }
+    html[data-theme="light"] .mtn-badge--active{ background:#fee2e2; color:#991b1b; }
+    html[data-theme="light"] .mtn-badge--dormant{ background:#fef3c7; color:#92400e; }
+    html[data-theme="light"] .mtn-badge--extinct{ background:#e2e8f0; color:#334155; }
+    html[data-theme="light"] .mtn-q{ background:#f8fafc; }
+    html[data-theme="light"] .mtn-q p{ color:#1e293b; }
+    html[data-theme="light"] .mtn-q .mtn-ans{ color:#4338ca; }
+    html[data-theme="light"] .mtn-mnem{ color:#4338ca; }
+  </style>
+</head>
+
+<body style="background: transparent; margin: 0;">
+  <main class="rev-page">
+
+    <h1>Mountains &amp; Volcanoes</h1>
+    <p class="rev-subtitle">Ranges · highest peaks of continents · active / dormant / extinct volcanoes — tap to reveal.</p>
+
+    <div class="rev-note">
+      <strong>Two separate topics, one page.</strong>
+      <ul>
+        <li><strong>Mountains</strong> — physical features (ranges, peaks, continents).</li>
+        <li><strong>Volcanoes</strong> — classified by activity: <em>Active</em> (erupts often), <em>Dormant</em> (sleeping but can wake), <em>Extinct</em> (dead, won't erupt again).</li>
+      </ul>
+      UPSC / BPSC loves asking: highest peak of a continent, and whether a volcano is active / dormant / extinct.
+    </div>
+
+    <h2>1 · Major Mountain Ranges of the World</h2>
+    <p>Read the range name → say the continent and the highest peak → tap to check.</p>
+
+    <div class="mtn-tools">
+      <button class="mtn-btn" data-mtn-all="open">Reveal all</button>
+      <button class="mtn-btn" data-mtn-all="close">Hide all</button>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Rockies <span class="mtn-badge mtn-badge--na">North America</span></div>
+      <div class="mtn-card__body">
+        <p><strong>Location:</strong> Western USA and Canada — stretch from Alaska down to New Mexico.</p>
+        <p><strong>Highest peak:</strong> <code>Mount Elbert — 4401 m</code> (Colorado, USA).</p>
+        <p><strong>Famous for:</strong> Yellowstone, Grand Teton and Rocky Mountain National Parks.</p>
+      </div>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Appalachians <span class="mtn-badge mtn-badge--na">North America</span></div>
+      <div class="mtn-card__body">
+        <p><strong>Location:</strong> Eastern USA and Canada — the oldest mountain system of North America.</p>
+        <p><strong>Highest peak:</strong> <code>Mount Mitchell — 2037 m</code> (North Carolina, USA).</p>
+        <p><strong>Famous for:</strong> The <em>Appalachian Trail</em> — the world's longest hiking trail.</p>
+      </div>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Scandinavian Mountains <span class="mtn-badge mtn-badge--eu">Europe</span></div>
+      <div class="mtn-card__body">
+        <p><strong>Location:</strong> Norway and Sweden (the Scandinavian peninsula).</p>
+        <p><strong>Highest peak:</strong> <code>Galdhøpiggen — 2469 m</code> (Norway) — the highest peak of Northern Europe.</p>
+        <p><strong>Famous for:</strong> Fjords, glaciers, and the northern lights.</p>
+      </div>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Alps <span class="mtn-badge mtn-badge--eu">Europe</span></div>
+      <div class="mtn-card__body">
+        <p><strong>Location:</strong> Stretch across France, Switzerland, Italy, Austria, Germany, Slovenia.</p>
+        <p><strong>Highest peak:</strong> <code>Mont Blanc — 4809 m</code> (France / Italy border).</p>
+        <p><strong>Famous for:</strong> Europe's most popular ski region; the Matterhorn; the Rhine, Rhône, and Po rivers all rise here.</p>
+      </div>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Urals <span class="mtn-badge mtn-badge--eu">Europe</span><span class="mtn-badge mtn-badge--asia">Asia</span></div>
+      <div class="mtn-card__body">
+        <p><strong>Location:</strong> Russia — the classic boundary between Europe and Asia.</p>
+        <p><strong>Highest peak:</strong> <code>Mount Narodnaya — 1894 m</code>.</p>
+        <p><strong>Famous for:</strong> Rich mineral belt (iron, copper, gold, platinum). The Urals mark the <em>continental divide</em> of Eurasia.</p>
+      </div>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Atlas <span class="mtn-badge mtn-badge--af">Africa</span></div>
+      <div class="mtn-card__body">
+        <p><strong>Location:</strong> Morocco, Algeria, Tunisia — the "backbone" of North Africa.</p>
+        <p><strong>Highest peak:</strong> <code>Mount Toubkal — 4167 m</code> (Morocco).</p>
+        <p><strong>Famous for:</strong> Separating the Mediterranean coast from the Sahara desert.</p>
+      </div>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Andes <span class="mtn-badge mtn-badge--sa">South America</span></div>
+      <div class="mtn-card__body">
+        <p><strong>Location:</strong> Runs the entire length of South America — 7000 km — through Venezuela, Colombia, Ecuador, Peru, Bolivia, Chile, Argentina.</p>
+        <p><strong>Highest peak:</strong> <code>Mount Aconcagua — 6961 m</code> (Argentina) — the highest peak in the Western and Southern Hemispheres.</p>
+        <p><strong>Famous for:</strong> The <em>world's longest mountain range</em>. Site of the Atacama desert and the Amazon's source.</p>
+      </div>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Drakensberg <span class="mtn-badge mtn-badge--af">Africa</span></div>
+      <div class="mtn-card__body">
+        <p><strong>Location:</strong> South Africa (also Lesotho and Eswatini).</p>
+        <p><strong>Highest peak:</strong> <code>Thabana Ntlenyana — 3482 m</code> (Lesotho).</p>
+        <p><strong>Famous for:</strong> "Drakensberg" means "Dragon's Mountain" in Afrikaans.</p>
+      </div>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Great Dividing Range <span class="mtn-badge mtn-badge--au">Australia</span></div>
+      <div class="mtn-card__body">
+        <p><strong>Location:</strong> Eastern Australia — Queensland, NSW, Victoria.</p>
+        <p><strong>Highest peak:</strong> <code>Mount Kosciuszko — 2228 m</code> (New South Wales) — the highest peak of mainland Australia.</p>
+        <p><strong>Famous for:</strong> The <em>only</em> major mountain range in Australia.</p>
+      </div>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Altai <span class="mtn-badge mtn-badge--asia">Asia</span></div>
+      <div class="mtn-card__body">
+        <p><strong>Location:</strong> Russia, Mongolia, China, Kazakhstan.</p>
+        <p><strong>Highest peak:</strong> <code>Belukha Mountain — 4506 m</code>.</p>
+        <p><strong>Famous for:</strong> The source region of the <em>Ob</em> and <em>Irtysh</em> rivers; rich in snow leopards.</p>
+      </div>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Himalayas <span class="mtn-badge mtn-badge--asia">Asia</span></div>
+      <div class="mtn-card__body">
+        <p><strong>Location:</strong> India, Nepal, Bhutan, Tibet (China), Pakistan.</p>
+        <p><strong>Highest peak:</strong> <code>Mount Everest — 8849 m</code> (Nepal – Tibet border) — the highest peak in the world.</p>
+        <p><strong>Famous for:</strong> The world's youngest and highest fold mountains. Home of the "Third Pole" (glaciers). Source of Indus, Ganga, Brahmaputra.</p>
+      </div>
+    </div>
+
+    <h2>2 · Highest Peak of Each Continent</h2>
+    <p>The single most-asked table in geography. Tap each continent to reveal.</p>
+
+    <div class="mtn-cont">
+      <div class="mtn-cont-card mtn-cont-card--asia">
+        <h3>Asia</h3>
+        <p><strong>Mount Everest</strong><br><code>8850 m</code><br>Nepal – Tibet</p>
+      </div>
+      <div class="mtn-cont-card mtn-cont-card--sa">
+        <h3>South America</h3>
+        <p><strong>Aconcagua</strong><br><code>6962 m</code><br>Argentina</p>
+      </div>
+      <div class="mtn-cont-card mtn-cont-card--na">
+        <h3>North America</h3>
+        <p><strong>McKinley (Denali)</strong><br><code>6194 m</code><br>Alaska, USA</p>
+      </div>
+      <div class="mtn-cont-card mtn-cont-card--af">
+        <h3>Africa</h3>
+        <p><strong>Kilimanjaro</strong><br><code>5895 m</code><br>Tanzania</p>
+      </div>
+      <div class="mtn-cont-card mtn-cont-card--eu">
+        <h3>Europe</h3>
+        <p><strong>Elbrus</strong><br><code>5642 m</code><br>Caucasus, Russia</p>
+      </div>
+      <div class="mtn-cont-card mtn-cont-card--an">
+        <h3>Antarctica</h3>
+        <p><strong>Vinson Massif</strong><br><code>5140 m</code><br>Antarctica</p>
+      </div>
+      <div class="mtn-cont-card mtn-cont-card--au">
+        <h3>Australia</h3>
+        <p><strong>Kosciuszko</strong><br><code>2228 m</code><br>New South Wales</p>
+      </div>
+    </div>
+
+    <div class="rev-note">
+      <strong>Ranks you should instantly know:</strong>
+      <ol>
+        <li>Asia (Everest) — 8850 m — <strong>World's highest</strong></li>
+        <li>South America (Aconcagua) — 6962 m</li>
+        <li>North America (McKinley) — 6194 m</li>
+        <li>Africa (Kilimanjaro) — 5895 m</li>
+        <li>Europe (Elbrus) — 5642 m</li>
+        <li>Antarctica (Vinson Massif) — 5140 m</li>
+        <li>Australia (Kosciuszko) — 2228 m — <strong>World's shortest of the seven</strong></li>
+      </ol>
+    </div>
+    <hr>
+
+<div>
+      <!--
+  IMAGE SNIPPET — paste inside <main class="rev-page"> at the spot you want it.
+  • src   : ../images/<lowercase-hyphenated-filename>.<png|jpg|svg|webp>
+  • class : rev-img-sm    (≤320px — icon, portrait, small symbol)
+            rev-img-md    (≤480px — single diagram, illustration)
+            rev-img-wide  (full width — map, timeline, comparison, chart)
+  • alt   : short description, required for accessibility
+-->
+
+
+
+<figure class="rev-figure">
+  <img src="../images/13_01_mountains-volcanoes.JPG"
+       class="rev-img rev-img-wide"
+       alt="Map of world major mountain ranges and highest peaks of each continent.">
+  <figcaption>Major Mountain Ranges and Highest Peaks of Each Continent</figcaption>
+</figure>
+
+</div>
+
+
+
+
+
+
+
+
+    <h2>3 · Volcanoes — three families</h2>
+
+    <div class="mtn-vfam">
+      <div class="mtn-vfam-card mtn-vfam-card--active">
+        <h3>Active</h3>
+        <p>Erupts frequently or has erupted in recent history. Still alive and dangerous.</p>
+      </div>
+      <div class="mtn-vfam-card mtn-vfam-card--dormant">
+        <h3>Dormant</h3>
+        <p>"Sleeping" — no eruption for a long time, but <em>can</em> erupt again. Not dead.</p>
+      </div>
+      <div class="mtn-vfam-card mtn-vfam-card--extinct">
+        <h3>Extinct</h3>
+        <p>Dead — no recorded eruption in historic times, and no magma supply left.</p>
+      </div>
+    </div>
+
+    <h3>3A · Active Volcanoes</h3>
+    <p>Tap each to reveal its country.</p>
+
+    <div class="mtn-tools">
+      <button class="mtn-btn" data-mtn-all="open">Reveal all</button>
+      <button class="mtn-btn" data-mtn-all="close">Hide all</button>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Mt. Taal <span class="mtn-badge mtn-badge--active">Active</span></div>
+      <div class="mtn-card__body">Philippines. Located on Luzon island, inside a lake — one of the smallest active volcanoes in the world.</div>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Mt. Mayon <span class="mtn-badge mtn-badge--active">Active</span></div>
+      <div class="mtn-card__body">Philippines. Famous for its almost-perfect cone — "the world's most perfect volcano".</div>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Mt. Pinatubo <span class="mtn-badge mtn-badge--active">Active</span></div>
+      <div class="mtn-card__body">Philippines. Its 1991 eruption was one of the largest of the 20th century — cooled the entire planet by ~0.5 °C for a year.</div>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Barren Island <span class="mtn-badge mtn-badge--active">Active</span></div>
+      <div class="mtn-card__body"><strong>Andaman &amp; Nicobar Islands, India</strong> — India's <em>only</em> active volcano. Lies in the Bay of Bengal.</div>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Stromboli <span class="mtn-badge mtn-badge--active">Active</span></div>
+      <div class="mtn-card__body">Italy. Called the "Lighthouse of the Mediterranean" — erupts almost continuously.</div>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Mt. Etna <span class="mtn-badge mtn-badge--active">Active</span></div>
+      <div class="mtn-card__body">Italy (Sicily). Europe's most active volcano — erupts almost every year.</div>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Hekla <span class="mtn-badge mtn-badge--active">Active</span></div>
+      <div class="mtn-card__body">Iceland. In medieval Europe it was called the "Gateway to Hell".</div>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Laki <span class="mtn-badge mtn-badge--active">Active</span></div>
+      <div class="mtn-card__body">Iceland. Its 1783 eruption killed ~25% of Iceland's population and caused crop failures across Europe.</div>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Katmai <span class="mtn-badge mtn-badge--active">Active</span></div>
+      <div class="mtn-card__body">Alaska, USA. Site of the 1912 Novarupta eruption — the largest of the 20th century.</div>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Mt. Rainier <span class="mtn-badge mtn-badge--active">Active</span></div>
+      <div class="mtn-card__body">Washington, USA. Considered one of the most dangerous volcanoes in the USA.</div>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Mt. Shasta <span class="mtn-badge mtn-badge--active">Active</span></div>
+      <div class="mtn-card__body">California, USA. Part of the Cascade Range.</div>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Mauna Loa <span class="mtn-badge mtn-badge--active">Active</span></div>
+      <div class="mtn-card__body">Hawaii, USA. The <strong>largest volcano on Earth</strong> by volume.</div>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Mauna Kea <span class="mtn-badge mtn-badge--active">Active</span></div>
+      <div class="mtn-card__body">Hawaii, USA. Taller than Everest when measured from its base on the ocean floor.</div>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Kilauea <span class="mtn-badge mtn-badge--active">Active</span></div>
+      <div class="mtn-card__body">Hawaii, USA. One of the world's most active volcanoes — erupts almost non-stop.</div>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Mt. Pelée <span class="mtn-badge mtn-badge--active">Active</span></div>
+      <div class="mtn-card__body">West Indies (Martinique). Its 1902 eruption destroyed the city of Saint-Pierre — only 3 survivors.</div>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Cotopaxi <span class="mtn-badge mtn-badge--active">Active</span></div>
+      <div class="mtn-card__body">Ecuador. One of the world's highest active volcanoes (<code>5897 m</code>).</div>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Erebus <span class="mtn-badge mtn-badge--active">Active</span></div>
+      <div class="mtn-card__body">Antarctica. The southernmost active volcano on Earth — has a permanent lava lake.</div>
+    </div>
+
+    <h3>3B · Dormant Volcanoes</h3>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Narcondam Island <span class="mtn-badge mtn-badge--dormant">Dormant</span></div>
+      <div class="mtn-card__body"><strong>Andaman &amp; Nicobar Islands, India</strong> — India's dormant volcano. Sits ~150 km from Barren Island.</div>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Krakatoa <span class="mtn-badge mtn-badge--dormant">Dormant</span></div>
+      <div class="mtn-card__body">Indonesia. Its 1883 eruption was one of the deadliest in history — heard 3000+ km away.</div>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Mt. Fujiyama / Fuji <span class="mtn-badge mtn-badge--dormant">Dormant</span></div>
+      <div class="mtn-card__body">Japan. Japan's highest peak (<code>3776 m</code>) and a sacred symbol.</div>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Vesuvius <span class="mtn-badge mtn-badge--dormant">Dormant</span></div>
+      <div class="mtn-card__body">Italy. Famous for the 79 AD eruption that buried Pompeii and Herculaneum.</div>
+    </div>
+
+    <h3>3C · Extinct Volcanoes</h3>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Mt. Popa <span class="mtn-badge mtn-badge--extinct">Extinct</span></div>
+      <div class="mtn-card__body">Myanmar (Burma). A sacred pilgrimage site — "Mount Popa" is an extinct volcano.</div>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Mt. Damavand <span class="mtn-badge mtn-badge--extinct">Extinct</span></div>
+      <div class="mtn-card__body">Iran. The highest peak in Iran and the Middle East (<code>5610 m</code>).</div>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Koh Sultan <span class="mtn-badge mtn-badge--extinct">Extinct</span></div>
+      <div class="mtn-card__body">Iran. A dormant / extinct volcanic cone in the eastern Iranian plateau.</div>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Kilimanjaro <span class="mtn-badge mtn-badge--extinct">Extinct</span></div>
+      <div class="mtn-card__body">Tanzania (border with Kenya). The highest peak in Africa (<code>5895 m</code>) — a dormant volcano that may erupt again.</div>
+    </div>
+
+    <div class="mtn-card">
+      <div class="mtn-card__head">Aconcagua <span class="mtn-badge mtn-badge--extinct">Extinct</span></div>
+      <div class="mtn-card__body">Argentina – Chile border. Highest peak in South America (<code>6962 m</code>) — an extinct volcano.</div>
+    </div>
+
+    <div class="mtn-india">
+      <strong>🇮🇳 India-only revision:</strong>
+      <p><strong>Barren Island</strong> — India's <em>only active volcano</em>. In the Andaman Sea, ~138 km from Port Blair.</p>
+      <p><strong>Narcondam Island</strong> — India's <em>dormant volcano</em>. Also in the Andaman Sea.</p>
+      <p>Both are part of the <strong>Andaman &amp; Nicobar Islands</strong> union territory. UPSC has asked this repeatedly.</p>
+    </div>
+
+    <hr>
+
+<div>
+      <!--
+  IMAGE SNIPPET — paste inside <main class="rev-page"> at the spot you want it.
+  • src   : ../images/<lowercase-hyphenated-filename>.<png|jpg|svg|webp>
+  • class : rev-img-sm    (≤320px — icon, portrait, small symbol)
+            rev-img-md    (≤480px — single diagram, illustration)
+            rev-img-wide  (full width — map, timeline, comparison, chart)
+  • alt   : short description, required for accessibility
+-->
+
+
+
+<figure class="rev-figure">
+  <img src="../images/13_03_mountains-volcanoes.JPG"
+       class="rev-img rev-img-wide"
+       alt="world major tectonic plates and volcanoes, showing active, dormant and extinct volcanoes.">
+  <figcaption>World Major Tectonic Plates and Volcanoes</figcaption>
+</figure>
+
+</div>
+
+    <h2>4 · Memory tricks that save you</h2>
+
+    <div class="rev-note">
+      <strong>Trick 1 — The 7 highest peaks, in descending order:</strong><br>
+      <span class="mtn-mnem">"Everest · Aconcagua · McKinley · Kilimanjaro · Elbrus · Vinson · Kosciuszko"</span><br>
+      Remember the mnemonic: <strong>"E-A-M-K-E-V-K"</strong> → <em>"Every Adventurous Mountaineer Knows Every Very High Kilometre"</em>.
+    </div>
+
+    <div class="rev-note">
+      <strong>Trick 2 — Continents + their peaks:</strong><br>
+      Asia → Everest (highest)<br>
+      South America → Aconcagua<br>
+      North America → McKinley<br>
+      Africa → Kilimanjaro<br>
+      Europe → Elbrus<br>
+      Antarctica → Vinson<br>
+      Australia → Kosciuszko (lowest)
+    </div>
+
+    <div class="rev-note">
+      <strong>Trick 3 — Volcano types by country:</strong><br>
+      • <strong>Philippines has three:</strong> Taal, Mayon, Pinatubo — "T-M-P".<br>
+      • <strong>Italy has three:</strong> Stromboli, Etna (active), Vesuvius (dormant).<br>
+      • <strong>Iceland has two:</strong> Hekla, Laki — "H-L".<br>
+      • <strong>Hawaii has three:</strong> Mauna Loa, Mauna Kea, Kilauea — "M-M-K".<br>
+      • <strong>India has two:</strong> Barren Island (active), Narcondam (dormant).
+    </div>
+
+    <div class="rev-note">
+      <strong>Trick 4 — "Extinct" club:</strong><br>
+      <span class="mtn-mnem">"Popa (Myanmar) · Damavand (Iran) · Koh Sultan (Iran) · Kilimanjaro (Tanzania) · Aconcagua (Argentina)"</span><br>
+      Memory: <em>Extinct = East + Africa + South America</em>.
+    </div>
+
+    <div class="rev-note">
+      <strong>Trick 5 — The one that catches everyone:</strong><br>
+      <strong>Barren Island</strong> = active (India).<br>
+      <strong>Narcondam</strong> = dormant (India).<br>
+      Both in <strong>Andaman &amp; Nicobar Islands</strong>. Do not swap them.
+    </div>
+
+    <div class="rev-note">
+      <strong>Trick 6 — Ranges vs highest peak:</strong><br>
+      • <strong>Andes</strong> — world's longest range → Aconcagua.<br>
+      • <strong>Himalayas</strong> — world's highest range → Everest.<br>
+      • <strong>Rockies</strong> — North America → Elbert.<br>
+      • <strong>Appalachians</strong> — oldest in North America → Mitchell.<br>
+      • <strong>Alps</strong> — Europe → Mont Blanc.<br>
+      • <strong>Urals</strong> — Europe-Asia divide → Narodnaya.
+    </div>
+
+    <h2>5 · Rapid Fire</h2>
+    <p>Answer out loud, then tap to check.</p>
+
+    <div class="mtn-q">
+      <p>Highest peak in the world?</p>
+      <div class="mtn-ans">Mount Everest — 8850 m (Nepal – Tibet)</div>
+    </div>
+
+    <div class="mtn-q">
+      <p>Highest peak of South America?</p>
+      <div class="mtn-ans">Aconcagua — 6962 m (Argentina)</div>
+    </div>
+
+    <div class="mtn-q">
+      <p>Highest peak of North America?</p>
+      <div class="mtn-ans">McKinley (Denali) — 6194 m (Alaska, USA)</div>
+    </div>
+
+    <div class="mtn-q">
+      <p>Highest peak of Africa?</p>
+      <div class="mtn-ans">Kilimanjaro — 5895 m (Tanzania)</div>
+    </div>
+
+    <div class="mtn-q">
+      <p>Highest peak of Europe?</p>
+      <div class="mtn-ans">Elbrus — 5642 m (Caucasus, Russia)</div>
+    </div>
+
+    <div class="mtn-q">
+      <p>Highest peak of Antarctica?</p>
+      <div class="mtn-ans">Vinson Massif — 5140 m</div>
+    </div>
+
+    <div class="mtn-q">
+      <p>Highest peak of Australia?</p>
+      <div class="mtn-ans">Kosciuszko — 2228 m (New South Wales)</div>
+    </div>
+
+    <div class="mtn-q">
+      <p>India's only active volcano?</p>
+      <div class="mtn-ans">Barren Island (Andaman &amp; Nicobar Islands)</div>
+    </div>
+
+    <div class="mtn-q">
+      <p>India's dormant volcano?</p>
+      <div class="mtn-ans">Narcondam Island (Andaman &amp; Nicobar Islands)</div>
+    </div>
+
+    <div class="mtn-q">
+      <p>Which country has Mt. Etna and Stromboli?</p>
+      <div class="mtn-ans">Italy</div>
+    </div>
+
+    <div class="mtn-q">
+      <p>Which country has Hekla and Laki?</p>
+      <div class="mtn-ans">Iceland</div>
+    </div>
+
+    <div class="mtn-q">
+      <p>Which country has Mt. Taal, Mayon and Pinatubo?</p>
+      <div class="mtn-ans">Philippines</div>
+    </div>
+
+    <div class="mtn-q">
+      <p>Which country has Mauna Loa, Mauna Kea and Kilauea?</p>
+      <div class="mtn-ans">USA (Hawaii)</div>
+    </div>
+
+    <div class="mtn-q">
+      <p>Which volcano destroyed Pompeii?</p>
+      <div class="mtn-ans">Mt. Vesuvius (Italy) — 79 AD</div>
+    </div>
+
+    <div class="mtn-q">
+      <p>Which is the southernmost active volcano on Earth?</p>
+      <div class="mtn-ans">Erebus (Antarctica)</div>
+    </div>
+
+    <div class="mtn-q">
+      <p>Which is the largest volcano on Earth by volume?</p>
+      <div class="mtn-ans">Mauna Loa (Hawaii)</div>
+    </div>
+
+    <div class="mtn-q">
+      <p>Highest peak of the Rockies?</p>
+      <div class="mtn-ans">Mount Elbert — 4401 m</div>
+    </div>
+
+    <div class="mtn-q">
+      <p>Highest peak of the Alps?</p>
+      <div class="mtn-ans">Mont Blanc — 4809 m</div>
+    </div>
+
+    <div class="mtn-q">
+      <p>Longest mountain range in the world?</p>
+      <div class="mtn-ans">Andes (South America) — ~7000 km</div>
+    </div>
+
+    <div class="mtn-q">
+      <p>Which range separates Europe from Asia?</p>
+      <div class="mtn-ans">The Urals (Russia)</div>
+    </div>
+<div>
+    <h2>add it good way later</h2> 
+    <p>While the extraction of the information from the provided map is complete, **the map itself is not comprehensive enough for BPSC or UPSC preparation**. The image provides a basic foundational overview, but Civil Services examinations require a much deeper understanding of geomorphology, drainage, and ecology.
+
+To elevate this topic to a BPSC/UPSC standard, you must supplement the map's data with the following critical details for each region:
+
+## 1. The Himalayas & Trans-Himalayas
+
+* **Formation:** They are Young Fold Mountains formed by the tectonic collision of the Indian Plate with the Eurasian Plate.
+* **Trans-Himalayas (Karakoram, Ladakh, Zaskar):** Contains major glaciers like Siachen, Baltoro, and Biafo. The Ladakh range separates the Indus and Shyok river systems.
+* **Regional Divisions:** You must know the longitudinal divisions (Punjab Himalayas, Kumaon Himalayas, Nepal Himalayas, and Assam Himalayas) and the rivers that demarcate them (Indus, Sutlej, Kali, Tista, Dihang).
+* **Syntaxial Bends:** The sharp southward bends of the Himalayas at their western (Nanga Parbat) and eastern (Namcha Barwa) extremities.
+* **Important Passes:** Questions frequently ask to match passes with states or ranges (e.g., Zoji La, Rohtang, Nathu La, Bomdi La, Lipulekh).
+
+## 2. Central Indian Highlands
+
+* **Aravalli Range:** These are the oldest fold mountains in India, now reduced to relict (residual) mountains due to extensive weathering. They act as a water divide between the Indus basin and the Ganga basin, and are the source of rivers like Luni and Banas.
+* **Vindhya Range:** Acts as the traditional boundary between North and South India. It is a block mountain system and is a major source of rivers like Chambal, Betwa, and Ken. Its highest point is Sadbhawna Shikhar (Goodwill Peak).
+* **Satpura Range:** A series of seven mountains (Sat-pura). It is a block mountain flanked by rift valleys (Narmada to the north, Tapi to the south). Its highest peak is **Dhupgarh** (1,350 m) in the Mahadeo Hills.
+
+## 3. The Peninsular Plateau & Coastal Mountains
+
+* **Western Ghats (Sahyadris):**
+* **Geology:** They are essentially the faulted edge of the Deccan Plateau (escarpments), not true mountains.
+* **Continuity:** They are continuous and can only be crossed through specific passes (Gaps): **Thal Ghat** (connects Mumbai-Nashik), **Bhor Ghat** (Mumbai-Pune), and **Palghat** (Kerala-Tamil Nadu).
+* **Ecology:** A UNESCO World Heritage site and a globally recognized biodiversity hotspot.
+* **Drainage:** The primary watershed of the peninsula, sourcing major east-flowing rivers (Godavari, Krishna, Kaveri).
+
+
+* **Eastern Ghats:**
+* **Geology:** Older than the Western Ghats and highly discontinuous. They have been heavily eroded and cut through by the major east-flowing rivers (Mahanadi, Godavari, Krishna, Pennar, Kaveri) emptying into the Bay of Bengal.
+* **Highest Peak:** **Jindhagada Peak** (1,690 m) in Andhra Pradesh (though Mahendragiri is also frequently cited in older NCERTs).
+
+
+* **Nilgiri Hills (Blue Mountains):** The structural knot where the Eastern Ghats and Western Ghats meet. Famous for the Shola forests and the Kurinji flower.</p>
+
+
+</div>
+
+<div>
+<!--
+  IMAGE SNIPPET — paste inside <main class="rev-page"> at the spot you want it.
+  • src   : ../images/<lowercase-hyphenated-filename>.<png|jpg|svg|webp>
+  • class : rev-img-sm    (≤320px — icon, portrait, small symbol)
+            rev-img-md    (≤480px — single diagram, illustration)
+            rev-img-wide  (full width — map, timeline, comparison, chart)
+  • alt   : short description, required for accessibility
+-->
+
+
+
+<figure class="rev-figure">
+  <img src="../images/13_02_mountains-volcanoes.JPG"
+       class="rev-img rev-img-wide"
+       alt="INDIAN MOUNTAIN RANGES AND HILL REGIONS MAP showing the major mountain ranges, hill regions, and their highest peaks across India.">
+  <figcaption>INDIAN MOUNTAIN RANGES AND HILL REGIONS</figcaption>
+</figure>
+
+
+
+</div>
+
+
+
+    <hr>
+
+    <p class="rev-subtitle">Tip: use "Hide all" before a session, then "Reveal all" to check. The volcano list is memory-heavy — go through the rapid-fire twice.</p>
+
+  </main>
+
+  <!-- Tap-to-reveal behaviour for this page. -->
+  <script>
+    (function () {
+      document.addEventListener('click', function (e) {
+        if (e.target.closest('.mtn-btn')) return;
+        var el = e.target.closest('.mtn-card, .mtn-q');
+        if (!el) return;
+        el.classList.toggle('is-open');
+      });
+
+      document.querySelectorAll('.mtn-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var open = btn.getAttribute('data-mtn-all') === 'open';
+          document.querySelectorAll('.mtn-card, .mtn-q').forEach(function (el) {
+            el.classList.toggle('is-open', open);
+          });
+        });
+      });
+    })();
+  </script>
+
+  <!-- Report true content height to the parent app.
+       Measures <main class="rev-page"> directly, NOT document.body. -->
+  <script>
+    (function () {
+      function sendHeight() {
+        var el = document.querySelector('.rev-page') || document.body;
+        var h = Math.ceil(el.getBoundingClientRect().height);
+        if (!h) h = el.scrollHeight || 0;
+        if (!h) return;
+        try {
+          window.parent.postMessage({ type: 'revision-height', height: h }, '*');
+        } catch (e) {}
+      }
+      window.addEventListener('load', sendHeight);
+      window.addEventListener('resize', sendHeight);
+      setTimeout(sendHeight, 0);
+      setTimeout(sendHeight, 50);
+      setTimeout(sendHeight, 300);
+      setTimeout(sendHeight, 1000);
+      if (window.ResizeObserver) {
+        new ResizeObserver(sendHeight).observe(document.body);
+      }
+    })();
+  </script>
+</body>
+</html>

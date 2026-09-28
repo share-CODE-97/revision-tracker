@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>President of India — Powers, Election &amp; Articles — Revision</title>
+
+  <!--
+    Revision page for "President of India — Powers, Election & Articles".
+    Loaded inside the main app's iframe.
+    • Theme is passed via URL hash: #theme=dark or #theme=light
+    • Styles come from ../css/style.css
+  -->
+
+  <!-- Read theme from URL hash BEFORE paint (no flash). -->
+  <script>
+    (function () {
+      var m = location.hash.match(/theme=(light|dark)/);
+      document.documentElement.setAttribute('data-theme', m ? m[1] : 'dark');
+    })();
+  </script>
+
+  <!-- Shared app styles — this links the file to the MAIN stylesheet. -->
+  <link rel="stylesheet" href="../css/style.css">
+
+  <!-- Match the app's font stack. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Page-specific styles for President of India. -->
+  <style>
+    .pres-card { background:#0f172a; border:1px solid #1e293b; border-radius:10px; margin:16px 0; }
+    .pres-card__head { display:flex; align-items:center; gap:12px; padding:16px 18px; cursor:pointer; font-weight:600; color:#e2e8f0; font-size:15px; line-height:1.5; flex-wrap:wrap; }
+    .pres-card__head::after { content:'▾'; margin-left:auto; color:#818cf8; transition:transform .2s; flex:0 0 auto; }
+    .pres-card.open .pres-card__head::after { transform:rotate(180deg); }
+    .pres-card__body { display:none; padding:0 18px 18px; color:#cbd5e1; font-size:14px; line-height:1.9; }
+    .pres-card.open .pres-card__body { display:block; }
+    .pres-card__body ul { margin:8px 0; padding-left:22px; }
+    .pres-card__body li { margin:6px 0; }
+    .pres-card__body .pres-fact { display:block; margin-bottom:10px; }
+
+    html[data-theme="light"] .pres-card { background:#ffffff; border-color:#e2e8f0; }
+    html[data-theme="light"] .pres-card__head { color:#1e293b; }
+    html[data-theme="light"] .pres-card__body { color:#475569; }
+
+    .pres-badge { display:inline-block; font-size:11px; padding:3px 10px; border-radius:999px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; white-space:nowrap; }
+    .pres-badge--art { background:#1e3a8a; color:#bfdbfe; }
+    .pres-badge--elec { background:#064e3b; color:#a7f3d0; }
+    .pres-badge--exec { background:#7c2d12; color:#fed7aa; }
+    .pres-badge--leg { background:#4c1d95; color:#ddd6fe; }
+    .pres-badge--fin { background:#78350f; color:#fde68a; }
+    .pres-badge--jud { background:#831843; color:#fbcfe8; }
+    .pres-badge--emg { background:#7f1d1d; color:#fecaca; }
+    .pres-badge--ord { background:#0c4a6e; color:#bae6fd; }
+    .pres-badge--veto { background:#713f12; color:#fef08a; }
+    .pres-badge--pardon { background:#064e3b; color:#a7f3d0; }
+    .pres-badge--date { background:#475569; color:#e2e8f0; }
+    .pres-badge--vimp { background:#7f1d1d; color:#fecaca; border:1px dashed #ef4444; }
+    .pres-badge--vimp-gold { background:#422006; color:#fde68a; border:1px dashed #d97706; }
+    .pres-badge--trap { background:#7f1d1d; color:#fecaca; border:1px dashed #ef4444; }
+
+    html[data-theme="light"] .pres-badge--art { background:#dbeafe; color:#1e40af; }
+    html[data-theme="light"] .pres-badge--elec { background:#d1fae5; color:#065f46; }
+    html[data-theme="light"] .pres-badge--exec { background:#ffedd5; color:#9a3412; }
+    html[data-theme="light"] .pres-badge--leg { background:#ede9fe; color:#5b21b6; }
+    html[data-theme="light"] .pres-badge--fin { background:#fef3c7; color:#78350f; }
+    html[data-theme="light"] .pres-badge--jud { background:#fce7f3; color:#9d174d; }
+    html[data-theme="light"] .pres-badge--emg { background:#fee2e2; color:#991b1b; }
+    html[data-theme="light"] .pres-badge--ord { background:#e0f2fe; color:#075985; }
+    html[data-theme="light"] .pres-badge--veto { background:#fef9c3; color:#713f12; }
+    html[data-theme="light"] .pres-badge--pardon { background:#d1fae5; color:#065f46; }
+    html[data-theme="light"] .pres-badge--date { background:#e2e8f0; color:#334155; }
+    html[data-theme="light"] .pres-badge--vimp { background:#fee2e2; color:#991b1b; border-color:#dc2626; }
+    html[data-theme="light"] .pres-badge--vimp-gold { background:#fefce8; color:#854d0e; border-color:#ca8a04; }
+    html[data-theme="light"] .pres-badge--trap { background:#fee2e2; color:#991b1b; border-color:#dc2626; }
+
+    .pres-tools { display:flex; gap:10px; flex-wrap:wrap; margin:16px 0 10px; }
+    .pres-btn { background:#1e293b; color:#c7d2fe; border:1px solid #334155; border-radius:8px; padding:8px 16px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; }
+    .pres-btn:hover { background:#334155; }
+    html[data-theme="light"] .pres-btn { background:#eef2ff; color:#3730a3; border-color:#c7d2fe; }
+    html[data-theme="light"] .pres-btn:hover { background:#e0e7ff; }
+
+    .pres-q { background:#0f172a; border-left:3px solid #6366f1; border-radius:8px; padding:16px 18px; margin:12px 0; cursor:pointer; }
+    .pres-q p { margin:0; color:#e2e8f0; font-weight:600; font-size:14.5px; line-height:1.6; }
+    .pres-ans { display:none; margin-top:12px; padding-top:12px; border-top:1px dashed #334155; color:#a5b4fc; font-size:14px; line-height:1.9; }
+    .pres-q.open .pres-ans { display:block; }
+    html[data-theme="light"] .pres-q { background:#ffffff; }
+    html[data-theme="light"] .pres-q p { color:#1e293b; }
+    html[data-theme="light"] .pres-ans { color:#4338ca; border-top-color:#e2e8f0; }
+
+    .pres-mnem { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; background:#1e1b4b; color:#a5b4fc; padding:3px 9px; border-radius:5px; font-size:13px; }
+    html[data-theme="light"] .pres-mnem { background:#e0e7ff; color:#3730a3; }
+
+    .pres-flag { background:#1c1917; border-left:3px solid #facc15; border-radius:8px; padding:14px 18px; margin:12px 0; color:#fde68a; font-size:13.5px; line-height:1.8; }
+    html[data-theme="light"] .pres-flag { background:#fefce8; color:#713f12; }
+
+    .pres-vimp { background:#1c0a0a; border-left:3px solid #dc2626; border-radius:8px; padding:14px 18px; margin:12px 0; color:#fca5a5; font-size:13.5px; line-height:1.8; }
+    html[data-theme="light"] .pres-vimp { background:#fef2f2; color:#991b1b; }
+
+    .pres-timeline { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:10px; margin:16px 0; }
+    .pres-tl { background:#0f172a; border:1px solid #1e293b; border-radius:8px; padding:12px 14px; }
+    .pres-tl__yr { font-size:12px; font-weight:800; color:#818cf8; letter-spacing:.05em; }
+    .pres-tl__ev { font-size:13px; color:#cbd5e1; margin-top:5px; line-height:1.5; }
+    html[data-theme="light"] .pres-tl { background:#ffffff; border-color:#e2e8f0; }
+    html[data-theme="light"] .pres-tl__ev { color:#475569; }
+
+    .pres-king { background:#111827; border:1px solid #1f2937; border-left:4px solid #f59e0b; border-radius:8px; padding:18px 22px; margin:16px 0; }
+    .pres-king__name { font-weight:700; color:#fbbf24; font-size:15.5px; margin-bottom:12px; line-height:1.5; }
+    .pres-king__facts { color:#cbd5e1; font-size:14px; line-height:1.9; }
+    .pres-king__facts strong { color:#e2e8f0; }
+    .pres-king__facts br { content: ""; display: block; margin-top: 12px; }
+
+    html[data-theme="light"] .pres-king { background:#fffbeb; border-color:#fde68a; border-left-color:#d97706; }
+    html[data-theme="light"] .pres-king__name { color:#92400e; }
+    html[data-theme="light"] .pres-king__facts { color:#475569; }
+    html[data-theme="light"] .pres-king__facts strong { color:#1e293b; }
+  </style>
+</head>
+
+<body style="background: transparent; margin: 0;">
+  <main class="rev-page">
+
+    <h1>President of India — Powers, Election &amp; Articles</h1>
+    <p class="rev-subtitle">The constitutional head of the Republic — Articles 52 to 78 of Part V. The most-asked Polity topic in Prelims, and the one where article numbers decide the answer.</p>
+
+    <div class="rev-note">
+      <strong>How to use this page:</strong> every card is <em>closed</em> by default. Tap it — or hit <strong>Reveal all</strong> — only <em>after</em> you have tried to recall the article number, the power, and the limitation. Reading an open card teaches you nothing. Guessing first is what makes it stick.
+    </div>
+
+    <div class="rev-note">
+      <strong>How this topic is actually asked.</strong> Almost every Prelims question falls into one of four buckets:
+      <br>① <em>Power → Article</em> (Which article gives the President the pardoning power?)
+      <br>② <em>Article → Power</em> (What does Article 123 deal with?)
+      <br>③ <em>Election → Method</em> (How is the President elected — direct or indirect? What is the vote value formula?)
+      <br>④ <em>Limitation / Exception</em> (In which case can the President act against ministerial advice?)
+      <br>Cards below are built so any of those four queries hits a single fact, not a paragraph.
+    </div>
+
+    <div class="pres-timeline">
+      <div class="pres-tl"><div class="pres-tl__yr">Art 52</div><div class="pres-tl__ev">There shall be a President</div></div>
+      <div class="pres-tl"><div class="pres-tl__yr">Art 53</div><div class="pres-tl__ev">Executive power vested</div></div>
+      <div class="pres-tl"><div class="pres-tl__yr">Art 54–55</div><div class="pres-tl__ev">Election &amp; manner</div></div>
+      <div class="pres-tl"><div class="pres-tl__yr">Art 56–58</div><div class="pres-tl__ev">Term, re-election, qualifications</div></div>
+      <div class="pres-tl"><div class="pres-tl__yr">Art 61</div><div class="pres-tl__ev">Impeachment</div></div>
+      <div class="pres-tl"><div class="pres-tl__yr">Art 72</div><div class="pres-tl__ev">Pardoning power</div></div>
+      <div class="pres-tl"><div class="pres-tl__yr">Art 123</div><div class="pres-tl__ev">Ordinance power</div></div>
+      <div class="pres-tl"><div class="pres-tl__yr">Art 352–360</div><div class="pres-tl__ev">Emergency powers</div></div>
+    </div>
+
+    <h2>1 · The Constitutional Articles — the master table</h2>
+    <p class="rev-subtitle">Part V, Chapter I (Articles 52–78) deals with the Union Executive. These are the articles you must know by number.</p>
+
+    <div class="pres-tools">
+      <button class="pres-btn" data-pres-all="open">Reveal all</button>
+      <button class="pres-btn" data-pres-all="close">Hide all</button>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-card__head">Article 52 — The President of India <span class="pres-badge pres-badge--art">Art 52</span></div>
+      <div class="pres-card__body">
+        <span class="pres-fact"><strong>Text:</strong> "There shall be a President of India."</span>
+        <span class="pres-fact"><strong>What it does:</strong> Establishes the office of the President as the constitutional head of the Republic. This is the foundational article — every other article about the President flows from this one.</span>
+        <span class="pres-fact"><strong>Exam keyword:</strong> "Which article establishes the office of the President?" — Article 52.</span>
+      </div>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-card__head">Article 53 — Executive Power of the Union <span class="pres-badge pres-badge--exec">Art 53</span> <span class="pres-badge pres-badge--vimp-gold">V.Imp</span></div>
+      <div class="pres-card__body">
+        <span class="pres-fact"><strong>Text:</strong> "The executive power of the Union shall be vested in the President and shall be exercised by him either directly or through officers subordinate to him in accordance with this Constitution."</span>
+        <span class="pres-fact"><strong>Key sub-clauses:</strong></span>
+        <ul>
+          <li><strong>Article 53(2):</strong> The supreme command of the Defence Forces of the Union is vested in the President.</li>
+          <li><strong>Article 53(3):</strong> This article does not transfer to the President any functions conferred by law on state governments or other authorities.</li>
+        </ul>
+        <span class="pres-fact"><strong>Exam trap:</strong> The President is the <em>supreme commander</em> of the armed forces, but the exercise of this command is regulated by law — not by the President's personal discretion.</span>
+      </div>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-card__head">Article 54 — Election of President <span class="pres-badge pres-badge--elec">Art 54</span> <span class="pres-badge pres-badge--vimp-gold">V.Imp</span></div>
+      <div class="pres-card__body">
+        <span class="pres-fact"><strong>Electoral College consists of:</strong></span>
+        <ul>
+          <li><strong>(a)</strong> The elected members of both Houses of Parliament (Lok Sabha + Rajya Sabha).</li>
+          <li><strong>(b)</strong> The elected members of the Legislative Assemblies of the States.</li>
+        </ul>
+        <span class="pres-fact"><strong>Explanation:</strong> "State" includes the National Capital Territory of Delhi and the Union Territory of Puducherry. (Added by the 70th Amendment Act, 1992.)</span>
+        <span class="pres-fact"><strong>Who is NOT in the electoral college:</strong></span>
+        <ul>
+          <li>Nominated members of Parliament (both Houses)</li>
+          <li>Nominated members of State Legislative Assemblies</li>
+          <li>Members of State Legislative Councils (MLCs)</li>
+        </ul>
+        <span class="pres-fact"><strong>Exam keyword:</strong> "Who elects the President?" — Only <em>elected</em> members of Parliament and <em>elected</em> members of State Legislative Assemblies. Nominated members are excluded.</span>
+      </div>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-card__head">Article 55 — Manner of Election <span class="pres-badge pres-badge--elec">Art 55</span> <span class="pres-badge pres-badge--vimp-gold">V.Imp</span></div>
+      <div class="pres-card__body">
+        <span class="pres-fact"><strong>Three principles:</strong></span>
+        <ul>
+          <li><strong>Uniformity</strong> in the scale of representation of different States <em>inter se</em>.</li>
+          <li><strong>Parity</strong> between the States as a whole and the Union.</li>
+          <li><strong>Proportional representation</strong> by means of the <strong>single transferable vote</strong> system.</li>
+        </ul>
+        <span class="pres-fact"><strong>Vote value formula (the part Prelims tests):</strong></span>
+        <span class="pres-fact"><strong>MLA vote value</strong> = (Population of State ÷ Total elected MLAs of State) ÷ 1000</span>
+        <span class="pres-fact"><strong>MP vote value</strong> = (Total value of all MLA votes) ÷ (Total elected MPs of both Houses)</span>
+        <span class="pres-fact"><strong>Population basis:</strong> The 1971 census is used until the first census after 2026 is published. (This was extended by the 84th Amendment Act, 2001.)</span>
+        <span class="pres-fact"><strong>Exam trap:</strong> The election is <strong>indirect</strong> — no citizen votes directly. It is also <em>proportional</em> (not first-past-the-post) and the voting is <em>secret</em>.</span>
+      </div>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-card__head">Article 56 — Term of Office <span class="pres-badge pres-badge--art">Art 56</span></div>
+      <div class="pres-card__body">
+        <span class="pres-fact"><strong>Term:</strong> 5 years from the date of entering office.</span>
+        <span class="pres-fact"><strong>The three provisos:</strong></span>
+        <ul>
+          <li><strong>(a)</strong> The President may resign by writing to the Vice-President.</li>
+          <li><strong>(b)</strong> The President may be removed by impeachment for violation of the Constitution (Article 61).</li>
+          <li><strong>(c)</strong> The President shall continue in office after the expiry of the term until the successor enters office.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-card__head">Article 57 — Eligibility for Re-election <span class="pres-badge pres-badge--art">Art 57</span></div>
+      <div class="pres-card__body">
+        <span class="pres-fact"><strong>Text:</strong> "A person who holds, or who has held, office as President shall, subject to the other provisions of this Constitution, be eligible for re-election to that office."</span>
+        <span class="pres-fact"><strong>Significance:</strong> There is <strong>no limit</strong> on the number of times a person can be re-elected as President. (In contrast, the US President is limited to two terms by the 22nd Amendment.)</span>
+        <span class="pres-fact"><strong>Exam keyword:</strong> "How many times can a person be re-elected as President of India?" — Any number of times. The Constitution imposes no limit.</span>
+      </div>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-card__head">Article 58 — Qualifications <span class="pres-badge pres-badge--art">Art 58</span> <span class="pres-badge pres-badge--vimp-gold">V.Imp</span></div>
+      <div class="pres-card__body">
+        <span class="pres-fact"><strong>To be eligible for election as President, a person must:</strong></span>
+        <ul>
+          <li><strong>(a)</strong> Be a citizen of India.</li>
+          <li><strong>(b)</strong> Have completed the age of 35 years.</li>
+          <li><strong>(c)</strong> Be qualified for election as a member of the House of the People (Lok Sabha).</li>
+          <li><strong>(d)</strong> Not hold any office of profit under the Government of India, any State, or any local authority.</li>
+        </ul>
+        <span class="pres-fact"><strong>Exceptions (Article 58(2)):</strong> A person shall not be deemed to hold an office of profit merely because they are:</span>
+        <ul>
+          <li>President or Vice-President</li>
+          <li>Governor of a State</li>
+          <li>Minister of the Union or any State</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-card__head">Article 59 — Conditions of Office <span class="pres-badge pres-badge--art">Art 59</span></div>
+      <div class="pres-card__body">
+        <span class="pres-fact"><strong>The President shall not:</strong></span>
+        <ul>
+          <li>Be a member of either House of Parliament or of a State Legislature. If elected, they are deemed to have vacated that seat.</li>
+          <li>Hold any other office of profit.</li>
+        </ul>
+        <span class="pres-fact"><strong>Emoluments:</strong> The President is entitled to emoluments, allowances, and privileges as determined by Parliament. These <em>cannot be diminished</em> during the President's term.</span>
+      </div>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-card__head">Article 60 — Oath or Affirmation <span class="pres-badge pres-badge--art">Art 60</span></div>
+      <div class="pres-card__body">
+        <span class="pres-fact"><strong>Administered by:</strong> The <strong>Chief Justice of India</strong> (or in their absence, the senior-most judge of the Supreme Court available).</span>
+        <span class="pres-fact"><strong>The oath:</strong> The President swears to "preserve, protect and defend the Constitution and the law" and to "devote myself to the service and well-being of the people of India."</span>
+        <span class="pres-fact"><strong>Exam keyword:</strong> "Who administers the oath to the President?" — The Chief Justice of India. Not the Vice-President, not the Speaker.</span>
+      </div>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-card__head">Article 61 — Impeachment <span class="pres-badge pres-badge--art">Art 61</span> <span class="pres-badge pres-badge--vimp-gold">V.Imp</span></div>
+      <div class="pres-card__body">
+        <span class="pres-fact"><strong>Ground:</strong> "Violation of the Constitution" — the only ground. Note the phrase: it is broad and undefined, deliberately so.</span>
+        <span class="pres-fact"><strong>Procedure:</strong></span>
+        <ul>
+          <li><strong>Step 1:</strong> The charge may be preferred by <em>either</em> House of Parliament.</li>
+          <li><strong>Step 2:</strong> A resolution must be moved after at least <strong>14 days' notice</strong> in writing, signed by <strong>not less than one-fourth</strong> of the total members of that House.</li>
+          <li><strong>Step 3:</strong> The resolution must be passed by a majority of <strong>not less than two-thirds of the total membership</strong> of that House.</li>
+          <li><strong>Step 4:</strong> The other House investigates the charge. The President has the right to appear and be represented.</li>
+          <li><strong>Step 5:</strong> If the investigating House also passes a resolution by a two-thirds majority of its total membership declaring the charge sustained, the President is removed from office.</li>
+        </ul>
+        <span class="pres-fact"><strong>Key facts:</strong></span>
+        <ul>
+          <li><strong>Nominated members</strong> of Parliament <em>can</em> participate in impeachment proceedings (unlike in the election of the President).</li>
+          <li>Elected members of State Legislative Assemblies do <em>not</em> participate — impeachment is a parliamentary process only.</li>
+          <li>No President has ever been impeached in India.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-card__head">Article 62 — Time of Holding Election <span class="pres-badge pres-badge--art">Art 62</span></div>
+      <div class="pres-card__body">
+        <span class="pres-fact"><strong>Rule:</strong> An election to fill a vacancy caused by the expiration of the term must be completed <strong>before</strong> the expiration of the term.</span>
+        <span class="pres-fact"><strong>Casual vacancy</strong> (death, resignation, removal): The election must be held within <strong>6 months</strong> of the vacancy.</span>
+      </div>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-card__head">Article 71 — Disputes Relating to Election <span class="pres-badge pres-badge--elec">Art 71</span></div>
+      <div class="pres-card__body">
+        <span class="pres-fact"><strong>Text:</strong> All doubts and disputes arising out of or in connection with the election of the President or Vice-President shall be inquired into and decided by the <strong>Supreme Court</strong>, whose decision shall be final.</span>
+        <span class="pres-fact"><strong>Key point:</strong> If the election of a President is declared void by the Supreme Court, acts done by them <em>before</em> the date of the decision are <em>not</em> invalidated.</span>
+        <span class="pres-fact"><strong>Exam keyword:</strong> "Who decides disputes relating to the election of the President?" — The Supreme Court of India (not the Election Commission).</span>
+      </div>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-card__head">Article 72 — Pardoning Power <span class="pres-badge pres-badge--pardon">Art 72</span> <span class="pres-badge pres-badge--vimp-gold">V.Imp</span></div>
+      <div class="pres-card__body">
+        <span class="pres-fact"><strong>The President can grant:</strong> Pardon, reprieve, respite, remission, or commute a sentence — or suspend, remit, or commute a sentence.</span>
+        <span class="pres-fact"><strong>Applicable in these cases (the jurisdictional test):</strong></span>
+        <ul>
+          <li><strong>(a)</strong> All cases where the punishment or sentence is by a <strong>Court Martial</strong>.</li>
+          <li><strong>(b)</strong> All cases where the punishment is for an offence against a law relating to a matter to which the <strong>executive power of the Union extends</strong>.</li>
+          <li><strong>(c)</strong> All cases where the sentence is a <strong>sentence of death</strong>.</li>
+        </ul>
+        <span class="pres-fact"><strong>Limitation:</strong> The President's pardoning power does <em>not</em> extend to sentences by a court martial where the law itself confers the power on an officer of the armed forces (Article 72(2)).</span>
+        <span class="pres-fact"><strong>Exam trap:</strong> The President has pardoning power in <em>all</em> death sentence cases. The Governor does <em>not</em> — the Governor's power under Article 161 does not extend to death sentences.</span>
+      </div>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-card__head">Article 74 — Council of Ministers to Aid and Advise <span class="pres-badge pres-badge--exec">Art 74</span> <span class="pres-badge pres-badge--vimp-gold">V.Imp</span></div>
+      <div class="pres-card__body">
+        <span class="pres-fact"><strong>Text:</strong> "There shall be a Council of Ministers with the Prime Minister at the head to aid and advise the President, who shall in the exercise of his functions, act in accordance with such advice."</span>
+        <span class="pres-fact"><strong>The 42nd Amendment (1976):</strong> Made the President <em>bound</em> by ministerial advice.</span>
+        <span class="pres-fact"><strong>The 44th Amendment (1978):</strong> Added a proviso — the President <em>may require</em> the Council of Ministers to reconsider its advice, but must act in accordance with the advice tendered after such reconsideration. This is the President's only substantive check.</span>
+        <span class="pres-fact"><strong>Exam keyword:</strong> Article 74(1) — the President acts on ministerial advice. The 44th Amendment gave the President the right to <em>return</em> advice once, but not to reject it.</span>
+      </div>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-card__head">Article 75 — Appointment of Ministers <span class="pres-badge pres-badge--exec">Art 75</span></div>
+      <div class="pres-card__body">
+        <span class="pres-fact"><strong>The President appoints:</strong> The Prime Minister, and on the PM's advice, the other Ministers.</span>
+        <span class="pres-fact"><strong>The PM's appointment:</strong> The President invites the leader of the party with a majority in the Lok Sabha to be PM. In a hung Parliament, the President exercises discretion in inviting the person most likely to command a majority.</span>
+        <span class="pres-fact"><strong>Tenure:</strong> Ministers hold office during the pleasure of the President — but in practice, the PM's advice determines this.</span>
+        <span class="pres-fact"><strong>Collective responsibility:</strong> Article 75(3) — the Council of Ministers is collectively responsible to the Lok Sabha.</span>
+      </div>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-card__head">Article 78 — PM's Duty to Furnish Information <span class="pres-badge pres-badge--exec">Art 78</span></div>
+      <div class="pres-card__body">
+        <span class="pres-fact"><strong>The Prime Minister must:</strong></span>
+        <ul>
+          <li>Communicate to the President all decisions of the Council of Ministers relating to the administration of the affairs of the Union and proposals for legislation.</li>
+          <li>Furnish such information relating to the administration of the affairs of the Union and proposals for legislation as the President may call for.</li>
+          <li>If the President requires, submit for the consideration of the Council of Ministers any matter on which a decision has been taken by a Minister but which has not been considered by the Council.</li>
+        </ul>
+        <span class="pres-fact"><strong>Exam keyword:</strong> Article 78 is the President's information channel — the PM must keep the President informed. This is the basis of the President's right to be consulted.</span>
+      </div>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-card__head">Article 123 — Ordinance Making Power <span class="pres-badge pres-badge--ord">Art 123</span> <span class="pres-badge pres-badge--vimp-gold">V.Imp</span></div>
+      <div class="pres-card__body">
+        <span class="pres-fact"><strong>Power:</strong> The President can promulgate ordinances when <em>both</em> Houses of Parliament are not in session (or when either House is not in session in the case of a unicameral legislature — not applicable at the Union level).</span>
+        <span class="pres-fact"><strong>Conditions:</strong></span>
+        <ul>
+          <li>The President must be satisfied that immediate action is necessary.</li>
+          <li>The ordinance must be laid before both Houses of Parliament within <strong>6 weeks</strong> of the reassembly of Parliament.</li>
+          <li>If it is not approved within that period, it ceases to operate.</li>
+        </ul>
+        <span class="pres-fact"><strong>Judicial review:</strong> The <em>satisfaction</em> of the President is not beyond judicial review — the <strong>44th Amendment</strong> made the ordinance-making power justiciable on grounds of malafide or abuse of power. The Supreme Court in <em>DC Wadhwa v. State of Bihar (1986)</em> held that repeated re-promulgation of ordinances is a fraud on the Constitution.</span>
+        <span class="pres-fact"><strong>Exam trap:</strong> The ordinance power is <em>co-extensive</em> with Parliament's legislative power — it cannot be used to amend the Constitution.</span>
+      </div>
+    </div>
+
+    <h2>2 · The Election — How the President is actually chosen</h2>
+    <p class="rev-subtitle">Indirect election, proportional representation, single transferable vote. The method is as important as the outcome.</p>
+
+    <div class="pres-tools">
+      <button class="pres-btn" data-pres-all="open">Reveal all</button>
+      <button class="pres-btn" data-pres-all="close">Hide all</button>
+    </div>
+
+    <div class="pres-vimp">
+      <strong>V.V.Imp — The vote value calculation:</strong> This is the single most-asked numerical question on the President's election.
+      <br><strong>MLA vote value</strong> = (Population of State ÷ Total elected MLAs) ÷ 1000
+      <br><strong>MP vote value</strong> = (Total value of all MLA votes) ÷ (Total elected MPs)
+      <br>The 1971 census is the basis until the first census after 2026.
+      <br><strong>Example:</strong> If a state has a population of 5 crore and 200 MLAs, MLA vote value = (5,00,00,000 ÷ 200) ÷ 1000 = 2,50,000 ÷ 1000 = <strong>250</strong>.
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-card__head">Who votes — and who does not <span class="pres-badge pres-badge--elec">Art 54</span></div>
+      <div class="pres-card__body">
+        <span class="pres-fact"><strong>Voters:</strong> Elected members of Lok Sabha, elected members of Rajya Sabha, elected members of State Legislative Assemblies (including Delhi and Puducherry).</span>
+        <span class="pres-fact"><strong>Non-voters:</strong></span>
+        <ul>
+          <li>Nominated members of Parliament (both Houses)</li>
+          <li>Nominated members of State Assemblies</li>
+          <li>Members of State Legislative Councils (MLCs)</li>
+          <li>Elected members of the Legislative Assemblies of Union Territories without legislatures (e.g., Ladakh, Lakshadweep)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-card__head">Proportional Representation &amp; Single Transferable Vote <span class="pres-badge pres-badge--elec">Art 55(3)</span></div>
+      <div class="pres-card__body">
+        <span class="pres-fact"><strong>What it means:</strong> Voters rank candidates in order of preference. If no candidate gets the required quota on the first count, the candidate with the fewest votes is eliminated, and their votes are transferred to the next preference on those ballots.</span>
+        <span class="pres-fact"><strong>Quota:</strong> The winning candidate must secure more than 50% of the total valid votes (the "quota").</span>
+        <span class="pres-fact"><strong>Why this system:</strong> It ensures the President is elected by a broad consensus, not by a simple plurality. It also gives representation to smaller parties and independents.</span>
+      </div>
+    </div>
+
+    <h2>3 · The Powers — five categories, one office</h2>
+    <p class="rev-subtitle">Executive, Legislative, Financial, Judicial, and Emergency. Every Prelims question on the President falls into one of these five buckets.</p>
+
+    <div class="pres-tools">
+      <button class="pres-btn" data-pres-all="open">Reveal all</button>
+      <button class="pres-btn" data-pres-all="close">Hide all</button>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-card__head">Executive Powers <span class="pres-badge pres-badge--exec">Executive</span></div>
+      <div class="pres-card__body">
+        <span class="pres-fact"><strong>Administrative head:</strong> All executive actions of the Government of India are formally taken in the President's name (Article 77).</span>
+        <span class="pres-fact"><strong>Appointments:</strong> The President appoints the PM, other Ministers, the Attorney General, the CAG, the CEC and Election Commissioners, the Chairman and members of UPSC, Governors of States, and members of the Finance Commission.</span>
+        <span class="pres-fact"><strong>Supreme Commander:</strong> The supreme command of the Defence Forces is vested in the President (Article 53(2)).</span>
+        <span class="pres-fact"><strong>Administration of UTs:</strong> The President administers Union Territories through administrators appointed by him.</span>
+        <span class="pres-fact"><strong>Scheduled Areas:</strong> The President can declare any area as a Scheduled Area and has powers over its administration.</span>
+        <span class="pres-fact"><strong>Information:</strong> The President can seek any information from the PM relating to the administration of the Union (Article 78).</span>
+      </div>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-card__head">Legislative Powers <span class="pres-badge pres-badge--leg">Legislative</span></div>
+      <div class="pres-card__body">
+        <span class="pres-fact"><strong>Part of Parliament:</strong> The President is an integral part of Parliament (Article 79) — no bill becomes law without presidential assent.</span>
+        <span class="pres-fact"><strong>Summoning &amp; Prorogation:</strong> The President summons and prorogues both Houses of Parliament, and can dissolve the Lok Sabha (Article 85).</span>
+        <span class="pres-fact"><strong>Special Address:</strong> The President addresses both Houses assembled together at the commencement of the first session after each general election and at the first session of each year (Article 87).</span>
+        <span class="pres-fact"><strong>Nomination:</strong> The President nominates 12 members to the Rajya Sabha (persons with special knowledge in literature, science, art, and social service) and 2 Anglo-Indian members to the Lok Sabha (Article 331 — this provision expired in 2020).</span>
+        <span class="pres-fact"><strong>Ordinance:</strong> The President can promulgate ordinances when Parliament is not in session (Article 123).</span>
+        <span class="pres-fact"><strong>Prior recommendation:</strong> Certain bills (e.g., Money Bills, bills involving expenditure from the Consolidated Fund) can be introduced only with the President's prior recommendation.</span>
+      </div>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-card__head">Financial Powers <span class="pres-badge pres-badge--fin">Financial</span></div>
+      <div class="pres-card__body">
+        <span class="pres-fact"><strong>Money Bills:</strong> No Money Bill can be introduced in Parliament without the President's recommendation.</span>
+        <span class="pres-fact"><strong>Annual Budget:</strong> The President causes the Annual Financial Statement (Budget) to be laid before Parliament.</span>
+        <span class="pres-fact"><strong>Contingency Fund:</strong> The President can make advances from the Contingency Fund of India to meet unforeseen expenditure.</span>
+        <span class="pres-fact"><strong>Finance Commission:</strong> The President constitutes the Finance Commission every fifth year (Article 280).</span>
+        <span class="pres-fact"><strong>Emergency:</strong> The President can declare a Financial Emergency under Article 360.</span>
+      </div>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-card__head">Judicial Powers <span class="pres-badge pres-badge--jud">Judicial</span></div>
+      <div class="pres-card__body">
+        <span class="pres-fact"><strong>Appointments:</strong> The President appoints the Chief Justice of India and other judges of the Supreme Court, and the Chief Justice and judges of High Courts.</span>
+        <span class="pres-fact"><strong>Pardoning Power (Article 72):</strong> Pardon, reprieve, respite, remission, commute — in all cases of Court Martial, Union law offences, and death sentences.</span>
+        <span class="pres-fact"><strong>Advisory Jurisdiction (Article 143):</strong> The President can refer a question of law or fact of public importance to the Supreme Court for its advisory opinion. The opinion is not binding on the President.</span>
+        <span class="pres-fact"><strong>Disputes (Article 71):</strong> Disputes relating to the election of the President and Vice-President are decided by the Supreme Court.</span>
+      </div>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-card__head">Emergency Powers <span class="pres-badge pres-badge--emg">Emergency</span> <span class="pres-badge pres-badge--vimp-gold">V.Imp</span></div>
+      <div class="pres-card__body">
+        <span class="pres-fact"><strong>Three types of emergency:</strong></span>
+        <ul>
+          <li><strong>National Emergency (Article 352):</strong> On grounds of war, external aggression, or armed rebellion. The President can proclaim this even before the actual occurrence if there is imminent danger.</li>
+          <li><strong>President's Rule (Article 356):</strong> On failure of constitutional machinery in a State. Based on the Governor's report or otherwise.</li>
+          <li><strong>Financial Emergency (Article 360):</strong> If the financial stability or credit of India is threatened. Never declared so far.</li>
+        </ul>
+        <span class="pres-fact"><strong>Parliamentary approval:</strong> A National Emergency must be approved by both Houses within <strong>one month</strong> (44th Amendment; earlier two months). President's Rule must be approved within <strong>two months</strong>. Financial Emergency must be approved within <strong>two months</strong>.</span>
+        <span class="pres-fact"><strong>Judicial review:</strong> The 44th Amendment made the proclamation of National Emergency subject to judicial review on grounds of malafide. The <em>S.R. Bommai</em> case (1994) made Article 356 proclamations subject to judicial review.</span>
+      </div>
+    </div>
+
+    <h2>4 · The Veto Powers — Absolute, Suspensive, Pocket</h2>
+    <p class="rev-subtitle">When the President refuses assent. The Indian President has three vetoes — but no "qualified veto".</p>
+
+    <div class="pres-tools">
+      <button class="pres-btn" data-pres-all="open">Reveal all</button>
+      <button class="pres-btn" data-pres-all="close">Hide all</button>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-card__head">Absolute Veto <span class="pres-badge pres-badge--veto">Veto</span></div>
+      <div class="pres-card__body">
+        <span class="pres-fact"><strong>What it is:</strong> The President withholds assent to a bill passed by Parliament, and the bill ends there. It does <em>not</em> become law.</span>
+        <span class="pres-fact"><strong>When used:</strong> In the case of private members' bills, or bills passed by a previous government that has since lost its majority.</span>
+        <span class="pres-fact"><strong>Example:</strong> In 1954, President Rajendra Prasad used the absolute veto on the PEPSU Appropriation Bill. In 1991, President R. Venkataraman used it on the Salary, Allowances and Pension of Members of Parliament (Amendment) Bill.</span>
+      </div>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-card__head">Suspensive Veto <span class="pres-badge pres-badge--veto">Veto</span></div>
+      <div class="pres-card__body">
+        <span class="pres-fact"><strong>What it is:</strong> The President returns a non-Money Bill to Parliament for reconsideration. If Parliament passes the bill again (with or without amendments) and sends it back, the President <em>must</em> give assent.</span>
+        <span class="pres-fact"><strong>Applicable to:</strong> Non-Money Bills only. The President <em>cannot</em> return a Money Bill for reconsideration.</span>
+        <span class="pres-fact"><strong>Example:</strong> In 2006, President APJ Abdul Kalam returned the Office of Profit Bill for reconsideration.</span>
+      </div>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-card__head">Pocket Veto <span class="pres-badge pres-badge--veto">Veto</span></div>
+      <div class="pres-card__body">
+        <span class="pres-fact"><strong>What it is:</strong> The President simply keeps the bill pending indefinitely — neither assents, nor rejects, nor returns it. The Indian Constitution prescribes <em>no time limit</em> for the President to act on a bill.</span>
+        <span class="pres-fact"><strong>Example:</strong> In 1986, President Giani Zail Singh used the pocket veto on the Indian Post Office (Amendment) Bill — he neither assented nor returned it, and the bill lapsed.</span>
+        <span class="pres-fact"><strong>Exam trap:</strong> The pocket veto is a <em>consequence</em> of the Constitution's silence on a time limit, not an explicitly granted power. It is a discretionary power.</span>
+      </div>
+    </div>
+
+    <div class="pres-vimp">
+      <strong>V.V.Imp — The three vetoes in one line:</strong> <em>Absolute</em> = the bill dies. <em>Suspensive</em> = the bill goes back once, but Parliament can override. <em>Pocket</em> = the bill is kept in limbo, with no time limit. India has <strong>no qualified veto</strong> (unlike the US President, who can veto and require a two-thirds majority to override).
+    </div>
+
+    <h2>5 · Discretionary Powers — when the President acts alone</h2>
+    <p class="rev-subtitle">Article 74 says the President acts on ministerial advice. But there are situations where the President exercises genuine discretion.</p>
+
+    <div class="pres-tools">
+      <button class="pres-btn" data-pres-all="open">Reveal all</button>
+      <button class="pres-btn" data-pres-all="close">Hide all</button>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-card__head">Discretion in Appointing the Prime Minister <span class="pres-badge pres-badge--vimp-gold">V.Imp</span></div>
+      <div class="pres-card__body">
+        <span class="pres-fact"><strong>Situation:</strong> A hung Parliament — no party or coalition has a clear majority in the Lok Sabha.</span>
+        <span class="pres-fact"><strong>President's discretion:</strong> Invite the leader most likely to command a majority in the House. The President may also ask the person to prove their majority within a specified time.</span>
+        <span class="pres-fact"><strong>Example:</strong> In 1996, President Shankar Dayal Sharma invited Atal Bihari Vajpayee to form the government despite the BJP not having a majority, because it was the single-largest party. In 1998, the same situation led to a similar decision.</span>
+      </div>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-card__head">Discretion in Dissolving the Lok Sabha <span class="pres-badge pres-badge--vimp-gold">V.Imp</span></div>
+      <div class="pres-card__body">
+        <span class="pres-fact"><strong>Situation:</strong> The Council of Ministers recommends dissolution of the Lok Sabha after a defeat or loss of majority.</span>
+        <span class="pres-fact"><strong>President's discretion:</strong> The President may refuse dissolution if there is a viable alternative government, or if the recommendation appears malafide.</span>
+        <span class="pres-fact"><strong>Judicial guidance:</strong> In <em>S.R. Bommai v. Union of India (1994)</em>, the Supreme Court held that the President's satisfaction in dissolving the Lok Sabha is subject to judicial review.</span>
+      </div>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-card__head">Discretion in Dismissing the Council of Ministers <span class="pres-badge pres-badge--vimp">V.Imp</span></div>
+      <div class="pres-card__body">
+        <span class="pres-fact"><strong>Situation:</strong> The Council of Ministers loses the confidence of the Lok Sabha but refuses to resign.</span>
+        <span class="pres-fact"><strong>President's discretion:</strong> The President can dismiss the Council of Ministers. This is an extreme step and has never been used at the Union level in India.</span>
+        <span class="pres-fact"><strong>Note:</strong> The President cannot dismiss a Council of Ministers that enjoys the confidence of the House — the President is not a political arbiter.</span>
+      </div>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-card__head">Discretion in Assent to Bills <span class="pres-badge pres-badge--veto">Veto</span></div>
+      <div class="pres-card__body">
+        <span class="pres-fact"><strong>Situation:</strong> A bill passed by Parliament is presented for assent.</span>
+        <span class="pres-fact"><strong>President's discretion:</strong> The President may withhold assent, return the bill (if non-Money), or use the pocket veto. But if Parliament passes the bill again, assent is mandatory.</span>
+        <span class="pres-fact"><strong>Note:</strong> The President cannot withhold assent to a Constitutional Amendment Bill — the 24th Amendment (1971) made assent mandatory for such bills.</span>
+      </div>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-card__head">Discretion in Referring Matters to the Supreme Court <span class="pres-badge pres-badge--jud">Art 143</span></div>
+      <div class="pres-card__body">
+        <span class="pres-fact"><strong>Power:</strong> The President can refer a question of law or fact of public importance to the Supreme Court for its advisory opinion.</span>
+        <span class="pres-fact"><strong>Nature:</strong> The opinion is <em>not binding</em> on the President. The Supreme Court may also decline to answer.</span>
+        <span class="pres-fact"><strong>Example:</strong> In 1993, President Shankar Dayal Sharma referred the Ayodhya dispute to the Supreme Court. In 2004, the Gujarat Assembly dissolution issue was referred.</span>
+      </div>
+    </div>
+
+    <div class="pres-card">
+      <div class="pres-card__head">Judicial pronouncements on discretionary powers <span class="pres-badge pres-badge--vimp-gold">V.Imp</span></div>
+      <div class="pres-card__body">
+        <span class="pres-fact"><strong>Shamsher Singh v. State of Punjab (1974):</strong> The Supreme Court held that the President and Governors must act on ministerial advice <em>except</em> in exceptional cases where the Constitution expressly requires them to act in their discretion.</span>
+        <span class="pres-fact"><strong>S.R. Bommai v. Union of India (1994):</strong> Limited the misuse of Article 356 — made President's Rule subject to judicial review.</span>
+        <span class="pres-fact"><strong>Rameshwar Prasad Case (2006):</strong> Struck down the dissolution of the Bihar Assembly (2005), ruling it unconstitutional.</span>
+        <span class="pres-fact"><strong>Nabam Rebia v. Deputy Speaker (2016):</strong> Held that the Governor (representing the President) cannot interfere arbitrarily in legislative matters.</span>
+      </div>
+    </div>
+
+    <h2>6 · Impeachment vs. Election — the two parliamentary processes</h2>
+    <p class="rev-subtitle">A comparison table that resolves most confusion.</p>
+
+    <table>
+      <tr>
+        <th>Feature</th>
+        <th>Election of President</th>
+        <th>Impeachment of President</th>
+      </tr>
+      <tr>
+        <td>Article</td>
+        <td>Articles 54, 55, 71</td>
+        <td>Article 61</td>
+      </tr>
+      <tr>
+        <td>Who participates</td>
+        <td>Elected MPs + Elected MLAs</td>
+        <td>All MPs (elected + nominated)</td>
+      </tr>
+      <tr>
+        <td>Who does NOT participate</td>
+        <td>Nominated MPs, Nominated MLAs, MLCs</td>
+        <td>MLAs (State legislators have no role)</td>
+      </tr>
+      <tr>
+        <td>Voting system</td>
+        <td>Proportional representation, single transferable vote, secret ballot</td>
+        <td>Resolution passed by two-thirds majority of total membership of each House</td>
+      </tr>
+      <tr>
+        <td>Grounds</td>
+        <td>N/A (election, not removal)</td>
+        <td>Violation of the Constitution</td>
+      </tr>
+      <tr>
+        <td>Notice period</td>
+        <td>N/A</td>
+        <td>14 days' notice signed by at least 1/4th of the House</td>
+      </tr>
+      <tr>
+        <td>Dispute resolution</td>
+        <td>Supreme Court (Article 71)</td>
+        <td>N/A (Parliament's decision is final)</td>
+      </tr>
+    </table>
+
+    <h2>7 · Memory tricks that save you</h2>
+
+    <div class="rev-note">
+      <strong>The articles in order — by function.</strong>
+      <span class="pres-mnem">"52 Exists, 53 Executes, 54 Elects, 55 Method, 56 Term, 57 Re-elect, 58 Qualify, 59 Conditions, 60 Oath, 61 Impeach"</span><br>
+      Read it as a story: <em>52</em> says there shall be a President → <em>53</em> gives them executive power → <em>54–55</em> explain how they are elected → <em>56–57</em> say how long they serve and whether they can return → <em>58–59</em> list what they must be and must not do → <em>60</em> is the oath → <em>61</em> is the exit door.
+    </div>
+
+    <div class="rev-note">
+      <strong>The three vetoes — in one line each.</strong>
+      <span class="pres-mnem">"Absolute kills, Suspensive returns, Pocket waits"</span><br>
+      <strong>Absolute</strong> — the bill dies. <strong>Suspensive</strong> — the bill goes back once, but Parliament can override. <strong>Pocket</strong> — the bill is kept pending indefinitely. India has <em>no qualified veto</em>. If a question asks "which veto does the Indian President NOT have?" — the answer is qualified veto.
+    </div>
+
+    <div class="rev-note">
+      <strong>The three emergencies — by article and approval time.</strong>
+      <span class="pres-mnem">"352 National, 356 President's Rule, 360 Financial"</span><br>
+      <strong>352</strong> — National Emergency; approval within <em>1 month</em> (44th Amendment; earlier 2 months). <strong>356</strong> — President's Rule; approval within <em>2 months</em>. <strong>360</strong> — Financial Emergency; approval within <em>2 months</em>. Three articles, three numbers — never mix them.
+    </div>
+
+    <div class="rev-note">
+      <strong>The pardoning power — the three jurisdictional tests.</strong>
+      <span class="pres-mnem">"Court Martial, Union Law, Death Sentence"</span><br>
+      Article 72 gives the President pardoning power in exactly <em>three</em> categories: (a) Court Martial sentences, (b) offences against Union laws, (c) death sentences. The Governor's power (Article 161) covers state laws and does <em>not</em> extend to death sentences. This is a permanent Prelims trap.
+    </div>
+
+    <div class="rev-note">
+      <strong>The 42nd vs 44th Amendment — the Article 74 story.</strong>
+      <span class="pres-mnem">"42 bound, 44 bound but can return once"</span><br>
+      <strong>42nd Amendment (1976):</strong> Made the President <em>bound</em> by ministerial advice — no discretion. <strong>44th Amendment (1978):</strong> Kept the binding nature, but gave the President the right to <em>return</em> advice once for reconsideration. After reconsideration, the President <em>must</em> accept the advice. The 44th Amendment is the source of the President's only real check on the Council of Ministers.
+    </div>
+
+    <div class="rev-note">
+      <strong>The electoral college — who is in, who is out.</strong>
+      <span class="pres-mnem">"Elected in, Nominated out, MLCs never"</span><br>
+      <strong>In:</strong> Elected MPs + Elected MLAs (including Delhi and Puducherry). <strong>Out:</strong> Nominated MPs, Nominated MLAs, all MLCs. If a question asks "who participates in the election of the President?", the answer is only <em>elected</em> legislators. Nominated members are deliberately excluded to keep the process democratic.
+    </div>
+
+    <div class="pres-note">
+      <strong>The vote value formula — in plain English.</strong>
+      <span class="pres-mnem">"MLA = (Population ÷ MLAs) ÷ 1000"</span><br>
+      <span class="pres-mnem">"MP = (Total MLA votes) ÷ (Total elected MPs)"</span><br>
+      The 1971 census is used until the first census after 2026. The formula ensures uniformity across states and parity between the Union and the States. This is the most numerical part of the topic — practice with a sample calculation.
+    </div>
+
+    <div class="pres-flag">
+      <strong>Four traps to watch.</strong>
+      <strong>①</strong> The President is <em>not</em> elected directly by the people — it is an indirect election.
+      <strong>②</strong> The President <em>cannot</em> return a Money Bill for reconsideration — only non-Money Bills.
+      <strong>③</strong> The President <em>cannot</em> withhold assent to a Constitutional Amendment Bill — assent is mandatory.
+      <strong>④</strong> Nominated members of Parliament <em>can</em> vote in impeachment but <em>cannot</em> vote in the election of the President. This asymmetry is a favourite Prelims question.
+    </div>
+
+    <h2>8 · Rapid Fire</h2>
+    <p class="rev-subtitle">Cover the whole page. Answer out loud <em>before</em> you tap.</p>
+
+    <div class="pres-tools">
+      <button class="pres-btn" data-pres-all="open">Reveal all</button>
+      <button class="pres-btn" data-pres-all="close">Hide all</button>
+    </div>
+
+    <div class="pres-q">
+      <p>1. Which article establishes the office of the President of India?</p>
+      <div class="pres-ans">Article 52 — "There shall be a President of India."</div>
+    </div>
+
+    <div class="pres-q">
+      <p>2. Which article vests the executive power of the Union in the President?</p>
+      <div class="pres-ans">Article 53(1). Article 53(2) vests the supreme command of the Defence Forces in the President.</div>
+    </div>
+
+    <div class="pres-q">
+      <p>3. Who elects the President of India — and who is excluded from the electoral college?</p>
+      <div class="pres-ans">Elected members of both Houses of Parliament and elected members of State Legislative Assemblies (including Delhi and Puducherry). Excluded: nominated members of Parliament, nominated members of State Assemblies, and all MLCs.</div>
+    </div>
+
+    <div class="pres-q">
+      <p>4. What is the vote value formula for an MLA in the presidential election?</p>
+      <div class="pres-ans">MLA vote value = (Population of the State ÷ Total elected MLAs of the State) ÷ 1000. The 1971 census is used until the first census after 2026.</div>
+    </div>
+
+    <div class="pres-q">
+      <p>5. What is the term of office of the President, and can they be re-elected?</p>
+      <div class="pres-ans">5 years (Article 56). Article 57 allows re-election any number of times — there is no limit.</div>
+    </div>
+
+    <div class="pres-q">
+      <p>6. What are the qualifications to be elected as President?</p>
+      <div class="pres-ans">Article 58: (a) Citizen of India, (b) Completed 35 years of age, (c) Qualified for election as a member of the Lok Sabha, (d) Not holding any office of profit. Article 58(2) exempts the President, Vice-President, Governor, and Ministers from the "office of profit" disqualification.</div>
+    </div>
+
+    <div class="pres-q">
+      <p>7. Who administers the oath to the President of India?</p>
+      <div class="pres-ans">The Chief Justice of India (Article 60) — or in their absence, the senior-most judge of the Supreme Court available.</div>
+    </div>
+
+    <div class="pres-q">
+      <p>8. On what ground can the President be impeached, and under which article?</p>
+      <div class="pres-ans">Article 61 — on the ground of "violation of the Constitution."</div>
+    </div>
+
+    <div class="pres-q">
+      <p>9. What is the procedure for impeachment of the President?</p>
+      <div class="pres-ans">The charge can be preferred by either House. A resolution must be moved after 14 days' notice signed by at least 1/4th of the members of that House, and passed by a two-thirds majority of the total membership of that House. The other House investigates. If it also passes a resolution by a two-thirds majority of its total membership sustaining the charge, the President is removed.</div>
+    </div>
+
+    <div class="pres-q">
+      <p>10. Who participates in the impeachment of the President — and who does not?</p>
+      <div class="pres-ans">All MPs (elected + nominated) participate. State MLAs do <em>not</em> participate.</div>
+    </div>
+
+    <div class="pres-q">
+      <p>11. Who decides disputes relating to the election of the President?</p>
+      <div class="pres-ans">The Supreme Court of India (Article 71). Its decision is final.</div>
+    </div>
+
+    <div class="pres-q">
+      <p>12. What is the pardoning power of the President, and under which article?</p>
+      <div class="pres-ans">Article 72 — pardons, reprieves, respites, remission, or commutation of sentences. Applicable in: (a) Court Martial cases, (b) offences against Union laws, (c) all death sentence cases.</div>
+    </div>
+
+    <div class="pres-q">
+      <p>13. Can the President pardon a death sentence? Can the Governor?</p>
+      <div class="pres-ans">The President <em>can</em> (Article 72). The Governor <em>cannot</em> — Article 161 does not extend to death sentences.</div>
+    </div>
+
+    <div class="pres-q">
+      <p>14. What does Article 74 say, and how was it amended?</p>
+      <div class="pres-ans">Article 74 says the President acts on the aid and advice of the Council of Ministers. The 42nd Amendment (1976) made this binding. The 44th Amendment (1978) added the proviso that the President may require reconsideration of advice once, but must act on the advice tendered after such reconsideration.</div>
+    </div>
+
+    <div class="pres-q">
+      <p>15. What is the ordinance-making power of the President, and under which article?</p>
+      <div class="pres-ans">Article 123 — the President can promulgate ordinances when Parliament is not in session. The ordinance must be laid before Parliament within 6 weeks of its reassembly and ceases to operate if not approved.</div>
+    </div>
+
+    <div class="pres-q">
+      <p>16. What are the three types of veto available to the Indian President?</p>
+      <div class="pres-ans">Absolute veto, suspensive veto, and pocket veto. India does <em>not</em> have a qualified veto.</div>
+    </div>
+
+    <div class="pres-q">
+      <p>17. What is a pocket veto, and who used it in India?</p>
+      <div class="pres-ans">The President keeps a bill pending indefinitely — neither assenting, rejecting, nor returning it. President Giani Zail Singh used it in 1986 on the Indian Post Office (Amendment) Bill.</div>
+    </div>
+
+    <div class="pres-q">
+      <p>18. Can the President return a Money Bill for reconsideration?</p>
+      <div class="pres-ans">No. The suspensive veto (returning a bill) applies only to non-Money Bills. The President cannot return a Money Bill.</div>
+    </div>
+
+    <div class="pres-q">
+      <p>19. What are the three types of emergency the President can declare?</p>
+      <div class="pres-ans">National Emergency (Article 352), President's Rule (Article 356), and Financial Emergency (Article 360).</div>
+    </div>
+
+    <div class="pres-q">
+      <p>20. What is the approval time for a National Emergency?</p>
+      <div class="pres-ans">Within <strong>one month</strong> by both Houses of Parliament (44th Amendment; earlier it was two months).</div>
+    </div>
+
+    <div class="pres-q">
+      <p>21. What is the advisory jurisdiction of the President?</p>
+      <div class="pres-ans">Article 143 — the President can refer a question of law or fact of public importance to the Supreme Court for its advisory opinion. The opinion is not binding on the President.</div>
+    </div>
+
+    <div class="pres-q">
+      <p>22. Who nominates members to the Rajya Sabha, and how many?</p>
+      <div class="pres-ans">The President nominates 12 members to the Rajya Sabha (Article 80) — persons with special knowledge in literature, science, art, and social service.</div>
+    </div>
+
+    <div class="pres-q">
+      <p>23. What is the President's role in the appointment of the Prime Minister in a hung Parliament?</p>
+      <div class="pres-ans">The President exercises discretion in inviting the leader most likely to command a majority in the Lok Sabha. The President may ask the person to prove their majority within a specified time.</div>
+    </div>
+
+    <div class="pres-q">
+      <p>24. What did the S.R. Bommai case (1994) decide about the President's powers?</p>
+      <div class="pres-ans">It limited the misuse of Article 356 (President's Rule) by making the proclamation subject to judicial review. It also held that the President's satisfaction in dissolving the Lok Sabha is subject to judicial review.</div>
+    </div>
+
+    <p class="rev-subtitle" style="margin-top:18px;">Closing tip: on the night before the exam, only read the <strong>Rapid Fire</strong> section. If you can answer 20 of 24 out loud without tapping, this page has done its job.</p>
+
+  </main>
+
+  <!-- Report true content height to the parent app.
+       Measures <main class="rev-page"> directly, NOT document.body. -->
+  <script>
+    (function () {
+      function sendHeight() {
+        var el = document.querySelector('.rev-page') || document.body;
+        var h = Math.ceil(el.getBoundingClientRect().height);
+        if (!h) h = el.scrollHeight || 0;
+        if (!h) return;
+        try {
+          window.parent.postMessage({ type: 'revision-height', height: h }, '*');
+        } catch (e) {}
+      }
+      window.addEventListener('load', sendHeight);
+      window.addEventListener('resize', sendHeight);
+      setTimeout(sendHeight, 0);
+      setTimeout(sendHeight, 50);
+      setTimeout(sendHeight, 300);
+      setTimeout(sendHeight, 1000);
+      if (window.ResizeObserver) {
+        new ResizeObserver(sendHeight).observe(document.body);
+      }
+    })();
+  </script>
+
+  <!-- Card + quiz interaction -->
+  <script>
+    (function () {
+      // Reveal-all / Hide-all toolbars — scoped to cards that follow them,
+      // stopping at the next toolbar or heading.
+      document.querySelectorAll('.pres-tools').forEach(function (tools) {
+        tools.addEventListener('click', function (e) {
+          var btn = e.target.closest('[data-pres-all]');
+          if (!btn) return;
+          var open = btn.getAttribute('data-pres-all') === 'open';
+          var node = tools.nextElementSibling;
+          while (node) {
+            if (node.classList && node.classList.contains('pres-tools')) break;
+            if (node.tagName === 'H2' || node.tagName === 'H3') break;
+            if (node.classList && (node.classList.contains('pres-card') || node.classList.contains('pres-q'))) {
+              node.classList.toggle('open', open);
+            }
+            node = node.nextElementSibling;
+          }
+        });
+      });
+
+      // Individual card / quiz tap.
+      document.addEventListener('click', function (e) {
+        var head = e.target.closest('.pres-card__head');
+        if (head) {
+          var card = head.closest('.pres-card');
+          if (card) card.classList.toggle('open');
+          return;
+        }
+        var q = e.target.closest('.pres-q');
+        if (q) q.classList.toggle('open');
+      });
+    })();
+  </script>
+</body>
+</html>

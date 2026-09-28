@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>International Organisations — Part 1 — Revision</title>
+
+  <!--
+    Revision page for "International Organisations — Part 1".
+    Loaded inside the main app's iframe.
+    • Theme is passed via URL hash: #theme=dark or #theme=light
+    • Styles come from ../css/style.css
+  -->
+
+  <!-- Read theme from URL hash BEFORE paint (no flash). -->
+  <script>
+    (function () {
+      var m = location.hash.match(/theme=(light|dark)/);
+      document.documentElement.setAttribute('data-theme', m ? m[1] : 'dark');
+    })();
+  </script>
+
+  <!-- Shared app styles — this links the file to the MAIN stylesheet. -->
+  <link rel="stylesheet" href="../css/style.css">
+
+  <!-- Match the app's font stack. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Page-specific styles for Important International Organisations. -->
+  <style>
+    .io-card { background:#0f172a; border:1px solid #1e293b; border-radius:10px; margin:8px 0; }
+    .io-card__head { display:flex; align-items:center; gap:10px; padding:12px 14px; cursor:pointer; font-weight:600; color:#e2e8f0; font-size:14.5px; line-height:1.4; }
+    .io-card__head::after { content:'▾'; margin-left:auto; color:#818cf8; transition:transform .2s; flex:0 0 auto; }
+    .io-card.open .io-card__head::after { transform:rotate(180deg); }
+    .io-card__body { display:none; padding:0 14px 14px; color:#cbd5e1; font-size:14px; line-height:1.65; }
+    .io-card.open .io-card__body { display:block; }
+    .io-card__body ul, .io-card__body ol { margin:6px 0; padding-left:20px; }
+    .io-card__body li { margin:3px 0; }
+
+    html[data-theme="light"] .io-card { background:#ffffff; border-color:#e2e8f0; }
+    html[data-theme="light"] .io-card__head { color:#1e293b; }
+    html[data-theme="light"] .io-card__body { color:#475569; }
+
+    .io-badge { display:inline-block; font-size:10.5px; padding:2px 8px; border-radius:999px; font-weight:700; letter-spacing:.03em; text-transform:uppercase; white-space:nowrap; }
+    .io-badge--bw    { background:#0c4a6e; color:#bae6fd; }
+    .io-badge--un    { background:#064e3b; color:#a7f3d0; }
+    .io-badge--trade { background:#78350f; color:#fde68a; }
+    .io-badge--labour{ background:#7f1d1d; color:#fecaca; }
+    .io-badge--forum { background:#4c1d95; color:#ddd6fe; }
+    .io-badge--india { background:#7c2d12; color:#fed7aa; }
+    .io-badge--new   { background:#831843; color:#fbcfe8; }
+    .io-badge--fin   { background:#1e3a8a; color:#bfdbfe; }
+
+    html[data-theme="light"] .io-badge--bw    { background:#e0f2fe; color:#075985; }
+    html[data-theme="light"] .io-badge--un    { background:#d1fae5; color:#065f46; }
+    html[data-theme="light"] .io-badge--trade { background:#fef3c7; color:#92400e; }
+    html[data-theme="light"] .io-badge--labour{ background:#fee2e2; color:#991b1b; }
+    html[data-theme="light"] .io-badge--forum { background:#ede9fe; color:#5b21b6; }
+    html[data-theme="light"] .io-badge--india { background:#ffedd5; color:#9a3412; }
+    html[data-theme="light"] .io-badge--new   { background:#fce7f3; color:#9d174d; }
+    html[data-theme="light"] .io-badge--fin   { background:#dbeafe; color:#1e40af; }
+
+    .io-tools { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0 6px; }
+    .io-btn { background:#1e293b; color:#c7d2fe; border:1px solid #334155; border-radius:8px; padding:6px 14px; font-size:12.5px; font-weight:600; cursor:pointer; font-family:inherit; }
+    .io-btn:hover { background:#334155; }
+    html[data-theme="light"] .io-btn { background:#eef2ff; color:#3730a3; border-color:#c7d2fe; }
+    html[data-theme="light"] .io-btn:hover { background:#e0e7ff; }
+
+    .io-q { background:#0f172a; border-left:3px solid #6366f1; border-radius:8px; padding:12px 14px; margin:8px 0; cursor:pointer; }
+    .io-q p { margin:0; color:#e2e8f0; font-weight:600; font-size:14.5px; line-height:1.45; }
+    .io-ans { display:none; margin-top:9px; padding-top:9px; border-top:1px dashed #334155; color:#a5b4fc; font-size:14px; line-height:1.6; }
+    .io-q.open .io-ans { display:block; }
+    html[data-theme="light"] .io-q { background:#ffffff; }
+    html[data-theme="light"] .io-q p { color:#1e293b; }
+    html[data-theme="light"] .io-ans { color:#4338ca; border-top-color:#e2e8f0; }
+
+    .io-mnem { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; background:#1e1b4b; color:#a5b4fc; padding:2px 7px; border-radius:5px; font-size:13px; }
+    html[data-theme="light"] .io-mnem { background:#e0e7ff; color:#3730a3; }
+  </style>
+</head>
+
+<body style="background: transparent; margin: 0;">
+  <main class="rev-page">
+
+    <h1>International Organisations — Part 1</h1>
+    <p class="rev-subtitle">World Bank · WTO · ILO · WEF · UN · plus the orgs every UPSC/BPSC paper quietly asks about.</p>
+
+    <div class="rev-note">
+      <strong>How to use this page:</strong> every blue-accented card is <em>closed</em> by default.
+      Tap it (or hit <strong>Reveal all</strong>) only <em>after</em> you have tried to recall the answer.
+      Reading an open card teaches you nothing — guessing first is what makes it stick.
+    </div>
+
+    <h2>1 · The World Bank Group — five arms, one mission</h2>
+    <p class="rev-subtitle">Founded at Bretton Woods in 1944. Began operations June 1946. HQ: Washington DC. 189 member countries. India is a founder member.</p>
+
+    <div class="io-tools">
+      <button class="io-btn" data-io-all="open">Reveal all</button>
+      <button class="io-btn" data-io-all="close">Hide all</button>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">IBRD <span class="io-badge io-badge--bw">1944</span> <span class="io-badge io-badge--fin">Middle Income</span></div>
+      <div class="io-card__body">
+        <strong>International Bank for Reconstruction and Development.</strong> The original "World Bank".
+        Lends to <em>middle-income and creditworthy low-income</em> countries at near-market rates.
+        Started life funding post-WWII reconstruction (hence the name).
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">IDA <span class="io-badge io-badge--bw">1960</span> <span class="io-badge io-badge--fin">Poorest</span></div>
+      <div class="io-card__body">
+        <strong>International Development Association.</strong> The "soft loan window".
+        Gives <em>concessional loans and grants</em> to the world's poorest countries.
+        Known as the <strong>Soft Loan Window of the World Bank</strong> — the single most-asked fact in this section.
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">IFC <span class="io-badge io-badge--bw">1956</span> <span class="io-badge io-badge--fin">Private Sector</span></div>
+      <div class="io-card__body">
+        <strong>International Finance Corporation.</strong> Invests in and lends to the
+        <em>private sector</em> in developing countries — no government guarantees required.
+        Only arm of the group focused purely on private enterprise.
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">MIGA <span class="io-badge io-badge--bw">1988</span> <span class="io-badge io-badge--fin">Insurance</span></div>
+      <div class="io-card__body">
+        <strong>Multilateral Investment Guarantee Agency.</strong> Provides
+        <em>political-risk insurance and guarantees</em> to cross-border investors —
+        protects against expropriation, war, civil disturbance, breach of contract.
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">ICSID <span class="io-badge io-badge--bw">1966</span> <span class="io-badge io-badge--fin">Disputes</span></div>
+      <div class="io-card__body">
+        <strong>International Centre for Settlement of Investment Disputes.</strong>
+        A neutral forum for <em>arbitration between foreign investors and host states</em>.
+        Based in Washington DC. Not a lender — a tribunal.
+      </div>
+    </div>
+
+    <div class="rev-note">
+      <strong>Watch out:</strong> The World Bank Group has <strong>5</strong> arms; the "World Bank" strictly means
+      <strong>IBRD + IDA</strong> only. Examiners love this distinction.
+    </div>
+
+    <h2>2 · WTO — the referee of world trade</h2>
+    <p class="rev-subtitle">Created 1 January 1995 by the Marrakesh Agreement. Replaced GATT (which had run since 1948). HQ: Geneva, Switzerland. <strong>Not a UN body.</strong> India is a founding member.</p>
+
+    <div class="io-tools">
+      <button class="io-btn" data-io-all="open">Reveal all</button>
+      <button class="io-btn" data-io-all="close">Hide all</button>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">General Council <span class="io-badge io-badge--trade">Highest Body</span></div>
+      <div class="io-card__body">
+        The <strong>highest decision-making body</strong> of the WTO, meeting regularly at Geneva.
+        It also sits as the <em>Dispute Settlement Body</em> and the <em>Trade Policy Review Body</em>.
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">Ministerial Conference <span class="io-badge io-badge--trade">Every 2 Years</span></div>
+      <div class="io-card__body">
+        The WTO's <strong>supreme / main decision-making body</strong> — meets <em>at least once every two years</em>.
+        It is where all major new trade agreements are negotiated. (Note: General Council = highest <em>standing</em> body; Ministerial Conference = highest <em>plenary</em> body.)
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">Secretariat <span class="io-badge io-badge--trade">Admin</span></div>
+      <div class="io-card__body">
+        Provides <em>administrative and technical support</em> to WTO bodies. Headed by the
+        Director-General. Located in Geneva.
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">MC14 <span class="io-badge io-badge--new">Recent</span></div>
+      <div class="io-card__body">
+        The <strong>14th WTO Ministerial Conference</strong> was held in <strong>Cameroon</strong>.
+        Key flashpoint: the attempt to <em>renew the 26-year-old e-commerce moratorium</em> on
+        customs duties on digital trade — India opposed renewing it without a development outcome.
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">E-commerce Moratorium <span class="io-badge io-badge--india">India Opposed</span></div>
+      <div class="io-card__body">
+        Since 1998 the WTO has <em>not imposed customs duties on electronic transmissions</em>.
+        It has been rolled over again and again. Developing countries (led by India and South Africa)
+        argue it deprives them of tariff revenue and policy space for digital industrialisation.
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">Dispute Settlement — Appellate Body crisis <span class="io-badge io-badge--new">Key Issue</span></div>
+      <div class="io-card__body">
+        The WTO's two-tier dispute system: <em>Panels → Appellate Body</em>.
+        Since 2019 the US has <strong>blocked appointments to the Appellate Body</strong>, leaving it
+        non-functional. Members now use the <em>MPIA</em> (Multi-Party Interim Appeal Arbitration
+        Arrangement) as a workaround — India is <strong>not</strong> a member of the MPIA.
+      </div>
+    </div>
+
+    <h3>Subsidy "Boxes" — the comparison you must remember</h3>
+    <table>
+      <tr><th>Box</th><th>Colour meaning</th><th>What it does</th></tr>
+      <tr><td>Amber Box</td><td>Caution</td><td>Trade-distorting domestic support — must be <strong>reduced</strong></td></tr>
+      <tr><td>Blue Box</td><td>Allowed, conditional</td><td>Production-limiting subsidies — exempt from reduction</td></tr>
+      <tr><td>Green Box</td><td>Safe</td><td>Non/minimally trade-distorting (research, environment) — <strong>no limits</strong></td></tr>
+    </table>
+
+    <h3>Other WTO agreements worth a card in your head</h3>
+    <ul>
+      <li><strong>AoA</strong> — Agreement on Agriculture (market access, domestic support, export subsidies)</li>
+      <li><strong>GATS</strong> — General Agreement on Trade in Services: <code>Mode 1</code> cross-border, <code>Mode 2</code> consumption abroad, <code>Mode 3</code> commercial presence, <code>Mode 4</code> movement of natural persons</li>
+      <li><strong>TRIPS</strong> — Trade-Related Aspects of Intellectual Property Rights</li>
+      <li><strong>TRIMS</strong> — Trade-Related Investment Measures</li>
+      <li><strong>SPS</strong> — Sanitary and Phytosanitary Measures (food safety, animal/plant health)</li>
+      <li><strong>TBT</strong> — Technical Barriers to Trade (standards, labelling, packaging)</li>
+      <li><strong>Anti-Dumping / Countervailing Duties / Safeguards</strong> — the three trade-remedy tools</li>
+    </ul>
+
+    <h2>3 · ILO — Geneva's tripartite guardian of labour</h2>
+    <p class="rev-subtitle">Founded 1919 by the Treaty of Versailles. HQ: Geneva. Became a UN specialised agency in 1946. Nobel Peace Prize 1969. 187 member states. India is a founding member.</p>
+
+    <div class="io-tools">
+      <button class="io-btn" data-io-all="open">Reveal all</button>
+      <button class="io-btn" data-io-all="close">Hide all</button>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">Tripartite Structure <span class="io-badge io-badge--labour">Unique Feature</span></div>
+      <div class="io-card__body">
+        The ILO is the <strong>only UN agency with a tripartite structure</strong> — every decision is taken
+        jointly by three constituents: <strong>Governments + Employers + Workers</strong>.
+        This is the single most-examined fact about the ILO.
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">Objectives <span class="io-badge io-badge--labour">Mandate</span></div>
+      <div class="io-card__body">
+        <ul>
+          <li>Promote and realise <em>standards and fundamental labour rights</em></li>
+          <li>Create decent work opportunities for women and men</li>
+          <li>Enhance social protection and strengthen social dialogue</li>
+          <li>Eradicate forced labour, child labour and discrimination at work</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">8 Fundamental Conventions <span class="io-badge io-badge--labour">Core</span></div>
+      <div class="io-card__body">
+        <ul>
+          <li><strong>Forced Labour:</strong> C29 (1930), C105 (1957)</li>
+          <li><strong>Child Labour:</strong> C138 — Minimum Age (1973), C182 — Worst Forms (1999)</li>
+          <li><strong>Equality / Non-discrimination:</strong> C100 — Equal Remuneration (1951), C111 — Discrimination (1958)</li>
+          <li><strong>Freedom of Association &amp; Collective Bargaining:</strong> C87 (1948), C98 (1949)</li>
+        </ul>
+        All eight are binding on ratifying states; India has ratified <strong>six</strong> (not C87 and C98).
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">ILO Declaration, 1998 <span class="io-badge io-badge--labour">Principles</span></div>
+      <div class="io-card__body">
+        Four non-negotiable principles, binding on <em>all</em> members even without ratification:
+        <ol>
+          <li>Freedom of association &amp; effective recognition of collective bargaining</li>
+          <li>Elimination of all forms of forced or compulsory labour</li>
+          <li>Effective abolition of child labour</li>
+          <li>Elimination of discrimination in respect of employment and occupation</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">Key ILO Reports <span class="io-badge io-badge--labour">Reports</span></div>
+      <div class="io-card__body">
+        <ul>
+          <li><em>World Employment and Social Outlook (WESO)</em></li>
+          <li><em>Global Wage Report</em></li>
+          <li><em>World Social Protection Report</em></li>
+          <li><em>World of Work Report</em></li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>4 · WEF — the Davos club</h2>
+    <p class="rev-subtitle">An international non-profit foundation, not a treaty body. HQ: Geneva, Switzerland. Founder: Klaus Schwab.</p>
+
+    <div class="io-tools">
+      <button class="io-btn" data-io-all="open">Reveal all</button>
+      <button class="io-btn" data-io-all="close">Hide all</button>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">1971 — Founded <span class="io-badge io-badge--forum">Origin</span></div>
+      <div class="io-card__body">
+        Founded by <strong>Klaus Schwab</strong> as the <em>European Management Forum</em> — a
+        non-profit bringing European business leaders together. Headquartered in Geneva.
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">1973 — The Turning Point <span class="io-badge io-badge--forum">Expansion</span></div>
+      <div class="io-card__body">
+        Global economic turmoil — the <strong>collapse of the Bretton Woods system</strong> and the
+        first oil shock — forced the forum to widen its agenda from "management" to
+        <em>global economic and political issues</em>. Membership was later opened to roughly
+        <strong>1,000 leading global companies</strong>.
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">1987 — Renamed <span class="io-badge io-badge--forum">Rename</span></div>
+      <div class="io-card__body">
+        Renamed from <em>European Management Forum</em> to <strong>World Economic Forum</strong>
+        to reflect its genuinely global role.
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">2015 — Formal recognition <span class="io-badge io-badge--forum">Status</span></div>
+      <div class="io-card__body">
+        Formally recognised as an <strong>international organisation</strong> by the Swiss government —
+        which is why it is now treated alongside treaty bodies in exam lists.
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">56th Annual Meeting — Davos <span class="io-badge io-badge--new">Recent</span></div>
+      <div class="io-card__body">
+        Held in <strong>Davos, Switzerland</strong>. Theme: <em>"A Spirit of Dialogue"</em>.
+        The Annual Meeting is the WEF's flagship event; the venue is what gives the forum its
+        everyday nickname — "Davos".
+      </div>
+    </div>
+
+    <h2>5 · The United Nations — six organs, one charter</h2>
+    <p class="rev-subtitle">Charter signed 26 June 1945 at San Francisco; came into force 24 October 1945 (UN Day). HQ: New York. 193 members.</p>
+
+    <div class="io-tools">
+      <button class="io-btn" data-io-all="open">Reveal all</button>
+      <button class="io-btn" data-io-all="close">Hide all</button>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">UNGA — General Assembly <span class="io-badge io-badge--un">Universal</span></div>
+      <div class="io-card__body">
+        The <strong>only UN organ with universal representation</strong> — all 193 members, one nation, one vote.
+        <ul>
+          <li>Deliberative, policy-making and representative organ</li>
+          <li>"Important questions" need a <strong>two-thirds majority</strong>; others need a simple majority</li>
+          <li>President elected each year, serves a one-year term</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">UNSC — Security Council <span class="io-badge io-badge--un">15 Members</span></div>
+      <div class="io-card__body">
+        15 members: <strong>5 permanent</strong> (China, France, Russia, UK, USA — the P5, each with veto)
+        and <strong>10 non-permanent</strong> elected for two-year terms.
+        <ul>
+          <li>Elections held annually by <em>secret ballot</em>, requiring a two-thirds majority</li>
+          <li>Remains the only UN body whose decisions are <em>binding</em> on all members under the Charter</li>
+          <li>Non-permanent seats by region: Africa 3, Asia-Pacific 3, GRULAC 2, WEOG 2, Eastern Europe 1</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">UNSC — Recent Elected Members <span class="io-badge io-badge--new">2025–27</span></div>
+      <div class="io-card__body">
+        <ul>
+          <li><strong>2025–2026:</strong> Bahrain, Colombia, DR Congo, Latvia, Liberia</li>
+          <li><strong>2026–2027:</strong> Denmark, Greece, Pakistan, Panama, Somalia</li>
+        </ul>
+        Note: five seats turn over each year, so the council always has a mix of first-year and second-year members.
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">India's UNSC Terms <span class="io-badge io-badge--india">India</span></div>
+      <div class="io-card__body">
+        India has been elected as a non-permanent member <strong>eight times</strong>:
+        <code>1950–51 · 1967–68 · 1972–73 · 1977–78 · 1984–85 · 1991–92 · 2011–12 · 2021–22</code>.
+        India is a <strong>founder member of the UN</strong> (1945) and has long demanded permanent membership.
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">G4 &amp; the Coffee Club <span class="io-badge io-badge--un">Reform Blocs</span></div>
+      <div class="io-card__body">
+        <ul>
+          <li><strong>G4:</strong> Brazil, Germany, India, Japan — demand permanent UNSC seats for themselves.</li>
+          <li><strong>Coffee Club (Uniting for Consensus):</strong> formed in the 1990s, <em>opposes</em> expansion of
+              permanent seats. Members include Italy, Pakistan, Mexico, Egypt, South Korea, Colombia, Canada and others.</li>
+        </ul>
+        The two blocs cancel each other out — which is why UNSC reform has stalled for three decades.
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">ECOSOC <span class="io-badge io-badge--un">54 Members</span></div>
+      <div class="io-card__body">
+        <strong>Economic and Social Council</strong> — principal body for coordination, policy review,
+        policy dialogue and recommendations on economic, social and environmental issues.
+        Established 1945. <strong>54 members</strong>, elected by the General Assembly for overlapping
+        three-year terms. <span class="io-badge io-badge--india">India 2026–28</span> India was elected for the 2026–28 term.
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">ICJ — International Court of Justice <span class="io-badge io-badge--un">The Hague</span></div>
+      <div class="io-card__body">
+        The <strong>principal judicial organ</strong> of the UN. Established 1945.
+        <ul>
+          <li>Seat: <strong>Peace Palace, The Hague (Netherlands)</strong></li>
+          <li><strong>15 judges</strong>, elected for <strong>9-year terms</strong> by UNGA and UNSC voting separately</li>
+          <li>No two judges may be nationals of the same state</li>
+          <li>Official languages: <strong>English and French</strong></li>
+          <li>Advisory opinions are <em>non-binding</em>; judgments in contentious cases are binding on the parties</li>
+          <li>Regional composition: Africa 3, Latin America &amp; Caribbean 2, Asia 3, WEOG 5, Eastern Europe 2</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">Trusteeship Council <span class="io-badge io-badge--un">Dormant</span></div>
+      <div class="io-card__body">
+        Created to supervise trust territories. <strong>Suspended operations in 1994</strong> after
+        Palau (the last trust territory) became independent. Still exists on paper —
+        a favourite trick question: "which UN principal organ is effectively inactive?"
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">Secretariat &amp; Secretary-General <span class="io-badge io-badge--un">Executive</span></div>
+      <div class="io-card__body">
+        Carries out the day-to-day work of the UN. Headed by the <strong>Secretary-General</strong>,
+        appointed by the <strong>UNGA on the recommendation of the UNSC</strong> for a
+        <strong>5-year renewable term</strong>. Staff are drawn from all member states.
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">UNCTAT / Taliban Sanctions Committee <span class="io-badge io-badge--un">1973 / 2025</span></div>
+      <div class="io-card__body">
+        The <strong>1988 Sanctions Committee</strong> (Taliban) was set up under UNSC Resolution 1267 (1999)
+        and strengthened after the 9/11 attacks. In <strong>2025, India chaired</strong> the
+        Taliban Sanctions Committee, with France and Russia as vice-chairs.
+      </div>
+    </div>
+
+    <h3>UN organs — quick recall grid</h3>
+    <table>
+      <tr><th>Organ</th><th>Members</th><th>Seat / HQ</th><th>Key fact</th></tr>
+      <tr><td>UNGA</td><td>193 (all)</td><td>New York</td><td>One nation, one vote; 2/3 majority for important questions</td></tr>
+      <tr><td>UNSC</td><td>15 (5 + 10)</td><td>New York</td><td>Only binding organ; P5 veto</td></tr>
+      <tr><td>ECOSOC</td><td>54</td><td>New York</td><td>Overlapping 3-year terms</td></tr>
+      <tr><td>ICJ</td><td>15 judges</td><td>Peace Palace, The Hague</td><td>9-year terms; advisory opinions non-binding</td></tr>
+      <tr><td>Trusteeship Council</td><td>—</td><td>New York</td><td>Suspended 1994</td></tr>
+      <tr><td>Secretariat</td><td>—</td><td>New York</td><td>SG: UNGA appoints, UNSC recommends</td></tr>
+    </table>
+
+    <div class="rev-note">
+      <strong>UN80 Initiative (2025):</strong> a comprehensive UN reform drive to transform organisational
+      efficiency — aims to reduce bureaucracy, review <strong>4,000+ mandates</strong>, and address global
+      challenges and financial constraints. Good one-liner for essays on UN reform.
+    </div>
+
+    <h2>7 · The exits &amp; the solar club</h2>
+    <p class="rev-subtitle">Two big withdrawals and one India-led launch — all three are near-certain current-affairs questions.</p>
+
+    <div class="io-tools">
+      <button class="io-btn" data-io-all="open">Reveal all</button>
+      <button class="io-btn" data-io-all="close">Hide all</button>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">UNESCO <span class="io-badge io-badge--new">US Exit</span> <span class="io-badge io-badge--india">India 1946</span></div>
+      <div class="io-card__body">
+        <ul>
+          <li>HQ: <strong>Paris, France</strong>. Specialised agency of the UN.</li>
+          <li>The <strong>US announced its withdrawal from UNESCO</strong>, with the pull-out taking effect from <strong>December 2026</strong>.</li>
+          <li>India has been a member <strong>since 1946</strong> — one of the founding members.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">WHO <span class="io-badge io-badge--new">US Exit</span> <span class="io-badge io-badge--un">1948</span></div>
+      <div class="io-card__body">
+        <ul>
+          <li>Established <strong>1948</strong>; HQ: <strong>Geneva, Switzerland</strong>; special adviser to ECOSOC.</li>
+          <li>The <strong>USA withdrew from the WHO in January 2026</strong>.</li>
+          <li>Before withdrawal, the US was the WHO's <strong>largest donor, providing 12–15% of total funding</strong> — the key reason this exit matters so much financially.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">International Solar Alliance (ISA) <span class="io-badge io-badge--india">India + France</span></div>
+      <div class="io-card__body">
+        <ul>
+          <li>Launched in <strong>2015 by India and France at COP21 (Paris)</strong>.</li>
+          <li>Headquarters: <strong>Gurugram, India</strong> — the first major international organisation HQ'd in India.</li>
+          <li>Motto/target: <strong>"One World, One Sun, One Grid"</strong></li>
+          <li>Goal: mobilise <strong>USD 1,000 billion</strong> of investment in solar energy solutions by <strong>2030</strong>.</li>
+          <li>Membership open to <em>all</em> UN members (widened from the original "sunshine countries" between the Tropics).</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>8 · Beyond Part 1 — the orgs UPSC/BPSC actually asks</h2>
+    <p class="rev-subtitle">Not in the original notes. Added because Prelims keeps pulling from this exact list.</p>
+
+    <div class="io-tools">
+      <button class="io-btn" data-io-all="open">Reveal all</button>
+      <button class="io-btn" data-io-all="close">Hide all</button>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">IMF <span class="io-badge io-badge--bw">1944</span> <span class="io-badge io-badge--fin">Bretton Woods Twin</span></div>
+      <div class="io-card__body">
+        <strong>International Monetary Fund.</strong> Founded at Bretton Woods, 1944. HQ: <strong>Washington DC</strong>.
+        <ul>
+          <li>Mandate: <em>macroeconomic stability, exchange-rate stability, balance-of-payments support</em></li>
+          <li>Reports: <em>World Economic Outlook, Global Financial Stability Report, Fiscal Monitor</em></li>
+          <li>Special Drawing Rights (SDR) basket: <strong>USD, EUR, CNY, JPY, GBP</strong> (Chinese yuan added 2016)</li>
+          <li>Quota-based voting; <strong>16th General Review of Quotas</strong> agreed to realign shares — India is now the 8th-largest quota holder</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">NDB — New Development Bank <span class="io-badge io-badge--new">BRICS</span> <span class="io-badge io-badge--india">India</span></div>
+      <div class="io-card__body">
+        Established by the <strong>BRICS</strong> nations at the <strong>Fortaleza Summit (2014)</strong>.
+        HQ: <strong>Shanghai, China</strong>. India is a founding member and first President (K. V. Kamath).
+        Also called the "BRICS Bank".
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">AIIB — Asian Infrastructure Investment Bank <span class="io-badge io-badge--new">2016</span></div>
+      <div class="io-card__body">
+        Started operations <strong>2016</strong>. HQ: <strong>Beijing, China</strong>. India is the
+        <strong>second-largest shareholder</strong> (after China). Focus: infrastructure in Asia
+        and beyond.
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">ADB — Asian Development Bank <span class="io-badge io-badge--new">1966</span></div>
+      <div class="io-card__body">
+        Founded <strong>1966</strong>. HQ: <strong>Manila, Philippines</strong>. India is a
+        founding member. Largest shareholders: Japan and the USA.
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">BRICS <span class="io-badge io-badge--new">Expanded 2024</span></div>
+      <div class="io-card__body">
+        Originally Brazil, Russia, India, China, South Africa. Expanded from 2024 to include
+        <strong>Egypt, Ethiopia, Iran, UAE</strong> (and Saudi Arabia invited). Focus: reform of
+        global governance, de-dollarisation debate, NDB.
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">G20 <span class="io-badge io-badge--new">1999</span> <span class="io-badge io-badge--india">India 2023</span></div>
+      <div class="io-card__body">
+        Created <strong>1999</strong> after the Asian financial crisis. India held the
+        <strong>2023 Presidency</strong> and hosted the New Delhi Summit — the African Union
+        was admitted as a permanent member at that summit. The 2026 Presidency is with the
+        <strong>USA</strong>.
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">SCO — Shanghai Cooperation Organisation <span class="io-badge io-badge--new">2001</span></div>
+      <div class="io-card__body">
+        Founded <strong>2001</strong> (Shanghai Five + Uzbekistan). Permanent members: China, Russia,
+        India, Pakistan, Kazakhstan, Kyrgyzstan, Tajikistan, Uzbekistan, Iran (2023), Belarus (2024).
+        HQ: <strong>Beijing</strong>. India and Pakistan joined in <strong>2017</strong>.
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">QUAD <span class="io-badge io-badge--new">Indo-Pacific</span></div>
+      <div class="io-card__body">
+        <strong>Quadrilateral Security Dialogue</strong> — India, USA, Japan, Australia.
+        Revived in 2017; elevated to leader-level summits from 2021. Focus:
+        free and open Indo-Pacific, maritime security, critical technologies, resilient supply chains.
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">FATF <span class="io-badge io-badge--new">1989</span></div>
+      <div class="io-card__body">
+        <strong>Financial Action Task Force.</strong> Founded 1989 by the G7. HQ: <strong>Paris</strong>.
+        Sets global standards on anti-money laundering (AML) and counter-terrorist financing (CFT).
+        Maintains the <em>Grey List</em> and <em>Black List</em>. India is a member.
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">SAARC vs BIMSTEC <span class="io-badge io-badge--india">India's Neighbourhood</span></div>
+      <div class="io-card__body">
+        <ul>
+          <li><strong>SAARC</strong> — 1985, Dhaka. 8 members. HQ: <strong>Kathmandu</strong>. Largely paralysed by India–Pakistan friction; no summit since 2014.</li>
+          <li><strong>BIMSTEC</strong> — 1997, Bangkok. 7 members (5 South Asian + Myanmar &amp; Thailand). Permanent Secretariat: <strong>Dhaka</strong>. India's preferred regional vehicle under the "Neighbourhood First" and "Act East" policies.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">OPEC <span class="io-badge io-badge--new">1960</span></div>
+      <div class="io-card__body">
+        <strong>Organisation of the Petroleum Exporting Countries.</strong> Founded <strong>1960</strong> at the
+        <strong>Baghdad Conference</strong>. HQ: <strong>Vienna, Austria</strong>. "OPEC+" includes
+        non-OPEC producers like Russia. Founded by Iran, Iraq, Kuwait, Saudi Arabia and Venezuela.
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">OECD <span class="io-badge io-badge--new">1961</span></div>
+      <div class="io-card__body">
+        <strong>Organisation for Economic Co-operation and Development.</strong> Formed 1961 (successor to
+        the OEEC, which ran the Marshall Plan). HQ: <strong>Paris</strong>. Club of mostly
+        high-income economies. India is <em>not</em> a member.
+      </div>
+    </div>
+
+    <div class="io-card">
+      <div class="io-card__head">Commonwealth <span class="io-badge io-badge--new">1949</span></div>
+      <div class="io-card__body">
+        Modern Commonwealth dates from the <strong>London Declaration, 1949</strong>, which allowed
+        India to remain a member as a republic. <strong>56 members.</strong> Secretariat: London.
+        Head: the British monarch (ceremonial, not the head of government). India is a founding member.
+      </div>
+    </div>
+
+    <h2>9 · Memory tricks that save you</h2>
+
+    <div class="rev-note">
+      <strong>The five World Bank arms — by year.</strong>
+      <span class="io-mnem">"44 the Bank, 56 the Firms, 60 the Aid, 66 the Courts, 88 the Guards"</span><br>
+      1944 IBRD → 1956 IFC → 1960 IDA → 1966 ICSID → 1988 MIGA. Read the years in ascending order and the
+      names fall into place, because each arm was added as a gap appeared: reconstruction, then private
+      capital, then the poorest countries, then dispute settlement, then political risk.
+    </div>
+
+    <div class="rev-note">
+      <strong>World Bank vs IMF — one line.</strong>
+      <span class="io-mnem">"Bank Builds, Fund Fixes"</span><br>
+      The <em>Bank</em> lends for long-term <strong>development</strong>; the <em>Fund</em> fixes short-term
+      <strong>balance-of-payments</strong> crises. Both are 1944 Bretton Woods twins, both sit in
+      Washington DC.
+    </div>
+
+    <div class="rev-note">
+      <strong>ILO's eight core conventions — four pairs.</strong>
+      <span class="io-mnem">"Force · Child · Equal · Free"</span><br>
+      Then recall each pair by proximity of number:
+      <em>Forced</em> = <code>29 &amp; 105</code> · <em>Child</em> = <code>138 &amp; 182</code> ·
+      <em>Equal</em> = <code>100 &amp; 111</code> · <em>Free</em> = <code>87 &amp; 98</code>.
+      India has ratified six — the two missing are exactly the freedom-of-association pair
+      <code>87 &amp; 98</code>.
+    </div>
+
+    <div class="rev-note">
+      <strong>The six principal UN organs — in Charter order.</strong>
+      <span class="io-mnem">"Green Snakes Eat Icy Sweet Things"</span><br>
+      <strong>G</strong>A → <strong>S</strong>C → <strong>E</strong>COSOC → <strong>I</strong>CJ →
+      <strong>S</strong>ecretariat → <strong>T</strong>rusteeship Council.
+      (Trusteeship last because it is the only one that is effectively dead — suspended 1994.)
+    </div>
+
+    <div class="rev-note">
+      <strong>WTO subsidy boxes — the traffic-light trick.</strong>
+      <span class="io-mnem">"Amber slow down, Blue stay put, Green go free"</span><br>
+      Amber = trade-distorting, must be <em>reduced</em>. Blue = production-limiting, <em>exempt</em>.
+      Green = non-distorting, <em>no limit at all</em>. Once you see the colours as a traffic signal,
+      you never mix up Blue and Green again.
+    </div>
+
+    <div class="rev-note">
+      <strong>WEF's three dates — a 16-year ladder.</strong>
+      <span class="io-mnem">"71 born, 73 grew up, 87 got its real name, 2015 got its licence"</span><br>
+      1971 European Management Forum → 1973 agenda widens after Bretton Woods collapse →
+      1987 renamed World Economic Forum → 2015 recognised by Switzerland as an international organisation.
+    </div>
+
+    <h2>10 · Rapid Fire</h2>
+    <p class="rev-subtitle">Cover the whole page. Answer out loud <em>before</em> you tap.</p>
+
+    <div class="io-tools">
+      <button class="io-btn" data-io-all="open">Reveal all</button>
+      <button class="io-btn" data-io-all="close">Hide all</button>
+    </div>
+
+    <div class="io-q">
+      <p>1. In which year and at which conference was the IBRD founded?</p>
+      <div class="io-ans">1944, at the Bretton Woods Conference (USA). Operations began June 1946.</div>
+    </div>
+
+    <div class="io-q">
+      <p>2. Which World Bank arm provides concessional loans to the poorest countries, and in which year was it set up?</p>
+      <div class="io-ans">IDA — International Development Association, 1960. Nicknamed the "Soft Loan Window".</div>
+    </div>
+
+    <div class="io-q">
+      <p>3. Which two World Bank Group arms were created in 1956 and 1988, and what do they do?</p>
+      <div class="io-ans">1956 — IFC (financing the private sector). 1988 — MIGA (political-risk insurance and guarantees).</div>
+    </div>
+
+    <div class="io-q">
+      <p>4. When did the WTO come into being, and what did it replace?</p>
+      <div class="io-ans">1 January 1995, following the Marrakesh Agreement. It replaced GATT, which had governed world trade since 1948.</div>
+    </div>
+
+    <div class="io-q">
+      <p>5. Is the WTO a UN body? Where is it headquartered?</p>
+      <div class="io-ans">No — the WTO is <strong>not</strong> a UN member or agency. HQ: Geneva, Switzerland. India is a founding member.</div>
+    </div>
+
+    <div class="io-q">
+      <p>6. Name the WTO's highest decision-making body and its main plenary decision-making body.</p>
+      <div class="io-ans">Highest standing body — <strong>General Council</strong>. Main plenary body — <strong>Ministerial Conference</strong>, which meets at least once every two years.</div>
+    </div>
+
+    <div class="io-q">
+      <p>7. Where was MC14 held, and which 26-year-old moratorium was at stake?</p>
+      <div class="io-ans">Cameroon. The e-commerce moratorium on customs duties on electronic transmissions — India opposed its renewal.</div>
+    </div>
+
+    <div class="io-q">
+      <p>8. Which WTO organ is currently dysfunctional, and why?</p>
+      <div class="io-ans">The Appellate Body — the US has blocked appointments since 2019. Members now use the MPIA as an interim workaround; India is not a party to it.</div>
+    </div>
+
+    <div class="io-q">
+      <p>9. In which year was the ILO founded, by which treaty, and where is it headquartered?</p>
+      <div class="io-ans">1919, by the Treaty of Versailles. HQ: Geneva, Switzerland. India is a founding member.</div>
+    </div>
+
+    <div class="io-q">
+      <p>10. What is the ILO's unique structural feature, and in which year did it win the Nobel Peace Prize?</p>
+      <div class="io-ans">A <strong>tripartite structure</strong> — governments, employers and workers all participate. Nobel Peace Prize: 1969. It became a UN specialised agency in 1946.</div>
+    </div>
+
+    <div class="io-q">
+      <p>11. Name the four themes of the ILO's eight fundamental conventions — and which two India has NOT ratified.</p>
+      <div class="io-ans">Forced labour, child labour, equality/non-discrimination, freedom of association &amp; collective bargaining. India has not ratified C87 (Freedom of Association) and C98 (Right to Organise and Collective Bargaining).</div>
+    </div>
+
+    <div class="io-q">
+      <p>12. Who founded the WEF, in which year, and what was it originally called?</p>
+      <div class="io-ans">Klaus Schwab, 1971. Originally the <em>European Management Forum</em>; renamed World Economic Forum in 1987.</div>
+    </div>
+
+    <div class="io-q">
+      <p>13. Which 1973 event broadened the WEF's agenda, and what was the theme of the 56th Annual Meeting?</p>
+      <div class="io-ans">The collapse of the Bretton Woods system (plus the oil shock) forced a global agenda. 56th Annual Meeting theme: <em>"A Spirit of Dialogue"</em>, at Davos.</div>
+    </div>
+
+    <div class="io-q">
+      <p>14. How many members does the UNSC have, how many are permanent, and who are they?</p>
+      <div class="io-ans">15 total — 5 permanent (China, France, Russia, UK, USA — the P5 with veto) and 10 non-permanent, elected for two-year terms by secret ballot requiring a two-thirds majority.</div>
+    </div>
+
+    <div class="io-q">
+      <p>15. Name the UNSC non-permanent members for 2025–26 and 2026–27.</p>
+      <div class="io-ans">2025–26: Bahrain, Colombia, DR Congo, Latvia, Liberia. 2026–27: Denmark, Greece, Pakistan, Panama, Somalia.</div>
+    </div>
+
+    <div class="io-q">
+      <p>16. What is the G4, and what is the Coffee Club?</p>
+      <div class="io-ans">G4 = Brazil, Germany, India, Japan — want permanent UNSC seats. Coffee Club (Uniting for Consensus) = Italy, Pakistan, Mexico, Egypt, South Korea and others — oppose creating new permanent seats.</div>
+    </div>
+
+    <div class="io-q">
+      <p>17. Which is the only UN organ with universal representation, and what majority do "important questions" need?</p>
+      <div class="io-ans">The UN General Assembly. Important questions need a two-thirds majority; other questions a simple majority. One nation, one vote.</div>
+    </div>
+
+    <div class="io-q">
+      <p>18. Where does the ICJ sit, how many judges does it have, and what is their term?</p>
+      <div class="io-ans">Peace Palace, The Hague (Netherlands). 15 judges, 9-year terms, elected by UNGA and UNSC voting separately. Official languages: English and French. Advisory opinions are non-binding.</div>
+    </div>
+
+    <div class="io-q">
+      <p>19. Which UN principal organ is effectively inactive, and since when?</p>
+      <div class="io-ans">The Trusteeship Council — suspended operations in 1994 after Palau, the last trust territory, became independent.</div>
+    </div>
+
+    <div class="io-q">
+      <p>20. Which two countries launched the International Solar Alliance, when, and where is its HQ?</p>
+      <div class="io-ans">India and France, launched in 2015 at COP21 (Paris). HQ: Gurugram, India. Target: USD 1,000 billion of solar investment by 2030 under "One World, One Sun, One Grid".</div>
+    </div>
+
+    <div class="io-q">
+      <p>21. Which country withdrew from UNESCO and which from the WHO, and when do those exits take effect?</p>
+      <div class="io-ans">The USA announced withdrawal from UNESCO, effective December 2026; and withdrew from the WHO in January 2026. The US was the WHO's largest donor at 12–15% of total funding.</div>
+    </div>
+
+    <div class="io-q">
+      <p>22. Where are the IMF, NDB, AIIB and ADB headquartered?</p>
+      <div class="io-ans">IMF — Washington DC (1944, Bretton Woods). NDB — Shanghai (BRICS bank, 2014 Fortaleza Summit). AIIB — Beijing (2016). ADB — Manila (1966).</div>
+    </div>
+
+    <p class="rev-subtitle" style="margin-top:18px;">Closing tip: on the night before the exam, only read the <strong>Rapid Fire</strong> section. If you can answer 18 of 22 out loud without tapping, this page has done its job.</p>
+
+  </main>
+
+  <!-- Report true content height to the parent app.
+       Measures <main class="rev-page"> directly, NOT document.body. -->
+  <script>
+    (function () {
+      function sendHeight() {
+        var el = document.querySelector('.rev-page') || document.body;
+        var h = Math.ceil(el.getBoundingClientRect().height);
+        if (!h) h = el.scrollHeight || 0;
+        if (!h) return;
+        try {
+          window.parent.postMessage({ type: 'revision-height', height: h }, '*');
+        } catch (e) {}
+      }
+      window.addEventListener('load', sendHeight);
+      window.addEventListener('resize', sendHeight);
+      setTimeout(sendHeight, 0);
+      setTimeout(sendHeight, 50);
+      setTimeout(sendHeight, 300);
+      setTimeout(sendHeight, 1000);
+      if (window.ResizeObserver) {
+        new ResizeObserver(sendHeight).observe(document.body);
+      }
+    })();
+  </script>
+
+  <!-- Card + quiz interaction -->
+  <script>
+    (function () {
+      // Reveal-all / Hide-all toolbars (scoped to the nearest <section> ancestor,
+      // or the whole document if none exists).
+      document.querySelectorAll('.io-tools').forEach(function (tools) {
+        tools.addEventListener('click', function (e) {
+          var btn = e.target.closest('[data-io-all]');
+          if (!btn) return;
+          var open = btn.getAttribute('data-io-all') === 'open';
+          var scope = tools.closest('section') || document;
+          scope.querySelectorAll('.io-card, .io-q').forEach(function (c) {
+            c.classList.toggle('open', open);
+          });
+        });
+      });
+
+      // Individual card head tap.
+      document.addEventListener('click', function (e) {
+        var head = e.target.closest('.io-card__head');
+        if (head) {
+          var card = head.closest('.io-card');
+          if (card) card.classList.toggle('open');
+          return;
+        }
+        // Individual quiz tap.
+        var q = e.target.closest('.io-q');
+        if (q) q.classList.toggle('open');
+      });
+    })();
+  </script>
+</body>
+</html>

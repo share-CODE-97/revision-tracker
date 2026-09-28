@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modern Indian History 1857–1947 — Revision</title>
+
+  <!--
+    Revision page for "Modern Indian History 1857–1947".
+    Loaded inside the main app's iframe.
+    • Theme is passed via URL hash: #theme=dark or #theme=light
+    • Styles come from ../css/style.css
+  -->
+
+  <!-- Read theme from URL hash BEFORE paint (no flash). -->
+  <script>
+    (function () {
+      var m = location.hash.match(/theme=(light|dark)/);
+      document.documentElement.setAttribute('data-theme', m ? m[1] : 'dark');
+    })();
+  </script>
+
+  <!-- Shared app styles — this links the file to the MAIN stylesheet. -->
+  <link rel="stylesheet" href="../css/style.css">
+
+  <!-- Match the app's font stack. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Page-specific styles for Modern Indian History 1857–1947. -->
+  <style>
+    .mod-card { background:#0f172a; border:1px solid #1e293b; border-radius:10px; margin:8px 0; }
+    .mod-card__head { display:flex; align-items:center; gap:10px; padding:12px 14px; cursor:pointer; font-weight:600; color:#e2e8f0; font-size:14.5px; line-height:1.4; flex-wrap:wrap; }
+    .mod-card__head::after { content:'▾'; margin-left:auto; color:#818cf8; transition:transform .2s; flex:0 0 auto; }
+    .mod-card.open .mod-card__head::after { transform:rotate(180deg); }
+    .mod-card__body { display:none; padding:0 14px 14px; color:#cbd5e1; font-size:14px; line-height:1.65; }
+    .mod-card.open .mod-card__body { display:block; }
+    .mod-card__body ul { margin:6px 0; padding-left:20px; }
+    .mod-card__body li { margin:3px 0; }
+    .mod-card__body .mod-fact { display:block; margin-bottom:5px; }
+
+    html[data-theme="light"] .mod-card { background:#ffffff; border-color:#e2e8f0; }
+    html[data-theme="light"] .mod-card__head { color:#1e293b; }
+    html[data-theme="light"] .mod-card__body { color:#475569; }
+
+    .mod-badge { display:inline-block; font-size:10.5px; padding:2px 8px; border-radius:999px; font-weight:700; letter-spacing:.03em; text-transform:uppercase; white-space:nowrap; }
+    .mod-badge--revolt  { background:#7f1d1d; color:#fecaca; }
+    .mod-badge--cong    { background:#064e3b; color:#a7f3d0; }
+    .mod-badge--mod     { background:#0c4a6e; color:#bae6fd; }
+    .mod-badge--ext     { background:#7c2d12; color:#fed7aa; }
+    .mod-badge--gandhi  { background:#78350f; color:#fde68a; }
+    .mod-badge--rev     { background:#831843; color:#fbcfe8; }
+    .mod-badge--brit    { background:#4c1d95; color:#ddd6fe; }
+    .mod-badge--war     { background:#3f3f46; color:#fef08a; }
+    .mod-badge--final   { background:#7c2d12; color:#fed7aa; }
+    .mod-badge--date    { background:#1e3a8a; color:#bfdbfe; }
+    .mod-badge--add     { background:#422006; color:#fde68a; border:1px dashed #a16207; }
+    .mod-badge--trap    { background:#7f1d1d; color:#fecaca; border:1px dashed #ef4444; }
+
+    html[data-theme="light"] .mod-badge--revolt  { background:#fee2e2; color:#991b1b; }
+    html[data-theme="light"] .mod-badge--cong    { background:#d1fae5; color:#065f46; }
+    html[data-theme="light"] .mod-badge--mod     { background:#e0f2fe; color:#075985; }
+    html[data-theme="light"] .mod-badge--ext     { background:#ffedd5; color:#9a3412; }
+    html[data-theme="light"] .mod-badge--gandhi  { background:#fef3c7; color:#78350f; }
+    html[data-theme="light"] .mod-badge--rev     { background:#fce7f3; color:#9d174d; }
+    html[data-theme="light"] .mod-badge--brit    { background:#ede9fe; color:#5b21b6; }
+    html[data-theme="light"] .mod-badge--war     { background:#fef9c3; color:#713f12; }
+    html[data-theme="light"] .mod-badge--final   { background:#ffedd5; color:#9a3412; }
+    html[data-theme="light"] .mod-badge--date    { background:#dbeafe; color:#1e40af; }
+    html[data-theme="light"] .mod-badge--add     { background:#fefce8; color:#854d0e; border-color:#ca8a04; }
+    html[data-theme="light"] .mod-badge--trap    { background:#fee2e2; color:#991b1b; border-color:#dc2626; }
+
+    .mod-tools { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0 6px; }
+    .mod-btn { background:#1e293b; color:#c7d2fe; border:1px solid #334155; border-radius:8px; padding:6px 14px; font-size:12.5px; font-weight:600; cursor:pointer; font-family:inherit; }
+    .mod-btn:hover { background:#334155; }
+    html[data-theme="light"] .mod-btn { background:#eef2ff; color:#3730a3; border-color:#c7d2fe; }
+    html[data-theme="light"] .mod-btn:hover { background:#e0e7ff; }
+
+    .mod-q { background:#0f172a; border-left:3px solid #6366f1; border-radius:8px; padding:12px 14px; margin:8px 0; cursor:pointer; }
+    .mod-q p { margin:0; color:#e2e8f0; font-weight:600; font-size:14.5px; line-height:1.45; }
+    .mod-ans { display:none; margin-top:9px; padding-top:9px; border-top:1px dashed #334155; color:#a5b4fc; font-size:14px; line-height:1.6; }
+    .mod-q.open .mod-ans { display:block; }
+    html[data-theme="light"] .mod-q { background:#ffffff; }
+    html[data-theme="light"] .mod-q p { color:#1e293b; }
+    html[data-theme="light"] .mod-ans { color:#4338ca; border-top-color:#e2e8f0; }
+
+    .mod-mnem { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; background:#1e1b4b; color:#a5b4fc; padding:2px 7px; border-radius:5px; font-size:13px; }
+    html[data-theme="light"] .mod-mnem { background:#e0e7ff; color:#3730a3; }
+
+    .mod-flag { background:#1c1917; border-left:3px solid #facc15; border-radius:8px; padding:10px 14px; margin:8px 0; color:#fde68a; font-size:13.5px; line-height:1.6; }
+    html[data-theme="light"] .mod-flag { background:#fefce8; color:#713f12; }
+
+    .mod-trap { background:#1c0a0a; border-left:3px solid #ef4444; border-radius:8px; padding:10px 14px; margin:8px 0; color:#fca5a5; font-size:13.5px; line-height:1.6; }
+    html[data-theme="light"] .mod-trap { background:#fef2f2; color:#991b1b; }
+
+    .mod-timeline { display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:8px; margin:12px 0; }
+    .mod-tl { background:#0f172a; border:1px solid #1e293b; border-radius:8px; padding:10px 12px; }
+    .mod-tl__yr { font-size:12px; font-weight:800; color:#818cf8; letter-spacing:.04em; }
+    .mod-tl__ev { font-size:13px; color:#cbd5e1; margin-top:3px; line-height:1.4; }
+    html[data-theme="light"] .mod-tl { background:#ffffff; border-color:#e2e8f0; }
+    html[data-theme="light"] .mod-tl__ev { color:#475569; }
+  </style>
+</head>
+
+<body style="background: transparent; margin: 0;">
+  <main class="rev-page">
+
+    <h1>Modern Indian History 1857–1947</h1>
+    <p class="rev-subtitle">Ninety years that turned a company's colony into two nation-states. The single densest topic in Prelims — and the one where a well-built timeline beats everything else.</p>
+
+    <div class="rev-note">
+      <strong>How to use this page:</strong> every card is <em>closed</em> by default. Tap it — or hit <strong>Reveal all</strong> — only <em>after</em> you have tried to recall the year, the event, and the actor. Reading an open card teaches you nothing. Guessing first is what makes it stick.
+    </div>
+
+    <div class="rev-note">
+      <strong>How this topic is actually asked.</strong> Almost every Prelims question falls into one of four buckets:
+      <br>① <em>Year → event</em> (which year did X happen?)
+      <br>② <em>Event → actor</em> (who founded / led / wrote X?)
+      <br>③ <em>Sequence</em> (which came first?)
+      <br>④ <em>Session / commission / act → outcome</em> (which Congress session adopted Purna Swaraj?)
+      <br>The card grid below is designed so any of those four queries hits one fact, not a paragraph.
+    </div>
+
+    <div class="mod-timeline">
+      <div class="mod-tl"><div class="mod-tl__yr">1857</div><div class="mod-tl__ev">The Great Revolt</div></div>
+      <div class="mod-tl"><div class="mod-tl__yr">1885</div><div class="mod-tl__ev">INC founded</div></div>
+      <div class="mod-tl"><div class="mod-tl__yr">1905</div><div class="mod-tl__ev">Partition of Bengal</div></div>
+      <div class="mod-tl"><div class="mod-tl__yr">1919</div><div class="mod-tl__ev">Jallianwala Bagh</div></div>
+      <div class="mod-tl"><div class="mod-tl__yr">1930</div><div class="mod-tl__ev">Dandi March</div></div>
+      <div class="mod-tl"><div class="mod-tl__yr">1942</div><div class="mod-tl__ev">Quit India</div></div>
+      <div class="mod-tl"><div class="mod-tl__yr">1947</div><div class="mod-tl__ev">Independence &amp; Partition</div></div>
+    </div>
+
+    <h2>1 · 1857 — the revolt and its long shadow</h2>
+    <p class="rev-subtitle">The event that ended Company rule and set the frame for the next ninety years.</p>
+
+    <div class="mod-tools">
+      <button class="mod-btn" data-mod-all="open">Reveal all</button>
+      <button class="mod-btn" data-mod-all="close">Hide all</button>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">The Great Revolt of 1857 <span class="mod-badge mod-badge--revolt">Revolt</span> <span class="mod-badge mod-badge--date">1857</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Immediate trigger:</strong> the Enfield rifle cartridges (greased with animal fat) — offended both Hindu and Muslim sepoys at Meerut.</span>
+        <span class="mod-fact"><strong>Started:</strong> 10 May 1857, Meerut. Spread to Delhi (Bahadur Shah Zafar proclaimed leader), Kanpur (Nana Saheb), Lucknow (Begum Hazrat Mahal), Jhansi (Rani Lakshmibai), Bareilly (Khan Bahadur).</span>
+        <span class="mod-fact"><strong>Key leaders:</strong> Mangal Pandey (Barrackpore, 29 March 1857 — the first spark), Bahadur Shah Zafar (symbolic head), Tantia Tope (Jhansi–Gwalior).</span>
+        <span class="mod-fact"><strong>Result:</strong> Suppressed by 1858. Bahadur Shah Zafar exiled to Rangoon. Rani Lakshmibai died at Gwalior (June 1858).</span>
+        <span class="mod-fact"><strong>Consequence — the real exam point:</strong> The <strong>Government of India Act, 1858</strong> abolished the East India Company and transferred power to the British Crown. The Governor-General became the <strong>Viceroy</strong>; Canning became the first Viceroy.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Queen Victoria's Proclamation <span class="mod-badge mod-badge--brit">British</span> <span class="mod-badge mod-badge--date">1858</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact">Read out by Lord Canning at Allahabad, 1 November 1858. Promised <strong>non-interference in religion</strong>, respect for treaties with princely states, and equal treatment of Indians in government service.</span>
+        <span class="mod-fact"><strong>Exam keyword:</strong> The Proclamation is the formal end of Company rule — not the Act itself. The Act <em>transferred</em> power; the Proclamation <em>announced</em> the new policy.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Indigo Revolt <span class="mod-badge mod-badge--revolt">Peasant</span> <span class="mod-badge mod-badge--date">1859–60</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Where:</strong> Bengal — the indigo belt of Nadia, Jessore, Pabna.</span>
+        <span class="mod-fact"><strong>Against:</strong> European indigo planters who forced peasants to grow indigo on the best land at unfair prices (the <em>tinkathia</em> system).</span>
+        <span class="mod-fact"><strong>Outcome:</strong> The <strong>Indigo Commission (1860)</strong> was appointed; it criticised the planters. Play <em>Nil Darpan</em> (1860) by Dinabandhu Mitra dramatised it. This is the first great peasant movement of the modern era.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Universities of Bombay, Madras &amp; Calcutta <span class="mod-badge mod-badge--brit">British</span> <span class="mod-badge mod-badge--date">1857</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Based on:</strong> Charles Wood's <em>Despatch of 1854</em> — the "Magna Carta of English education in India".</span>
+        <span class="mod-fact"><strong>Why it matters:</strong> Created the English-educated middle class that would go on to found the Congress. Every nationalist of the first generation is a product of these universities.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Indian Councils Act <span class="mod-badge mod-badge--brit">British</span> <span class="mod-badge mod-badge--date">1861</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Key change:</strong> Introduced the <strong>portfolio system</strong> (credited to Canning) — each member of the Viceroy's Executive Council was given charge of a department.</span>
+        <span class="mod-fact"><strong>Also:</strong> Began the association of Indians with law-making — non-official Indian members could now be nominated to the Council for legislative purposes. The first step towards representative government.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Bombay–Calcutta Telegraph &amp; other infrastructure <span class="mod-badge mod-badge--brit">British</span> <span class="mod-badge mod-badge--date">1851–53</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Telegraph service:</strong> Calcutta–Agra line (1853); Calcutta–Bombay (1854). By 1856 India had 4,000 miles of telegraph — which the British used to <em>suppress</em> the 1857 revolt.</span>
+        <span class="mod-fact"><strong>First railway:</strong> Bombay to Thane, 16 April 1853 — 34 km. The beginning of the railway age in India.</span>
+        <span class="mod-fact"><strong>Note:</strong> The telegraph and railways were built for <em>military and commercial</em> reasons, not Indian welfare. This is a permanent Prelims angle.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Budget system introduced <span class="mod-badge mod-badge--brit">British</span> <span class="mod-badge mod-badge--date">1860</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>By:</strong> James Wilson — the first Finance Member of the Viceroy's Council, sent from London.</span>
+        <span class="mod-fact"><strong>Significance:</strong> India's first formal budget. Also introduced the <strong>income tax</strong> in India (1860) — a temporary measure that then became permanent.</span>
+      </div>
+    </div>
+
+    <h2>2 · 1875–1885 — the rehearsal years before the Congress</h2>
+    <p class="rev-subtitle">Arya Samaj, Deccan Riots, the Census — the scaffolding of a national consciousness.</p>
+
+    <div class="mod-tools">
+      <button class="mod-btn" data-mod-all="open">Reveal all</button>
+      <button class="mod-btn" data-mod-all="close">Hide all</button>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Deccan Riots <span class="mod-badge mod-badge--revolt">Peasant</span> <span class="mod-badge mod-badge--date">1875</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Where:</strong> Poona and Ahmednagar districts (Maharashtra).</span>
+        <span class="mod-fact"><strong>Against:</strong> Marwari and Gujarati <em>moneylenders</em> — not the British directly. The peasants (mostly Kunbis) attacked debt bonds and moneylender property.</span>
+        <span class="mod-fact"><strong>Why it matters:</strong> Led directly to the <strong>Deccan Agriculturists' Relief Act (1879)</strong> and helped shape the <em>Deccan Riots Commission Report (1878)</em>. This is the archetype of the "anti-moneylender" peasant uprising in the syllabus.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Arya Samaj <span class="mod-badge mod-badge--mod">Reform</span> <span class="mod-badge mod-badge--date">1875</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Founder:</strong> Swami Dayanand Saraswati — Bombay, 10 April 1875. HQ later at Lahore.</span>
+        <span class="mod-fact"><strong>Programme:</strong> "Back to the Vedas"; opposed idol worship, caste by birth, and child marriage; supported <em>Shuddhi</em> (reconversion) and women's education; founded the D.A.V. school network.</span>
+        <span class="mod-fact"><strong>Famous work:</strong> <em>Satyarth Prakash</em>.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Indian Association <span class="mod-badge mod-badge--cong">Pre-Congress</span> <span class="mod-badge mod-badge--date">1876</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Founder:</strong> Surendranath Banerjee (with Anand Mohan Bose) — Calcutta, 1876.</span>
+        <span class="mod-fact"><strong>Significance:</strong> The most important pre-Congress political body. It organised the <strong>first all-India agitation</strong> — against the <em>age limit for the ICS examination</em> (reduced from 21 to 19 in 1877). Its campaign is the rehearsal for the Congress.</span>
+        <span class="mod-fact"><strong>Also known:</strong> The Indian Association was the first to demand a <strong>representative government</strong> for India.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Census system in India <span class="mod-badge mod-badge--brit">British</span> <span class="mod-badge mod-badge--date">1872</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>First non-synchronous census:</strong> 1872, under Lord Mayo (initiated) — done in different provinces at different times.</span>
+        <span class="mod-fact"><strong>First synchronous census:</strong> 1881, under <strong>Lord Ripon</strong> — a single, coordinated count across India. Lord Ripon is therefore called the "Father of the Census in India".</span>
+        <span class="mod-fact"><strong>Exam trap:</strong> 1872 vs 1881. The answer to "first census" is 1872; the answer to "first synchronous census" is 1881.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Indian National Congress founded <span class="mod-badge mod-badge--cong">Congress</span> <span class="mod-badge mod-badge--date">1885</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Founded:</strong> 28 December 1885, Gokuldas Tejpal Sanskrit College, Bombay. First session presided over by <strong>W. C. Bonnerjee</strong>.</span>
+        <span class="mod-fact"><strong>Founder:</strong> <strong>A. O. Hume</strong> — a retired ICS officer. First called the "Indian National Union", renamed INC at the Bombay session.</span>
+        <span class="mod-fact"><strong>72 delegates</strong> attended the first session. The "Safety Valve" theory (that Hume founded it to let off steam) is the most-criticised explanation — the Congress was a genuine nationalist body.</span>
+        <span class="mod-fact"><strong>Exam keyword:</strong> Bombay 1885, W. C. Bonnerjee, A. O. Hume, 72 delegates. This is a permanent Prelims quartet.</span>
+      </div>
+    </div>
+
+    <h2>3 · 1890s–1905 — Moderates, then Extremists</h2>
+    <p class="rev-subtitle">From petitions to swadeshi — the split that gave the movement its teeth.</p>
+
+    <div class="mod-tools">
+      <button class="mod-btn" data-mod-all="open">Reveal all</button>
+      <button class="mod-btn" data-mod-all="close">Hide all</button>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Indian Universities Commission <span class="mod-badge mod-badge--brit">British</span> <span class="mod-badge mod-badge--date">1902</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Chaired by:</strong> Sir Thomas Raleigh. Led to the <strong>Indian Universities Act, 1904</strong>.</span>
+        <span class="mod-fact"><strong>Effect:</strong> Tightened government control over universities — increased official nomination, put conditions on affiliation, and made the curriculum more "loyalist". Indian nationalists saw it as a clampdown on the educated class.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Partition of Bengal <span class="mod-badge mod-badge--brit">British</span> <span class="mod-badge mod-badge--date">1905</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Announced by:</strong> <strong>Lord Curzon</strong> — the Viceroy from 1899 to 1905. Carried out on 16 October 1905.</span>
+        <span class="mod-fact"><strong>What it did:</strong> Split Bengal into <em>Eastern Bengal and Assam</em> (Muslim-majority) and <em>West Bengal</em> (Hindu-majority). The official excuse was administrative convenience; the real aim was to <strong>divide Hindus and Muslims</strong> and weaken the nationalist movement.</span>
+        <span class="mod-fact"><strong>Reaction:</strong> The <strong>Swadeshi and Boycott Movement (1905–08)</strong> — boycott of British goods, promotion of Indian-made goods, and the beginning of the <em>national education</em> movement. Also gave rise to the slogan <span class="mod-mnem">"Bande Mataram"</span>.</span>
+        <span class="mod-fact"><strong>Annulment:</strong> Partition was annulled in <strong>1911</strong> at the Delhi Durbar of George V — the capital was also shifted from Calcutta to Delhi in the same year.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Surat Split <span class="mod-badge mod-badge--cong">Congress</span> <span class="mod-badge mod-badge--date">1907</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>At:</strong> Surat session of the Congress, December 1907.</span>
+        <span class="mod-fact"><strong>What happened:</strong> Open rupture between the <strong>Moderates</strong> (led by Gokhale, Pherozeshah Mehta) and the <strong>Extremists</strong> (led by Tilak, Lala Lajpat Rai, Bipin Chandra Pal). The session broke up in chaos; the two factions held separate meetings.</span>
+        <span class="mod-fact"><strong>Key fact:</strong> The Congress was reunited at the <strong>Lucknow Session (1916)</strong> — the same session where the Lucknow Pact was signed with the Muslim League.</span>
+        <span class="mod-fact"><strong>Exam keyword:</strong> Surat 1907 = the split. Lucknow 1916 = the reunion.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Muslim League founded <span class="mod-badge mod-badge--cong">Communal</span> <span class="mod-badge mod-badge--date">1906</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Founded:</strong> Dacca (Dhaka), 30 December 1906 — at the annual meeting of the Muhammadan Educational Conference.</span>
+        <span class="mod-fact"><strong>Moved by:</strong> Nawab Salimullah Khan of Dacca. The name "All India Muslim League" was adopted in 1907.</span>
+        <span class="mod-fact"><strong>Context:</strong> The League's formation was encouraged by the British as a counterweight to the Congress — and the <em>Morley–Minto Reforms (1909)</em> then gave Muslims a <strong>separate electorate</strong>, institutionalising the divide.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Morley–Minto Reforms (Indian Councils Act, 1909) <span class="mod-badge mod-badge--brit">British</span> <span class="mod-badge mod-badge--date">1909</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Key change:</strong> Introduced <strong>separate electorates</strong> for Muslims — the single most consequential reform of the pre-Gandhian era.</span>
+        <span class="mod-fact"><strong>Also:</strong> Enlarged the legislative councils, allowed Indians to be associated with the executive councils, and introduced non-official members in the Imperial Legislative Council.</span>
+        <span class="mod-fact"><strong>Significance:</strong> First attempt at "representative" government — but on a communal basis. The seed of Partition is planted here.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Ghadar Party <span class="mod-badge mod-badge--rev">Revolutionary</span> <span class="mod-badge mod-badge--date">1913</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Founded:</strong> San Francisco, USA — by Punjabi immigrants led by <strong>Lala Har Dayal</strong>.</span>
+        <span class="mod-fact"><strong>Mouthpiece:</strong> <em>Ghadar</em> (in Urdu and Punjabi) — hence the name.</span>
+        <span class="mod-fact"><strong>Aim:</strong> Armed revolution to overthrow British rule in India. The Ghadar Conspiracy (1915) was crushed; the Komagata Maru incident (1914) was its immediate trigger.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Rabindranath Tagore — Nobel Prize <span class="mod-badge mod-badge--mod">Culture</span> <span class="mod-badge mod-badge--date">1913</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Awarded:</strong> Nobel Prize in Literature, 1913 — for <em>Gitanjali</em>.</span>
+        <span class="mod-fact"><strong>Significance:</strong> The first Asian to win the Nobel Prize in Literature. In the same period Tagore renounced his knighthood after the Jallianwala Bagh massacre (1919).</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">World War I begins <span class="mod-badge mod-badge--war">World</span> <span class="mod-badge mod-badge--date">1914</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Central Powers:</strong> Germany, Austria-Hungary, Ottoman Empire (Turkey), Bulgaria.</span>
+        <span class="mod-fact"><strong>Allied Powers:</strong> Britain, France, Russia, Italy (joined 1915), Japan, USA (joined 1917).</span>
+        <span class="mod-fact"><strong>India's role:</strong> Over <strong>1 million Indian soldiers</strong> served in the war. India's contribution to the British war effort became the moral basis of the Congress's demand for <em>self-government</em> after the war (the "Home Rule" argument).</span>
+      </div>
+    </div>
+
+    <h2>4 · 1915–1919 — Gandhi's arrival and the post-war rupture</h2>
+    <p class="rev-subtitle">The turning point of the entire movement — from elite petition to mass satyagraha.</p>
+
+    <div class="mod-tools">
+      <button class="mod-btn" data-mod-all="open">Reveal all</button>
+      <button class="mod-btn" data-mod-all="close">Hide all</button>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Gandhi's return to India <span class="mod-badge mod-badge--gandhi">Gandhi</span> <span class="mod-badge mod-badge--date">9 January 1915</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Arrived:</strong> Bombay, 9 January 1915 — from South Africa. That date is now <strong>Pravasi Bharatiya Divas</strong> (NRI Day).</span>
+        <span class="mod-fact"><strong>Before this:</strong> 21 years in South Africa (1893–1914). Founded the <em>Natal Indian Congress</em> (1894); developed <em>satyagraha</em>; led the <em>Champaran</em>-style campaigns against racial discrimination.</span>
+        <span class="mod-fact"><strong>Guru:</strong> Gopal Krishna Gokhale — Gandhi called him his political guru. He advised Gandhi to spend a year travelling India before joining politics, which Gandhi did.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Home Rule Movement <span class="mod-badge mod-badge--gandhi">Nationalist</span> <span class="mod-badge mod-badge--date">1916</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Two centres:</strong> Annie Besant (Madras — <em>Home Rule League</em>) and Bal Gangadhar Tilak (Poona — <em>Indian Home Rule League</em>).</span>
+        <span class="mod-fact"><strong>Demand:</strong> Self-government for India within the British Empire — not complete independence yet. This was the first time the demand was made at a mass level.</span>
+        <span class="mod-fact"><strong>Exam keyword:</strong> Besant's league was at Madras; Tilak's league was at Poona. The two merged informally in 1916.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Lucknow Session &amp; Lucknow Pact <span class="mod-badge mod-badge--cong">Congress</span> <span class="mod-badge mod-badge--date">1916</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Two things happened at Lucknow, 1916:</strong></span>
+        <ul>
+          <li><strong>Congress reunited</strong> — the Moderates and Extremists came back together after the 1907 Surat Split.</li>
+          <li><strong>Lucknow Pact signed with the Muslim League</strong> — the Congress accepted separate electorates for Muslims in exchange for League support for self-government. Jinnah, then a moderate, was the architect.</li>
+        </ul>
+        <span class="mod-fact"><strong>Exam trap:</strong> The Lucknow Pact is <em>not</em> the same as the Lucknow Session. The session = reunion; the pact = Congress–League deal.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Champaran Satyagraha <span class="mod-badge mod-badge--gandhi">Gandhi</span> <span class="mod-badge mod-badge--date">1917</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Where:</strong> Champaran district, Bihar. <strong>Against:</strong> the <em>tinkathia</em> system — indigo planters forcing peasants to grow indigo on 3/20 of their land.</span>
+        <span class="mod-fact"><strong>Who called Gandhi:</strong> Raj Kumar Shukla — a peasant who travelled to Lucknow to bring him.</span>
+        <span class="mod-fact"><strong>Result:</strong> The <strong>Champaran Agrarian Committee</strong> (1917) recommended abolition of the tinkathia system. It was Gandhi's <strong>first satyagraha in India</strong> — and the template for all future mass movements.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Ahmedabad Mill Strike <span class="mod-badge mod-badge--gandhi">Gandhi</span> <span class="mod-badge mod-badge--date">1918</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Where:</strong> Ahmedabad textile mills. <strong>Issue:</strong> dispute over <em>plague bonus</em> — the mill owners wanted to withdraw it; the workers wanted a 35% wage increase.</span>
+        <span class="mod-fact"><strong>Gandhi's method:</strong> <strong>Hunger strike</strong> (his first in India) to pressure both sides. The workers eventually got a 35% increase; Gandhi's reputation as a labour leader was cemented.</span>
+        <span class="mod-fact"><strong>Exam keyword:</strong> Ahmedabad 1918 = first hunger strike. Champaran 1917 = first satyagraha.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Kheda Satyagraha <span class="mod-badge mod-badge--gandhi">Gandhi</span> <span class="mod-badge mod-badge--date">1918</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Where:</strong> Kheda district, Gujarat. <strong>Issue:</strong> peasants unable to pay land revenue due to crop failure — demanded remission under the revenue code.</span>
+        <span class="mod-fact"><strong>Gandhi's colleagues:</strong> <strong>Sardar Vallabhbhai Patel</strong> (his first major campaign) and Indulal Yagnik.</span>
+        <span class="mod-fact"><strong>Result:</strong> The government eventually suspended revenue collection — a victory. Kheda is where Vallabhbhai Patel emerged as Gandhi's lieutenant.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Montagu–Chelmsford Reforms (GoI Act, 1919) <span class="mod-badge mod-badge--brit">British</span> <span class="mod-badge mod-badge--date">1919</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Key feature:</strong> Introduced <strong>dyarchy</strong> in the provinces — subjects divided into <em>transferred</em> (run by Indian ministers) and <em>reserved</em> (run by the Governor).</span>
+        <span class="mod-fact"><strong>Also:</strong> Expanded the central and provincial legislative councils; introduced direct elections; separated central and provincial budgets; provided for a <strong>Central Public Service Commission</strong> (established 1926, under the Lee Commission).</span>
+        <span class="mod-fact"><strong>Why it failed:</strong> The transferred subjects were starved of funds; the Governor retained veto and special powers. Dyarchy was abolished by the <em>GoI Act, 1935</em>, which introduced provincial autonomy.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Rowlatt Act <span class="mod-badge mod-badge--brit">British</span> <span class="mod-badge mod-badge--date">1919</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Officially:</strong> the <em>Anarchical and Revolutionary Crimes Act, 1919</em>.</span>
+        <span class="mod-fact"><strong>What it did:</strong> Allowed detention without trial, trials without jury, and restriction of the press — for "revolutionary" offences. Gandhi called it the "Black Act".</span>
+        <span class="mod-fact"><strong>Context:</strong> Recommended by the <em>Rowlatt Committee (1918)</em> chaired by Justice S. A. T. Rowlatt — set up to investigate revolutionary conspiracies. The Act was passed despite <strong>unanimous opposition from every Indian member</strong> of the Imperial Legislative Council.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Jallianwala Bagh Massacre <span class="mod-badge mod-badge--brit">British</span> <span class="mod-badge mod-badge--date">13 April 1919</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Where:</strong> Amritsar, Punjab. <strong>By:</strong> General <strong>Reginald Dyer</strong>, on the orders of the Lieutenant-Governor of Punjab, <strong>Michael O'Dwyer</strong>.</span>
+        <span class="mod-fact"><strong>Occasion:</strong> A peaceful gathering protesting the arrest of Saifuddin Kitchlew and Satya Pal — and the Rowlatt Act. It was <em>Baisakhi</em> day; many in the crowd did not know about the ban on assemblies.</span>
+        <span class="mod-fact"><strong>Toll:</strong> Officially 379 killed, over 1,200 wounded. The actual figures are likely much higher.</span>
+        <span class="mod-fact"><strong>Aftermath:</strong> Tagore renounced his knighthood. The <strong>Hunter Committee (1919)</strong> was appointed to investigate — it criticised Dyer; the House of Lords voted to support him. This was a turning point that turned Gandhi from a Home Ruler into a mass leader.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Khilafat Movement <span class="mod-badge mod-badge--gandhi">Mass</span> <span class="mod-badge mod-badge--date">1919–1924</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Led by:</strong> the Ali Brothers — <strong>Muhammad Ali Jauhar</strong> and <strong>Shaukat Ali</strong> — with Maulana Abul Kalam Azad and Hakim Ajmal Khan.</span>
+        <span class="mod-fact"><strong>Issue:</strong> The fate of the Ottoman Caliph (Khalifa) after WWI; the British were dismantling the Ottoman Empire. Indian Muslims saw this as a threat to the Caliphate.</span>
+        <span class="mod-fact"><strong>Gandhi's link:</strong> Gandhi supported the Khilafat as the first great opportunity for <strong>Hindu–Muslim unity</strong> — the foundation of the Non-Cooperation Movement.</span>
+        <span class="mod-fact"><strong>Exam keyword:</strong> Khilafat 1919 + Non-Cooperation 1920 = a single combined movement. The two are almost never separated in questions.</span>
+      </div>
+    </div>
+
+    <h2>5 · 1920–1927 — Non-Cooperation and the Swarajists</h2>
+    <p class="rev-subtitle">The first all-India mass movement, its abrupt end, and the constitutional debate that followed.</p>
+
+    <div class="mod-tools">
+      <button class="mod-btn" data-mod-all="open">Reveal all</button>
+      <button class="mod-btn" data-mod-all="close">Hide all</button>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Non-Cooperation Movement <span class="mod-badge mod-badge--gandhi">Gandhi</span> <span class="mod-badge mod-badge--date">1920–22</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Launched:</strong> 1 August 1920 — the day Khilafat Day was observed. Approved at the <strong>Nagpur Session (December 1920)</strong> of the Congress.</span>
+        <span class="mod-fact"><strong>Programme:</strong> Surrender of titles, boycott of government schools, courts, councils, and foreign goods; promotion of <em>swadeshi</em>, <em>charkha</em>, and national education.</span>
+        <span class="mod-fact"><strong>Key slogan:</strong> <span class="mod-mnem">"Swaraj in one year"</span></span>
+        <span class="mod-fact"><strong>Ended:</strong> February 1922, after the <strong>Chauri Chaura incident</strong> (5 February 1922, Gorakhpur district, UP) — a mob burnt a police station, killing 22 policemen. Gandhi withdrew the movement — a decision criticised by many leaders (Nehru, Subhas Bose).</span>
+        <span class="mod-fact"><strong>Arrested:</strong> Gandhi was arrested in March 1922 and sentenced to 6 years' imprisonment; released in 1924 on health grounds.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Chauri Chaura incident <span class="mod-badge mod-badge--gandhi">Gandhi</span> <span class="mod-badge mod-badge--date">5 February 1922</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Where:</strong> Chauri Chaura, Gorakhpur district, United Provinces (now UP).</span>
+        <span class="mod-fact"><strong>What happened:</strong> A crowd protesting police brutality clashed with police; the police fired; the crowd retaliated by setting the police station on fire, killing 22 policemen.</span>
+        <span class="mod-fact"><strong>Result:</strong> Gandhi called off the Non-Cooperation Movement — insisting that the movement must stay non-violent. This is one of the most debated decisions of his career.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Swaraj Party <span class="mod-badge mod-badge--cong">Congress</span> <span class="mod-badge mod-badge--date">1923</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Founded by:</strong> <strong>C. R. Das</strong> and <strong>Motilal Nehru</strong> — within the Congress, to contest the 1923 elections and enter the legislative councils.</span>
+        <span class="mod-fact"><strong>Argument:</strong> The "pro-changers" — those who wanted to enter the councils and obstruct the British from within. The "no-changers" (Rajendra Prasad, Vallabhbhai Patel, C. Rajagopalachari) opposed this.</span>
+        <span class="mod-fact"><strong>Exam keyword:</strong> Pro-changers = Swarajists = C. R. Das + Motilal Nehru. No-changers = Rajendra Prasad, Vallabhbhai Patel, Rajagopalachari.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Kakori Conspiracy / Kakori Train Action <span class="mod-badge mod-badge--rev">Revolutionary</span> <span class="mod-badge mod-badge--date">9 August 1925</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>By:</strong> the Hindustan Republican Association (HRA) — founded by <strong>Ram Prasad Bismil</strong>, Jogesh Chandra Chatterjee, and Sachindra Nath Sanyal.</span>
+        <span class="mod-fact"><strong>What happened:</strong> A train carrying government treasury was looted near Kakori (near Lucknow) — to fund the revolutionary movement.</span>
+        <span class="mod-fact"><strong>Aftermath:</strong> Ram Prasad Bismil, Ashfaqullah Khan, Roshan Singh, and Rajendra Lahiri were hanged. The Kakori case is the most famous trial of the revolutionary movement.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Simon Commission <span class="mod-badge mod-badge--brit">British</span> <span class="mod-badge mod-badge--date">1927</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Officially:</strong> the <em>Indian Statutory Commission</em> — set up to review the working of the GoI Act 1919, two years ahead of schedule.</span>
+        <span class="mod-fact"><strong>Why it was boycotted:</strong> All <strong>seven members were British</strong> — no Indian was included. The Congress and other parties boycotted it under the slogan <span class="mod-mnem">"Simon Go Back"</span>.</span>
+        <span class="mod-fact"><strong>Chaired by:</strong> Sir John Simon. Members included Clement Attlee (future PM of Britain).</span>
+        <span class="mod-fact"><strong>Consequence:</strong> The boycott led to the <strong>Nehru Report (1928)</strong> — the first Indian-drafted constitution — and, in reaction, Jinnah's <strong>Fourteen Points (1929)</strong>.</span>
+        <span class="mod-fact"><strong>Lala Lajpat Rai:</strong> Died in November 1928 after being lathi-charged during the anti-Simon protest in Lahore. His death radicalised Bhagat Singh, who avenged it by killing J. P. Saunders.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Butler Committee <span class="mod-badge mod-badge--brit">British</span> <span class="mod-badge mod-badge--date">1927</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Chaired by:</strong> Sir Harcourt Butler. Set up to examine the relationship between the Indian states and the British Crown.</span>
+        <span class="mod-fact"><strong>Report:</strong> Recommended that the princely states should not be transferred to an Indian government without their consent — a safeguard for the princes. This became the basis of the <em>paramountcy</em> doctrine in the 1935 Act.</span>
+      </div>
+    </div>
+
+    <h2>6 · 1928–1934 — Purna Swaraj, Dandi and the Round Tables</h2>
+    <p class="rev-subtitle">The decade when the demand moved from "dominion status" to "complete independence".</p>
+
+    <div class="mod-tools">
+      <button class="mod-btn" data-mod-all="open">Reveal all</button>
+      <button class="mod-btn" data-mod-all="close">Hide all</button>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Nehru Report <span class="mod-badge mod-badge--cong">Congress</span> <span class="mod-badge mod-badge--date">1928</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Chaired by:</strong> <strong>Motilal Nehru</strong> — the report was prepared by a committee set up after the Simon boycott.</span>
+        <span class="mod-fact"><strong>Key recommendations:</strong> Dominion status for India (not complete independence); a federal structure; joint electorates (with reservation for Muslims in some provinces); fundamental rights; and a Supreme Court.</span>
+        <span class="mod-fact"><strong>Jinnah's reaction:</strong> Rejected the report and issued his <strong>Fourteen Points (1929)</strong> — demanding separate electorates, one-third representation for Muslims, and safeguards in Punjab and Bengal.</span>
+        <span class="mod-fact"><strong>Exam keyword:</strong> Nehru Report = Motilal Nehru, 1928, dominion status. Jinnah's Fourteen Points = 1929, separate electorates.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Lahore Session — Purna Swaraj <span class="mod-badge mod-badge--cong">Congress</span> <span class="mod-badge mod-badge--date">December 1929</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Presided over by:</strong> <strong>Jawaharlal Nehru</strong> — his first Congress presidency.</span>
+        <span class="mod-fact"><strong>What was adopted:</strong> The resolution of <strong>Purna Swaraj</strong> — complete independence, not dominion status. <em>26 January 1930</em> was declared the first <strong>Independence Day</strong>.</span>
+        <span class="mod-fact"><strong>Exam keyword:</strong> Lahore 1929 = Purna Swaraj. 26 January 1930 = first Independence Day. Republic Day (26 January 1950) is chosen to honour this date.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Dandi March (Salt Satyagraha) <span class="mod-badge mod-badge--gandhi">Gandhi</span> <span class="mod-badge mod-badge--date">12 March 1930</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>From:</strong> Sabarmati Ashram, Ahmedabad. <strong>To:</strong> Dandi, on the Gujarat coast — 385 km (240 miles) in 24 days.</span>
+        <span class="mod-fact"><strong>What Gandhi did:</strong> Picked up a lump of salt at Dandi on 6 April 1930 — breaking the salt law and launching the <strong>Civil Disobedience Movement</strong>.</span>
+        <span class="mod-fact"><strong>Why salt:</strong> Salt was the one item every Indian, rich or poor, used — so a tax on it hit the poorest hardest. It was also a legal monopoly of the British government.</span>
+        <span class="mod-fact"><strong>Arrest:</strong> Gandhi was arrested in May 1930 (Karachi was the planned site; he was actually arrested at Karadi, near Dandi). The movement continued, led by Abbas Tyabji and then Sarojini Naidu.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">First Round Table Conference <span class="mod-badge mod-badge--brit">British</span> <span class="mod-badge mod-badge--date">November 1930</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Held at:</strong> London. <strong>Chaired by:</strong> the British Prime Minister, <strong>Ramsay MacDonald</strong>.</span>
+        <span class="mod-fact"><strong>Who attended:</strong> The British government, the princely states, Muslim League, liberals, and other minorities — but <strong>not the Congress</strong> (its leaders were in jail).</span>
+        <span class="mod-fact"><strong>Outcome:</strong> Inconclusive — the British insisted on a federal structure, the princes were non-committal, and without the Congress nothing could be decided. Hence the Gandhi–Irwin Pact (1931) and the Second RTC.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Gandhi–Irwin Pact <span class="mod-badge mod-badge--gandhi">Gandhi</span> <span class="mod-badge mod-badge--date">5 March 1931</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Signed between:</strong> Mahatma Gandhi and <strong>Lord Irwin</strong> — the Viceroy (1926–31).</span>
+        <span class="mod-fact"><strong>Congress agreed to:</strong> Call off the Civil Disobedience Movement and attend the Second Round Table Conference.</span>
+        <span class="mod-fact"><strong>British agreed to:</strong> Release political prisoners (except those convicted of violence), allow the manufacture of salt for personal use in coastal areas, and return confiscated property.</span>
+        <span class="mod-fact"><strong>Exam keyword:</strong> Gandhi–Irwin Pact = 5 March 1931. The British did <em>not</em> concede Purna Swaraj, dominion status, or any major political demand.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Second Round Table Conference <span class="mod-badge mod-badge--brit">British</span> <span class="mod-badge mod-badge--date">1931</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Held:</strong> London, September–December 1931. Gandhi was the <strong>sole representative of the Congress</strong>.</span>
+        <span class="mod-fact"><strong>What happened:</strong> Deadlock over the communal question — Gandhi rejected separate electorates for the depressed classes; Ambedkar insisted on them. The British refused to grant responsible government at the centre.</span>
+        <span class="mod-fact"><strong>Result:</strong> No agreement. Gandhi returned empty-handed; the Civil Disobedience Movement was relaunched (1932) and then withdrawn in 1934.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Communal Award <span class="mod-badge mod-badge--brit">British</span> <span class="mod-badge mod-badge--date">16 August 1932</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Announced by:</strong> Ramsay MacDonald — the British PM. Hence also called the <em>MacDonald Award</em>.</span>
+        <span class="mod-fact"><strong>What it did:</strong> Extended separate electorates to the <strong>depressed classes</strong> (Dalits), in addition to Muslims, Sikhs, Indian Christians, Anglo-Indians and Europeans.</span>
+        <span class="mod-fact"><strong>Gandhi's response:</strong> Began a <strong>fast unto death</strong> (20 September 1932) from Yerwada Jail — demanding the withdrawal of separate electorates for Dalits.</span>
+        <span class="mod-fact"><strong>Result:</strong> The <strong>Poona Pact (24 September 1932)</strong> — between Gandhi and Ambedkar. Separate electorates were withdrawn; reserved seats for the depressed classes in joint electorates were increased (from 71 to 147 in provincial legislatures).</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Poona Pact <span class="mod-badge mod-badge--gandhi">Gandhi</span> <span class="mod-badge mod-badge--date">24 September 1932</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Between:</strong> Gandhi (on behalf of caste Hindus) and <strong>Dr. B. R. Ambedkar</strong> (on behalf of the depressed classes).</span>
+        <span class="mod-fact"><strong>Agreed:</strong> Joint electorates with reserved seats for the depressed classes — abandoning separate electorates.</span>
+        <span class="mod-fact"><strong>Significance:</strong> The most important Gandhi–Ambedkar negotiation. Gandhi ended his fast the same day. It is the founding text of Dalit political representation in India.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Government of India Act, 1935 <span class="mod-badge mod-badge--brit">British</span> <span class="mod-badge mod-badge--date">1935</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>The longest Act ever passed by the British Parliament</strong> — 451 clauses, 15 schedules.</span>
+        <span class="mod-fact"><strong>Key features:</strong></span>
+        <ul>
+          <li><strong>Provincial Autonomy</strong> — replaced dyarchy in provinces with responsible government (elected ministers in charge of all provincial subjects).</li>
+          <li><strong>Dyarchy at the Centre</strong> — introduced (though it never actually worked).</li>
+          <li><strong>All-India Federation</strong> — proposed, but never came into being (the princely states refused to join).</li>
+          <li><strong>Separate electorates extended</strong> — to depressed classes, women, and labour.</li>
+          <li><strong>Federal Court</strong> established (1937) — the precursor of the Supreme Court.</li>
+          <li><strong>RBI</strong> — already created in 1935, given more statutory powers.</li>
+          <li><strong>Public Service Commission</strong> at the federal level (Federal Public Service Commission).</li>
+        </ul>
+        <span class="mod-fact"><strong>Congress and the Act:</strong> Opposed it — but contested the 1937 elections under it, and formed ministries in 8 out of 11 provinces.</span>
+      </div>
+    </div>
+
+    <h2>7 · 1935–1942 — Ministries, war, and the last mass movement</h2>
+    <p class="rev-subtitle">The road from provincial power to Quit India.</p>
+
+    <div class="mod-tools">
+      <button class="mod-btn" data-mod-all="open">Reveal all</button>
+      <button class="mod-btn" data-mod-all="close">Hide all</button>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">All India Kisan Congress <span class="mod-badge mod-badge--cong">Congress</span> <span class="mod-badge mod-badge--date">1936</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Founded:</strong> Lucknow, April 1936. Also called the <em>All India Kisan Sabha</em> (AIKS).</span>
+        <span class="mod-fact"><strong>Founders:</strong> Swami Sahajanand Saraswati (first president), with N. G. Ranga, E. M. S. Namboodiripad, and others.</span>
+        <span class="mod-fact"><strong>Aim:</strong> Abolition of zamindari, reduction of rent and revenue, and protection of peasants' rights. This was the first major peasant organisation at an all-India level.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Congress ministries resign <span class="mod-badge mod-badge--cong">Congress</span> <span class="mod-badge mod-badge--date">October–November 1939</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Why:</strong> The Viceroy (Linlithgow) declared India a belligerent in World War II <strong>without consulting Indian leaders</strong>. The Congress demanded a clear commitment to Indian self-government after the war; the British refused.</span>
+        <span class="mod-fact"><strong>Result:</strong> Congress ministries resigned in all 8 provinces between October and November 1939. The Muslim League observed it as a <strong>"Day of Deliverance"</strong> (22 December 1939).</span>
+        <span class="mod-fact"><strong>Exam keyword:</strong> "Day of Deliverance" = Muslim League, December 1939, celebrating the resignation of Congress ministries.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">August Offer <span class="mod-badge mod-badge--brit">British</span> <span class="mod-badge mod-badge--date">8 August 1940</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>By:</strong> Lord Linlithgow — the Viceroy. A response to the Congress's demand for a clear post-war constitutional settlement.</span>
+        <span class="mod-fact"><strong>Key promises:</strong> Dominion status as the objective; expansion of the Viceroy's Executive Council with more Indians; a constituent assembly to frame the constitution after the war; and a guarantee of minority rights.</span>
+        <span class="mod-fact"><strong>Reaction:</strong> Congress rejected it — no immediate transfer of power, and the "minority veto" clause was unacceptable. Jinnah also rejected it, as it did not concede Pakistan. The <em>Individual Satyagraha (1940)</em> followed.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Individual Satyagraha <span class="mod-badge mod-badge--gandhi">Gandhi</span> <span class="mod-badge mod-badge--date">1940–41</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Launched by:</strong> Gandhi — because the Congress was not ready for a mass movement, but the leadership wanted to signal opposition to the war effort.</span>
+        <span class="mod-fact"><strong>Method:</strong> Selected individuals (not masses) would offer satyagraha by making anti-war speeches — and be arrested.</span>
+        <span class="mod-fact"><strong>First satyagrahi:</strong> <strong>Acharya Vinoba Bhave</strong>. Second: <strong>Jawaharlal Nehru</strong>. Over 25,000 satyagrahis were arrested.</span>
+        <span class="mod-fact"><strong>Exam keyword:</strong> Vinoba Bhave = first individual satyagrahi (1940). A permanent one-line answer.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Atlantic Charter <span class="mod-badge mod-badge--war">World</span> <span class="mod-badge mod-badge--date">August 1941</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Between:</strong> US President <strong>Franklin D. Roosevelt</strong> and British PM <strong>Winston Churchill</strong> — on board a warship in the Atlantic.</span>
+        <span class="mod-fact"><strong>Key principles:</strong> No territorial aggrandisement; self-determination of peoples; free trade; freedom from fear and want.</span>
+        <span class="mod-fact"><strong>India's angle:</strong> Churchill insisted the Charter applied only to Europe — not to the British Empire. Gandhi and Nehru pointed out the double standard. It became an argument for Indian self-determination.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Cripps Mission <span class="mod-badge mod-badge--brit">British</span> <span class="mod-badge mod-badge--date">March 1942</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>By:</strong> Sir <strong>Stafford Cripps</strong> — a Labour Party leader, sent by Churchill's government.</span>
+        <span class="mod-fact"><strong>Offered:</strong> Dominion status after the war; a constituent assembly elected by the provincial legislatures and princely states; and an option for provinces to stay out of the Union (the seed of Pakistan).</span>
+        <span class="mod-fact"><strong>Rejected by:</strong> Congress (no immediate transfer of power, no real defence portfolio) and the Muslim League (no clear Pakistan).</span>
+        <span class="mod-fact"><strong>Consequence:</strong> Its failure triggered the <strong>Quit India Movement</strong> — Gandhi's "Do or Die" speech.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Quit India Movement <span class="mod-badge mod-badge--final">Mass</span> <span class="mod-badge mod-badge--date">8 August 1942</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Launched:</strong> 8 August 1942 — at the <strong>Gowalia Tank Maidan (August Kranti Maidan), Bombay</strong>. Approved by the All India Congress Committee.</span>
+        <span class="mod-fact"><strong>Gandhi's slogan:</strong> <span class="mod-mnem">"Do or Die"</span> — and "Karo ya Maro".</span>
+        <span class="mod-fact"><strong>Demand:</strong> Immediate end of British rule in India.</span>
+        <span class="mod-fact"><strong>Arrests:</strong> Within hours, the entire Congress leadership was arrested — Gandhi (at Aga Khan Palace, Poona), Nehru, Patel, Azad, and others. Gandhi was released in 1944 on health grounds.</span>
+        <span class="mod-fact"><strong>Who led the underground:</strong> Jayaprakash Narayan (JP), Ram Manohar Lohia, Aruna Asaf Ali (hoisted the flag at Gowalia Tank), Usha Mehta (ran the underground <em>Congress Radio</em>), and Sucheta Kripalani.</span>
+        <span class="mod-fact"><strong>Exam keyword:</strong> Quit India = 8 August 1942, Gowalia Tank, "Do or Die". Aruna Asaf Ali hoisted the flag; Usha Mehta ran Congress Radio.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Indian National Army (INA) <span class="mod-badge mod-badge--war">World</span> <span class="mod-badge mod-badge--date">1942–45</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Founded:</strong> Initially 1942 by Mohan Singh (with Japanese help) in Southeast Asia, after the fall of Singapore.</span>
+        <span class="mod-fact"><strong>Reorganised:</strong> By <strong>Subhas Chandra Bose</strong> — who arrived in Singapore in July 1943 and took over the INA, also forming the <em>Provisional Government of Free India</em> (Azad Hind) in October 1943.</span>
+        <span class="mod-fact"><strong>Bose's famous line:</strong> "Give me blood, and I will give you freedom."</span>
+        <span class="mod-fact"><strong>Women's wing:</strong> The <strong>Rani Jhansi Regiment</strong> — commanded by <strong>Captain Lakshmi Sahgal</strong> (Lakshmi Swaminathan).</span>
+        <span class="mod-fact"><strong>Last stand:</strong> The INA fought alongside the Japanese in Imphal and Kohima (1944) and retreated with the Japanese. Bose died in a plane crash in Taiwan (18 August 1945) — the exact circumstances are still disputed.</span>
+        <span class="mod-fact"><strong>Legacy:</strong> The INA trials at the Red Fort (1945–46) triggered riots and turned the Indian public — and even the British Indian Army — against the Raj. It is the single biggest reason the British lost the loyalty of the Indian armed forces.</span>
+      </div>
+    </div>
+
+    <h2>8 · 1944–1947 — The endgame</h2>
+    <p class="rev-subtitle">Six years, five plans, three missions, one Radcliffe Line.</p>
+
+    <div class="mod-tools">
+      <button class="mod-btn" data-mod-all="open">Reveal all</button>
+      <button class="mod-btn" data-mod-all="close">Hide all</button>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Shimla Conference <span class="mod-badge mod-badge--brit">British</span> <span class="mod-badge mod-badge--date">1945</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Called by:</strong> Lord Wavell — the Viceroy. Held at Shimla, June–July 1945.</span>
+        <span class="mod-fact"><strong>Aim:</strong> To agree on the composition of the Executive Council — to give Indians a majority in the Viceroy's council.</span>
+        <span class="mod-fact"><strong>Failed because:</strong> Jinnah insisted the League had the right to nominate all Muslim members, which the Congress rejected. Wavell's "breakdown plan" followed.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Wavell Plan <span class="mod-badge mod-badge--brit">British</span> <span class="mod-badge mod-badge--date">June 1945</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Key proposal:</strong> Reconstituted Executive Council with <em>all</em> members Indians except the Viceroy and the Commander-in-Chief. An equal number of "caste Hindus" and Muslims, plus one Sikh, one from the depressed classes.</span>
+        <span class="mod-fact"><strong>Congress demand:</strong> It should have the right to nominate one Muslim member, and should be recognised as a national body representing all communities.</span>
+        <span class="mod-fact"><strong>League demand:</strong> The League alone should nominate all Muslim members.</span>
+        <span class="mod-fact"><strong>Result:</strong> Deadlock. The Shimla Conference failed.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Cabinet Mission <span class="mod-badge mod-badge--brit">British</span> <span class="mod-badge mod-badge--date">1946</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Members:</strong> <strong>Pethick-Lawrence</strong> (Secretary of State for India, Chairman), <strong>Stafford Cripps</strong>, and <strong>A. V. Alexander</strong> — three British cabinet ministers.</span>
+        <span class="mod-fact"><strong>Proposal:</strong></span>
+        <ul>
+          <li>A <strong>union of India</strong> with a weak centre (defence, foreign affairs, communications only)</li>
+          <li><strong>Grouping</strong> of provinces into three sections (A, B, C) — with the option to secede from the union after 10 years</li>
+          <li>A constituent assembly elected by the provincial legislatures</li>
+          <li>Interim government with Congress and League participation</li>
+        </ul>
+        <span class="mod-fact"><strong>Reaction:</strong> Both the Congress and the League accepted the plan initially, with different interpretations. The Congress opposed compulsory grouping; the League wanted it, because it would enable Pakistan.</span>
+        <span class="mod-fact"><strong>Result:</strong> The plan collapsed over the grouping issue. Jinnah called for <strong>"Direct Action Day"</strong> (16 August 1946), which led to the <em>Great Calcutta Killings</em>.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Direct Action Day / Great Calcutta Killings <span class="mod-badge mod-badge--final">Mass</span> <span class="mod-badge mod-badge--date">16 August 1946</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Called by:</strong> the Muslim League — Jinnah's response to the Congress's rejection of compulsory grouping under the Cabinet Mission plan.</span>
+        <span class="mod-fact"><strong>Result:</strong> Rioting in Calcutta over four days — estimated 4,000–10,000 dead. Communal violence spread to Noakhali, Bihar, and the Punjab. Gandhi walked barefoot through Noakhali in 1946–47 to restore peace.</span>
+        <span class="mod-fact"><strong>Exam keyword:</strong> Direct Action Day = 16 August 1946 = Great Calcutta Killings. This is the point of no return for Partition.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Interim Government <span class="mod-badge mod-badge--cong">Congress</span> <span class="mod-badge mod-badge--date">2 September 1946</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Formed:</strong> 2 September 1946 — with <strong>Jawaharlal Nehru</strong> as Vice-President of the Executive Council (effectively Prime Minister).</span>
+        <span class="mod-fact"><strong>Composition:</strong> Congress held the key portfolios (Home, External Affairs, Finance, Defence, etc.); the Muslim League joined in October 1946 but effectively boycotted it from 1947.</span>
+        <span class="mod-fact"><strong>Why it matters:</strong> This was the first Indian government — the transfer of power had effectively begun even before the formal date.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Constituent Assembly formed <span class="mod-badge mod-badge--final">Constitution</span> <span class="mod-badge mod-badge--date">9 December 1946</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>First met:</strong> 9 December 1946, in the Constitution Hall, New Delhi. <strong>Sachchidananda Sinha</strong> was appointed interim chairman.</span>
+        <span class="mod-fact"><strong>On 11 December 1946:</strong> <strong>Dr. Rajendra Prasad</strong> was elected permanent President. <strong>H. C. Mukherjee</strong> was elected Vice-President. <strong>B. N. Rau</strong> was appointed constitutional adviser.</span>
+        <span class="mod-fact"><strong>Objective Resolution:</strong> Moved by <strong>Jawaharlal Nehru</strong> on <strong>13 December 1946</strong> — the philosophical foundation of the Constitution. Adopted 22 January 1947.</span>
+        <span class="mod-fact"><strong>Drafting Committee:</strong> Chaired by <strong>Dr. B. R. Ambedkar</strong> — with 7 members including Alladi Krishnaswamy Ayyar, N. Gopalaswami Ayyangar, K. M. Munshi, T. T. Krishnamachari, and S. N. Mukherjee.</span>
+        <span class="mod-fact"><strong>Adopted:</strong> 26 November 1949. <strong>Came into force:</strong> 26 January 1950 (Republic Day).</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Mountbatten Plan <span class="mod-badge mod-badge--brit">British</span> <span class="mod-badge mod-badge--date">3 June 1947</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>By:</strong> Lord Mountbatten — the last Viceroy (March 1947 – August 1947).</span>
+        <span class="mod-fact"><strong>Key provisions:</strong></span>
+        <ul>
+          <li>Partition of India into two dominions — India and Pakistan</li>
+          <li>Provincial assemblies to decide whether to join India, Pakistan, or stay independent (in the case of Bengal and Punjab, the decision would be by <em>separate</em> votes of Hindu and Muslim members)</li>
+          <li>A referendum in the NWFP and Sylhet (Assam)</li>
+          <li>A Boundary Commission under <strong>Sir Cyril Radcliffe</strong></li>
+          <li>Princely states free to join either dominion or remain independent</li>
+        </ul>
+        <span class="mod-fact"><strong>Accepted by:</strong> Congress (reluctantly), Muslim League (after initial hesitation), and the Sikhs (reluctantly).</span>
+        <span class="mod-fact"><strong>Date set:</strong> 15 August 1947 — a year earlier than the British had planned (June 1948), because Mountbatten feared the collapse of order.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Indian Independence Act <span class="mod-badge mod-badge--brit">British</span> <span class="mod-badge mod-badge--date">18 July 1947</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Passed by:</strong> the British Parliament, 18 July 1947. Based on the Mountbatten Plan.</span>
+        <span class="mod-fact"><strong>Provision:</strong> Created two independent dominions — India and Pakistan — from 15 August 1947, with the right to secede from the Commonwealth. Abolished the office of the Secretary of State for India. The British suzerainty over the princely states lapsed.</span>
+        <span class="mod-fact"><strong>Note:</strong> The Act received royal assent on 18 July 1947. It is the legal instrument of Indian independence — not a mere declaration.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Radcliffe Line <span class="mod-badge mod-badge--final">Partition</span> <span class="mod-badge mod-badge--date">17 August 1947</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Drawn by:</strong> Sir <strong>Cyril Radcliffe</strong> — a British lawyer who had never been to India before.</span>
+        <span class="mod-fact"><strong>What it did:</strong> Divided Punjab and Bengal between India and Pakistan. The line was drawn in just five weeks, using outdated maps and census data.</span>
+        <span class="mod-fact"><strong>Published:</strong> 17 August 1947 — <em>two days after</em> independence, so the actual line was not known on 15 August.</span>
+        <span class="mod-fact"><strong>Consequence:</strong> The largest migration in human history — roughly 14–15 million people displaced. Estimates of deaths range from 200,000 to 2 million.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">Royal Indian Navy Mutiny <span class="mod-badge mod-badge--final">Mutiny</span> <span class="mod-badge mod-badge--date">18 February 1946</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Started:</strong> Bombay, on HMIS Talwar — a ratings' (sailors') mutiny over working conditions and food, and against the treatment of INA prisoners.</span>
+        <span class="mod-fact"><strong>Spread to:</strong> Karachi, Calcutta, Madras, and other ports. Around 20,000 sailors participated; the flag of the <em>Provisional Government of Free India</em> was hoisted in some places.</span>
+        <span class="mod-fact"><strong>Suppressed by:</strong> 23 February 1946 — with the personal intervention of Vallabhbhai Patel and Jinnah, who asked the ratings to surrender.</span>
+        <span class="mod-fact"><strong>Exam keyword:</strong> RIN Mutiny = February 1946 — the naval counterpart of the INA trials. It showed the British that even the Indian armed forces were no longer reliable. This is the last major pre-independence event before the Cabinet Mission.</span>
+      </div>
+    </div>
+
+    <div class="mod-card">
+      <div class="mod-card__head">"Jai Hind" — the phrase <span class="mod-badge mod-badge--final">Culture</span> <span class="mod-badge mod-badge--date">1940s</span></div>
+      <div class="mod-card__body">
+        <span class="mod-fact"><strong>Popularised by:</strong> <strong>Subhas Chandra Bose</strong> and the Indian National Army. The INA used it as its greeting.</span>
+        <span class="mod-fact"><strong>Originally:</strong> Coined by <strong>Major Abid Hasan Safrani</strong> — a Hyderabadi INA officer — as a shortened form of "Jai Hindustan". Bose adopted it as the INA's official salutation.</span>
+        <span class="mod-fact"><strong>After independence:</strong> "Jai Hind" became a standard Indian greeting, still used by the armed forces and in public life.</span>
+      </div>
+    </div>
+
+    <h2>9 · Memory tricks that save you</h2>
+
+    <div class="rev-note">
+      <strong>The four Rs of 1857–58.</strong>
+      <span class="mod-mnem">"Revolt → Repression → Royal Proclamation → Rule of Crown"</span><br>
+      1857 Revolt → 1858 suppression and exile of Bahadur Shah Zafar → Queen Victoria's Proclamation (1 Nov 1858) → Government of India Act 1858 transfers power from Company to Crown. Four steps, one year, one chain.
+    </div>
+
+    <div class="rev-note">
+      <strong>The Congress presidencies you must never mix.</strong>
+      <span class="mod-mnem">"First Bombay Bonnerjee, First Muslim Badruddin, First Woman Sarojini, First Nehru Motilal 1919"</span><br>
+      <strong>1885 Bombay:</strong> W. C. Bonnerjee (first session). <strong>1887 Madras:</strong> Badruddin Tyabji (first Muslim president). <strong>1917 Calcutta:</strong> Annie Besant (first woman president). <strong>1919 Amritsar:</strong> Motilal Nehru (first of the Nehru family). <strong>1929 Lahore:</strong> Jawaharlal Nehru (youngest till then; Purna Swaraj). Get these five, and Prelims can't trap you.
+    </div>
+
+    <div class="rev-note">
+      <strong>Gandhi's five early satyagrahas — by year, by issue.</strong>
+      <span class="mod-mnem">"Champaran Indigo 17, Ahmedabad Strike 18, Kheda Revenue 18"</span><br>
+      <strong>Champaran (1917)</strong> — indigo planters, Bihar. <strong>Ahmedabad (1918)</strong> — mill workers, wage dispute, first hunger strike. <strong>Kheda (1918)</strong> — peasants, revenue remission, Vallabhbhai Patel's debut. Three campaigns, three issues — never swap them.
+    </div>
+
+    <div class="rev-note">
+      <strong>The three Round Table Conferences.</strong>
+      <span class="mod-mnem">"First no Congress, Second only Gandhi, Third no Gandhi"</span><br>
+      <strong>1st RTC (Nov 1930):</strong> Congress boycotted — its leaders in jail. <strong>2nd RTC (Sep 1931):</strong> Gandhi the sole Congress delegate, deadlock over communal question. <strong>3rd RTC (Nov 1932):</strong> Gandhi back in India, Congress not represented. The Congress did not attend the 3rd RTC.
+    </div>
+
+    <div class="rev-note">
+      <strong>Gandhi vs Ambedkar — one negotiation, two vocabularies.</strong>
+      <span class="mod-mnem">"Communal Award → Gandhi fast → Poona Pact"</span><br>
+      The British award separate electorates for the depressed classes (16 Aug 1932) → Gandhi begins a fast unto death from Yerwada Jail (20 Sep 1932) → Gandhi and Ambedkar sign the Poona Pact (24 Sep 1932), agreeing to joint electorates with reserved seats. This is the single most important Gandhi–Ambedkar negotiation — remember the sequence.
+    </div>
+
+    <div class="rev-note">
+      <strong>The last three British plans — in order.</strong>
+      <span class="mod-mnem">"Cripps, Wavell, Cabinet"</span><br>
+      <strong>Cripps Mission (March 1942):</strong> Dominion status after the war; rejected by both Congress and League; triggered Quit India. <strong>Wavell Plan (June 1945):</strong> All-Indian Executive Council; failed over Muslim nomination. <strong>Cabinet Mission (1946):</strong> Three-tier federal union with groupings; collapsed over the grouping issue. Three plans, three failures, one road to Partition.
+    </div>
+
+    <div class="rev-note">
+      <strong>The last Viceroy and the last Governor-General.</strong>
+      <span class="mod-mnem">"Mountbatten the last Viceroy, Rajagopalachari the last Governor-General"</span><br>
+      <strong>Lord Mountbatten</strong> = last Viceroy (March–August 1947) AND the first Governor-General of independent India (1947–48). <strong>C. Rajagopalachari</strong> = the last Governor-General (1948–1950) and the first Indian to hold the post. If the question asks "who was the last Governor-General", the answer is Rajaji — not Mountbatten.
+    </div>
+
+    <div class="rev-note">
+      <strong>The three dates that always get confused.</strong>
+      <span class="mod-mnem">"26 Nov 49 adopted, 26 Jan 50 came into force, 26 Jan 30 first Independence Day"</span><br>
+      <strong>26 November 1949:</strong> Constitution adopted by the Constituent Assembly. <strong>26 January 1950:</strong> Constitution came into force — Republic Day. <strong>26 January 1930:</strong> First Independence Day — declared at the Lahore Session (1929). Three dates, three different meanings. Never mix them.
+    </div>
+
+    <div class="mod-flag">
+      <strong>Watch these four traps.</strong>
+      <strong>①</strong> "First census in India" = <em>1872</em> (non-synchronous). "First synchronous census" = <em>1881</em>.
+      <strong>②</strong> The Lucknow Session (1916) = Congress reunion; the Lucknow Pact (1916) = Congress–League deal. Different things.
+      <strong>③</strong> The Simon Commission was <em>all-British</em> — that is why it was boycotted. Not because of its recommendations.
+      <strong>④</strong> The <em>Government of India Act 1919</em> introduced dyarchy <em>in the provinces</em>; the <em>Government of India Act 1935</em> introduced dyarchy at the centre and provincial autonomy. The two are the same phrase for two different things — read the year carefully.
+    </div>
+
+    <h2>10 · Rapid Fire</h2>
+    <p class="rev-subtitle">Cover the whole page. Answer out loud <em>before</em> you tap.</p>
+
+    <div class="mod-tools">
+      <button class="mod-btn" data-mod-all="open">Reveal all</button>
+      <button class="mod-btn" data-mod-all="close">Hide all</button>
+    </div>
+
+    <div class="mod-q">
+      <p>1. When did the revolt of 1857 begin, where, and what was the immediate trigger?</p>
+      <div class="mod-ans">10 May 1857, Meerut. The immediate trigger was the Enfield rifle cartridge greased with animal fat, which offended both Hindu and Muslim sepoys. Mangal Pandey had already sparked resistance at Barrackpore on 29 March 1857.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>2. Which Act abolished the East India Company and when?</p>
+      <div class="mod-ans">The Government of India Act, 1858 — it transferred power from the Company to the British Crown. The Governor-General became the Viceroy; Lord Canning became the first Viceroy.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>3. What was the Indigo Revolt, where did it happen, and which commission followed it?</p>
+      <div class="mod-ans">1859–60, Bengal — against European indigo planters and the tinkathia system. The Indigo Commission (1860) was appointed, which criticised the planters. The play <em>Nil Darpan</em> (1860) by Dinabandhu Mitra dramatised it.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>4. Which event is called the first all-India agitation of the pre-Congress era, and who led it?</p>
+      <div class="mod-ans">The campaign against the reduction of the ICS examination age limit (from 21 to 19) in 1877 — led by Surendranath Banerjee and the Indian Association.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>5. Where was the Indian National Congress founded, in which year, and who was its first president?</p>
+      <div class="mod-ans">Gokuldas Tejpal Sanskrit College, Bombay, 28 December 1885. First president: W. C. Bonnerjee. Founder: A. O. Hume. 72 delegates attended the first session.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>6. What was the Deccan Riots, when did it happen, and who was the target?</p>
+      <div class="mod-ans">1875, Poona and Ahmednagar districts (Maharashtra). The target was Marwari and Gujarati moneylenders — not the British. It led to the Deccan Agriculturists' Relief Act (1879).</div>
+    </div>
+
+    <div class="mod-q">
+      <p>7. What was the first synchronous census in India and under which Viceroy?</p>
+      <div class="mod-ans">1881, under Lord Ripon. The first non-synchronous census was 1872, under Lord Mayo.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>8. When was the Partition of Bengal announced, by whom, and when was it annulled?</p>
+      <div class="mod-ans">Announced by Lord Curzon; carried out 16 October 1905. Annulled in 1911 at the Delhi Durbar of George V — when the capital was also shifted from Calcutta to Delhi.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>9. What happened at the Surat Session of 1907 and when were the two factions reunited?</p>
+      <div class="mod-ans">The Surat Split — a rupture between Moderates (Gokhale, Pherozeshah Mehta) and Extremists (Tilak, Lajpat Rai, Bipin Chandra Pal). Reunited at the Lucknow Session, 1916.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>10. When was the Muslim League founded, where, and by whom?</p>
+      <div class="mod-ans">30 December 1906, Dacca (Dhaka), at the Muhammadan Educational Conference. Moved by Nawab Salimullah Khan. The name "All India Muslim League" was adopted in 1907.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>11. What was the key feature of the Morley–Minto Reforms (1909)?</p>
+      <div class="mod-ans">Introduction of <strong>separate electorates</strong> for Muslims — the single most consequential reform of the pre-Gandhian era. Also enlarged legislative councils and allowed Indians into executive councils.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>12. When did Gandhi return to India, and which Congress leader did he regard as his political guru?</p>
+      <div class="mod-ans">9 January 1915, Bombay — now celebrated as Pravasi Bharatiya Divas. His political guru was Gopal Krishna Gokhale.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>13. Who founded the two Home Rule Leagues, and where was each based?</p>
+      <div class="mod-ans">Annie Besant — Home Rule League at Madras. Bal Gangadhar Tilak — Indian Home Rule League at Poona. Both founded 1916.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>14. What happened at the Lucknow Session of 1916?</p>
+      <div class="mod-ans">Two things: the Congress reunited (Moderates and Extremists after the 1907 Surat Split), and the Lucknow Pact was signed with the Muslim League — the Congress accepted separate electorates for Muslims.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>15. What was Gandhi's first satyagraha in India, when, where, and against what?</p>
+      <div class="mod-ans">Champaran Satyagraha, 1917, Bihar — against the tinkathia system of indigo planters. Raj Kumar Shukla brought Gandhi to Champaran. The Champaran Agrarian Committee (1917) recommended abolition of tinkathia.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>16. What was Gandhi's first hunger strike in India, and on what issue?</p>
+      <div class="mod-ans">The Ahmedabad Mill Strike, 1918 — a dispute over the plague bonus; workers demanded a 35% wage increase. Gandhi's hunger strike pressured both sides; the workers got 35%.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>17. Who were Gandhi's key lieutenants in the Kheda Satyagraha?</p>
+      <div class="mod-ans">Sardar Vallabhbhai Patel (his first major campaign, along with Indulal Yagnik). Kheda, 1918 — peasants unable to pay land revenue after crop failure.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>18. What did the Rowlatt Act do, and why was it called the "Black Act"?</p>
+      <div class="mod-ans">Officially the Anarchical and Revolutionary Crimes Act, 1919. It allowed detention without trial, trials without jury, and press restrictions. Gandhi called it the "Black Act". It was passed despite unanimous Indian opposition in the Imperial Legislative Council.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>19. What happened at Jallianwala Bagh, when, and who was responsible?</p>
+      <div class="mod-ans">13 April 1919, Amritsar — General Reginald Dyer ordered firing on a peaceful gathering protesting the Rowlatt Act and the arrest of Saifuddin Kitchlew and Satya Pal. Officially 379 killed; likely more. The Hunter Committee (1919) investigated; the House of Lords voted to support Dyer.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>20. What was the Khilafat Movement, who led it, and why did Gandhi support it?</p>
+      <div class="mod-ans">1919–1924 — a movement to protect the Ottoman Caliph after WWI. Led by the Ali Brothers (Muhammad Ali Jauhar, Shaukat Ali), Maulana Azad, Hakim Ajmal Khan. Gandhi supported it as the first great opportunity for Hindu–Muslim unity — and it became the foundation of the Non-Cooperation Movement.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>21. When was the Non-Cooperation Movement launched and when was it withdrawn?</p>
+      <div class="mod-ans">Launched 1 August 1920; approved at the Nagpur Session (December 1920). Withdrawn in February 1922 after the Chauri Chaura incident (5 February 1922, Gorakhpur district, UP) — a mob burnt a police station, killing 22 policemen.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>22. What was the Swaraj Party, who founded it, and what was the "pro-changer / no-changer" debate?</p>
+      <div class="mod-ans">Founded 1923 by C. R. Das and Motilal Nehru. Pro-changers (Swarajists) wanted to enter the councils and obstruct the British from within. No-changers (Rajendra Prasad, Vallabhbhai Patel, C. Rajagopalachari) opposed council entry.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>23. What was the Kakori Conspiracy, when, and who was hanged?</p>
+      <div class="mod-ans">9 August 1925 — the Hindustan Republican Association (founded by Ram Prasad Bismil) looted a train near Kakori carrying government treasury. Ram Prasad Bismil, Ashfaqullah Khan, Roshan Singh and Rajendra Lahiri were hanged.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>24. What was the Simon Commission, why was it boycotted, and who chaired it?</p>
+      <div class="mod-ans">The Indian Statutory Commission, 1927 — to review the GoI Act 1919. Chaired by Sir John Simon. Boycotted because all seven members were British — no Indian was included. Slogan: "Simon Go Back". Lala Lajpat Rai died after being lathi-charged during the Lahore protest (Nov 1928).</div>
+    </div>
+
+    <div class="mod-q">
+      <p>25. What was the Nehru Report, who chaired it, and what did Jinnah issue in response?</p>
+      <div class="mod-ans">Nehru Report, 1928 — chaired by Motilal Nehru; recommended dominion status, joint electorates, fundamental rights. Jinnah rejected it and issued his Fourteen Points (1929) demanding separate electorates and one-third Muslim representation.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>26. When and where was Purna Swaraj adopted, and who presided over the session?</p>
+      <div class="mod-ans">Lahore Session, December 1929 — presided over by Jawaharlal Nehru. 26 January 1930 was declared the first Independence Day.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>27. What was the Dandi March, when did it begin, and what did it launch?</p>
+      <div class="mod-ans">Began 12 March 1930 from Sabarmati Ashram — 385 km to Dandi, Gujarat. Gandhi picked up salt at Dandi on 6 April 1930, breaking the salt law and launching the Civil Disobedience Movement.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>28. What was the Gandhi–Irwin Pact, when was it signed, and what did each side concede?</p>
+      <div class="mod-ans">5 March 1931, between Gandhi and Lord Irwin. Congress agreed to call off Civil Disobedience and attend the 2nd RTC. British agreed to release political prisoners (except those convicted of violence), allow personal salt-making, and return confiscated property.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>29. What was the Communal Award, who announced it, and what was the Poona Pact?</p>
+      <div class="mod-ans">Communal Award — 16 August 1932, by Ramsay MacDonald; extended separate electorates to the depressed classes. Gandhi began a fast unto death (20 Sep 1932). The Poona Pact (24 Sep 1932) between Gandhi and Ambedkar withdrew separate electorates for Dalits and increased reserved seats in joint electorates from 71 to 147.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>30. When was the Government of India Act 1935 passed, and what was its most important feature?</p>
+      <div class="mod-ans">1935 — the longest Act ever passed by the British Parliament. Introduced <strong>provincial autonomy</strong> (replacing dyarchy in provinces), dyarchy at the centre, an All-India Federation (never implemented), a Federal Court, and extended separate electorates. Congress opposed it but contested the 1937 elections under it and formed ministries in 8 of 11 provinces.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>31. What was the August Offer, when was it made, and by whom?</p>
+      <div class="mod-ans">8 August 1940, by Lord Linlithgow. Promised dominion status as the objective, expansion of the Executive Council with more Indians, a constituent assembly after the war, and minority safeguards. Rejected by both Congress and the Muslim League.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>32. Who was the first individual satyagrahi in 1940, and who was the second?</p>
+      <div class="mod-ans">Acharya Vinoba Bhave was the first; Jawaharlal Nehru was the second. Over 25,000 satyagrahis were arrested.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>33. What was the Cripps Mission, when did it come, and what did it offer?</p>
+      <div class="mod-ans">March 1942, led by Sir Stafford Cripps. Offered dominion status after the war, a constituent assembly elected by provincial legislatures and princely states, and an option for provinces to stay out of the Union. Rejected by both Congress and the Muslim League — its failure triggered Quit India.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>34. When and where was the Quit India Movement launched, and what was Gandhi's slogan?</p>
+      <div class="mod-ans">8 August 1942, Gowalia Tank Maidan (August Kranti Maidan), Bombay. Gandhi's slogan was "Do or Die" (Karo ya Maro). The entire Congress leadership was arrested within hours.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>35. Who hoisted the flag at Gowalia Tank during Quit India, and who ran the underground Congress Radio?</p>
+      <div class="mod-ans">Aruna Asaf Ali hoisted the flag. Usha Mehta ran the underground Congress Radio. The underground was led by Jayaprakash Narayan, Ram Manohar Lohia, and Sucheta Kripalani.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>36. Who founded the INA, who reorganised it, and who commanded the women's wing?</p>
+      <div class="mod-ans">Founded in 1942 by Mohan Singh with Japanese help. Reorganised by Subhas Chandra Bose in 1943. The Rani Jhansi Regiment (women's wing) was commanded by Captain Lakshmi Sahgal.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>37. What was the Cabinet Mission, who were its members, and what did it propose?</p>
+      <div class="mod-ans">1946 — three British cabinet ministers: Pethick-Lawrence (Chairman), Stafford Cripps, and A. V. Alexander. Proposed a union of India with a weak centre, grouping of provinces into three sections (A, B, C), a constituent assembly, and an interim government. Collapsed over the grouping issue.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>38. What was Direct Action Day, when did it happen, and what was its consequence?</p>
+      <div class="mod-ans">16 August 1946, called by the Muslim League after the Congress rejected compulsory grouping under the Cabinet Mission plan. Led to the Great Calcutta Killings — 4,000–10,000 dead. Communal violence spread to Noakhali, Bihar, and Punjab.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>39. When was the Interim Government formed, and who was its de facto head?</p>
+      <div class="mod-ans">2 September 1946 — Jawaharlal Nehru as Vice-President of the Executive Council (effectively Prime Minister). The Muslim League joined in October 1946 but boycotted from 1947.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>40. When did the Constituent Assembly first meet, who was interim chairman, and who was elected permanent President?</p>
+      <div class="mod-ans">First met 9 December 1946; Sachchidananda Sinha was interim chairman. On 11 December 1946, Dr. Rajendra Prasad was elected permanent President; H. C. Mukherjee was elected Vice-President; B. N. Rau was appointed constitutional adviser.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>41. Who moved the Objectives Resolution, when, and what was its significance?</p>
+      <div class="mod-ans">Jawaharlal Nehru, 13 December 1946. The philosophical foundation of the Indian Constitution — adopted 22 January 1947.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>42. Who chaired the Drafting Committee of the Constitution, and when was the Constitution adopted and enforced?</p>
+      <div class="mod-ans">Dr. B. R. Ambedkar chaired the Drafting Committee. Adopted 26 November 1949. Came into force 26 January 1950 (Republic Day).</div>
+    </div>
+
+    <div class="mod-q">
+      <p>43. What was the Mountbatten Plan, when was it announced, and what date did it set for independence?</p>
+      <div class="mod-ans">3 June 1947 — partition of India into two dominions, provincial assemblies to decide their future, a referendum in NWFP and Sylhet, a Boundary Commission under Radcliffe. Set 15 August 1947 — a year earlier than the British had planned (June 1948).</div>
+    </div>
+
+    <div class="mod-q">
+      <p>44. What did the Indian Independence Act 1947 do, and when did it receive royal assent?</p>
+      <div class="mod-ans">Passed 18 July 1947 — created two independent dominions (India and Pakistan) from 15 August 1947, with the right to secede from the Commonwealth. Abolished the office of the Secretary of State for India and ended British suzerainty over the princely states.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>45. Who drew the Radcliffe Line, when was it published, and what was its consequence?</p>
+      <div class="mod-ans">Sir Cyril Radcliffe — a British lawyer who had never been to India. The line was published 17 August 1947, two days after independence. It displaced 14–15 million people; deaths are estimated between 200,000 and 2 million.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>46. What was the Royal Indian Navy Mutiny, when did it happen, and who asked the ratings to surrender?</p>
+      <div class="mod-ans">18 February 1946, starting at Bombay on HMIS Talwar — over working conditions, food, and the treatment of INA prisoners. Spread to Karachi, Calcutta, Madras; ~20,000 sailors participated. Suppressed by 23 February 1946, after Vallabhbhai Patel and Jinnah asked the ratings to surrender.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>47. Who was the last Viceroy of India, and who was the last Governor-General?</p>
+      <div class="mod-ans">Lord Mountbatten was the last Viceroy (March–August 1947) and the first Governor-General of independent India (1947–48). C. Rajagopalachari was the last Governor-General (1948–1950) and the first Indian to hold the post.</div>
+    </div>
+
+    <div class="mod-q">
+      <p>48. Who coined "Jai Hind", and who popularised it?</p>
+      <div class="mod-ans">Coined by Major Abid Hasan Safrani — a Hyderabadi INA officer — as a shortened form of "Jai Hindustan". Popularised by Subhas Chandra Bose and the INA as its official salutation.</div>
+    </div>
+
+    <p class="rev-subtitle" style="margin-top:18px;">Closing tip: on the night before the exam, only read the <strong>Rapid Fire</strong> section. If you can answer 40 of 48 out loud without tapping, this page has done its job.</p>
+
+  </main>
+
+  <!-- Report true content height to the parent app.
+       Measures <main class="rev-page"> directly, NOT document.body. -->
+  <script>
+    (function () {
+      function sendHeight() {
+        var el = document.querySelector('.rev-page') || document.body;
+        var h = Math.ceil(el.getBoundingClientRect().height);
+        if (!h) h = el.scrollHeight || 0;
+        if (!h) return;
+        try {
+          window.parent.postMessage({ type: 'revision-height', height: h }, '*');
+        } catch (e) {}
+      }
+      window.addEventListener('load', sendHeight);
+      window.addEventListener('resize', sendHeight);
+      setTimeout(sendHeight, 0);
+      setTimeout(sendHeight, 50);
+      setTimeout(sendHeight, 300);
+      setTimeout(sendHeight, 1000);
+      if (window.ResizeObserver) {
+        new ResizeObserver(sendHeight).observe(document.body);
+      }
+    })();
+  </script>
+
+  <!-- Card + quiz interaction -->
+  <script>
+    (function () {
+      // Reveal-all / Hide-all toolbars — scoped to cards that follow them,
+      // stopping at the next toolbar or heading.
+      document.querySelectorAll('.mod-tools').forEach(function (tools) {
+        tools.addEventListener('click', function (e) {
+          var btn = e.target.closest('[data-mod-all]');
+          if (!btn) return;
+          var open = btn.getAttribute('data-mod-all') === 'open';
+          var node = tools.nextElementSibling;
+          while (node) {
+            if (node.classList && node.classList.contains('mod-tools')) break;
+            if (node.tagName === 'H2' || node.tagName === 'H3') break;
+            if (node.classList && (node.classList.contains('mod-card') || node.classList.contains('mod-q'))) {
+              node.classList.toggle('open', open);
+            }
+            node = node.nextElementSibling;
+          }
+        });
+      });
+
+      // Individual card / quiz tap.
+      document.addEventListener('click', function (e) {
+        var head = e.target.closest('.mod-card__head');
+        if (head) {
+          var card = head.closest('.mod-card');
+          if (card) card.classList.toggle('open');
+          return;
+        }
+        var q = e.target.closest('.mod-q');
+        if (q) q.classList.toggle('open');
+      });
+    })();
+  </script>
+</body>
+</html>
