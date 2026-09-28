@@ -1,25 +1,18 @@
 /* ============================================================================
- * service-worker.js — Offline caching for Revision Tracker
+ * service-worker.js — auto-updating offline cache
  * ----------------------------------------------------------------------------
- * STRATEGY: cache-first, with network fallback + opportunistic runtime cache.
+ *  • Page navigations        → NETWORK FIRST   (always fresh when online)
+ *  • Same-origin .js / .css  → STALE-WHILE-REVALIDATE  (instant + self-updating)
+ *  • Images / icons / CDN    → CACHE FIRST     (they rarely change)
  *
- * ── WHEN YOU ADD A NEW SUBJECT ─────────────────────────────────────────────
- *   1. Add its HTML path to PRECACHE_URLS below.
- *   2. Bump CACHE_VERSION (e.g. 'v1' → 'v2') so old caches are purged.
- *   3. Reload the page twice (once to install the new SW, once to activate).
- *
- * NOTE: Service workers only run over http://localhost or https://. They are
- * silently skipped when the app is opened via file:// — which is fine, the
- * app just won't be available offline in that case.
+ *  • NOTHING is ever deleted by this file.
+ *  • If you keep app data in Cache Storage, name that cache 'rt-data-…'
+ *    (or anything not starting with 'rt-shell' / 'rt-runtime').
  * ==========================================================================*/
 
-const CACHE_VERSION = 'revision-tracker-v8';
-const CACHE_NAME    = CACHE_VERSION;
+const SHELL_CACHE   = 'rt-shell';     // HTML, JS, CSS, manifest, icons
+const RUNTIME_CACHE = 'rt-runtime';   // cross-origin stuff (fonts, CDN)
 
-/* ---------------------------------------------------------------------------
- * Everything listed here is downloaded on first install and served from
- * cache forever after. Add every file the app needs to boot offline.
- * -------------------------------------------------------------------------*/
 const PRECACHE_URLS = [
   './',
   './index.html',
@@ -40,25 +33,17 @@ const PRECACHE_URLS = [
   './revision/09_alloys-ores.html',
   './revision/10_india_minerals.html',
   './revision/11_indian-rivers.html',
-  './revision/12_grasslands-world.html',  
+  './revision/12_grasslands-world.html',
   './revision/13_mountains-volcanoes.html',
-  './revision/14_world-geography.html',  
+  './revision/14_world-geography.html',
   './revision/15_physical-geography.html',
-  './revision/16_science-capsule.html',  
+  './revision/16_science-capsule.html',
   './revision/17_international_organization.html',
-  './revision/18_socio_religious_movement.html',  
+  './revision/18_socio_religious_movement.html',
   './revision/19_foreign_travellers.html',
-  './revision/20_modern_india_1857_1947_overview.html',  
+  './revision/20_modern_india_1857_1947_overview.html',
   './revision/21_viceroys.html',
-  './revision/22_president_of_india.html', 
-
-
-/* ABOVE THIS LINE IS PERFECT */
-
-
-
-
-/* BELOW THIS LINE IS PERFECT */
+  './revision/22_president_of_india.html',
 
   './images/10_01_india_minerals.jpg',
   './images/11_01_indian-rivers.jpg',
@@ -78,74 +63,111 @@ const PRECACHE_URLS = [
   './images/15_03_physical-geography.jpg',
   './images/15_04_physical-geography.jpg',
 
-
-  
   './manifest.webmanifest',
   './icons/icon-192.png',
   './icons/icon-512.png'
 ];
 
+/* ---------- helpers ------------------------------------------------------ */
+
+function okToCache(res) {
+  if (!res) return false;
+  if (res.type === 'opaque') return true;           // CDN without CORS
+  return res.ok;                                    // 200-299
+}
+
+function offline() {
+  return new Response('Offline', { status: 503, statusText: 'Offline' });
+}
+
 /* ==========================================================================
- * INSTALL — precache all app files, then take over immediately.
+ * INSTALL — pre-cache every file, then activate immediately.
  * ==========================================================================*/
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(PRECACHE_URLS))
-      .then(() => self.skipWaiting())
-      .catch(err => console.warn('[SW] Precache failed (some files may be missing):', err))
-  );
+  event.waitUntil((async () => {
+    const cache = await caches.open(SHELL_CACHE);
+    await Promise.all(PRECACHE_URLS.map(async url => {
+      try {
+        // cache:'reload' bypasses HTTP cache so we really get the current file
+        await cache.add(new Request(url, { cache: 'reload' }));
+      } catch (e) {
+        console.warn('[SW] precache miss:', url);
+      }
+    }));
+    await self.skipWaiting();
+  })());
 });
 
 /* ==========================================================================
- * ACTIVATE — drop old caches, then claim all open clients.
+ * ACTIVATE — take over clients. We do NOT delete anything here.
  * ==========================================================================*/
 self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys()
-      .then(keys => Promise.all(
-        keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))
-      ))
-      .then(() => self.clients.claim())
-  );
+  event.waitUntil(self.clients.claim());
 });
 
 /* ==========================================================================
- * FETCH — cache-first, fall back to network, opportunistically cache
- * successful GETs (this is how the Tailwind / Font Awesome / Google Fonts
- * CDN assets end up cached after the first online visit).
+ * FETCH
  * ==========================================================================*/
 self.addEventListener('fetch', event => {
   const req = event.request;
-
-  // Only handle GET requests.
   if (req.method !== 'GET') return;
-
-  // Never try to cache browser-extension or non-http(s) schemes.
   if (!req.url.startsWith('http')) return;
 
+  const url = new URL(req.url);
+  const sameOrigin = url.origin === self.location.origin;
+
+  /* 1. PAGE NAVIGATION — network first ---------------------------------- */
+  if (req.mode === 'navigate') {
+    event.respondWith((async () => {
+      const cache = await caches.open(SHELL_CACHE);
+      try {
+        const fresh = await fetch(req);
+        if (okToCache(fresh)) cache.put(req, fresh.clone()).catch(() => {});
+        return fresh;
+      } catch {
+        return (await cache.match(req))
+            || (await cache.match('./index.html'))
+            || offline();
+      }
+    })());
+    return;
+  }
+
+  /* 2. SAME-ORIGIN JS / CSS — stale-while-revalidate -------------------- */
+  if (sameOrigin && /\.(?:js|css)$/i.test(url.pathname)) {
+    // Kick off the refresh in parallel, keep SW alive via waitUntil
+    const refresh = fetch(req).then(res => {
+      if (okToCache(res)) {
+        caches.open(SHELL_CACHE)
+          .then(c => c.put(req, res.clone()))
+          .catch(() => {});
+      }
+      return res;
+    }).catch(() => null);
+    event.waitUntil(refresh);
+
+    event.respondWith((async () => {
+      const cache = await caches.open(SHELL_CACHE);
+      const hit   = await cache.match(req);
+      if (hit) return hit;                 // instant, fresh copy lands in background
+      const net = await refresh;
+      return net || offline();
+    })());
+    return;
+  }
+
+  /* 3. EVERYTHING ELSE — cache first ------------------------------------ */
+  const cacheName = sameOrigin ? SHELL_CACHE : RUNTIME_CACHE;
   event.respondWith((async () => {
-    const cache  = await caches.open(CACHE_NAME);
-    const cached = await cache.match(req);
-
-    if (cached) return cached;
-
+    const cache = await caches.open(cacheName);
+    const hit   = await cache.match(req);
+    if (hit) return hit;
     try {
       const fresh = await fetch(req);
-
-      // Only cache "basic" (same-origin) or "cors" (properly CORS-enabled)
-      // 200 responses. Opaque responses (status 0) can't be cached.
-      if (fresh && fresh.status === 200 && fresh.type !== 'opaque') {
-        cache.put(req, fresh.clone()).catch(() => { /* quota / opaque — ignore */ });
-      }
+      if (okToCache(fresh)) cache.put(req, fresh.clone()).catch(() => {});
       return fresh;
-    } catch (err) {
-      // Offline AND not cached.
-      if (req.mode === 'navigate') {
-        const fallback = await cache.match('./index.html');
-        if (fallback) return fallback;
-      }
-      return new Response('Offline', { status: 503, statusText: 'Offline' });
+    } catch {
+      return offline();
     }
   })());
 });
