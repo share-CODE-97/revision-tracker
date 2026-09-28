@@ -13,7 +13,7 @@
  * app just won't be available offline in that case.
  * ==========================================================================*/
 
-const CACHE_VERSION = 'revision-tracker-v6';
+const CACHE_VERSION = 'revision-tracker-v7';
 const CACHE_NAME    = CACHE_VERSION;
 
 /* ---------------------------------------------------------------------------
@@ -55,12 +55,30 @@ const PRECACHE_URLS = [
 
 /* ABOVE THIS LINE IS PERFECT */
 
- 
-
-  
 
 
-  /* BELOW THIS LINE IS PERFECT */
+
+/* BELOW THIS LINE IS PERFECT */
+
+  './images/10_01_india_minerals.jpg',
+  './images/11_01_indian-rivers.jpg',
+  './images/11_02_indian-rivers.jpg',
+  './images/11_03_indian-rivers.jpg',
+  './images/11_04_indian-rivers.jpg',
+  './images/12_01_grasslands-world.jpg',
+  './images/13_01_mountains-volcanoes.jpg',
+  './images/13_02_mountains-volcanoes.jpg',
+  './images/13_03_mountains-volcanoes.jpg',
+  './images/14_01_world-geography.jpg',
+  './images/14_02_world-geography.jpg',
+  './images/14_03_world-geography.jpg',
+  './images/14_04_world-geography.jpg',
+  './images/15_01_physical-geography.jpg',
+  './images/15_02_physical-geography.jpg',
+  './images/15_03_physical-geography.jpg',
+  './images/15_04_physical-geography.jpg',
+
+
   
   './manifest.webmanifest',
   './icons/icon-192.png',
