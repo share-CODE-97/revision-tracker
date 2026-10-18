@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bihar River System — Revision</title>
+
+  <!--
+    Revision page for "Bihar River System".
+    Loaded inside the main app's iframe.
+    • Theme is passed via URL hash: #theme=dark or #theme=light
+    • Styles come from ../css/style.css
+  -->
+
+  <!-- Read theme from URL hash BEFORE paint (no flash). -->
+  <script>
+    (function () {
+      var m = location.hash.match(/theme=(light|dark)/);
+      document.documentElement.setAttribute('data-theme', m ? m[1] : 'dark');
+    })();
+  </script>
+
+  <!-- Shared app styles — this links the file to the MAIN stylesheet. -->
+  <link rel="stylesheet" href="../css/style.css">
+
+  <!-- Match the app's font stack. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Page-specific styles for Bihar River System (namespace: .bhr-). -->
+  <style>
+    .bhr-section { margin-bottom: 38px; }
+
+    /* Toolbars */
+    .bhr-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 6px 0 14px;
+    }
+    .bhr-btn {
+      border: 1px solid #2d3248;
+      background: transparent;
+      color: inherit;
+      padding: 7px 16px;
+      border-radius: 22px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: border-color .2s ease, background .2s ease;
+    }
+    .bhr-btn:hover { border-color: #5a9ac2; background: rgba(90,154,194,.08); }
+    html[data-theme="light"] .bhr-btn { border-color: #cbd5e1; }
+    html[data-theme="light"] .bhr-btn:hover { border-color: #1a5f7a; background: rgba(26,95,122,.06); }
+
+    /* Stats strip */
+    .bhr-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin: 18px 0 26px;
+    }
+    .bhr-stat {
+      border: 1px solid #2d3248;
+      background: #181a25;
+      border-radius: 12px;
+      padding: 16px 14px;
+      text-align: center;
+    }
+    html[data-theme="light"] .bhr-stat { border-color: #ddd8d0; background: #fff; }
+    .bhr-stat__num {
+      display: block;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #93c5fd;
+      margin-bottom: 4px;
+      line-height: 1.3;
+    }
+    html[data-theme="light"] .bhr-stat__num { color: #0b3d5a; }
+    .bhr-stat__label { font-size: 0.78rem; opacity: .75; line-height: 1.5; }
+
+    /* Cards */
+    .bhr-card {
+      border: 1px solid #2d3248;
+      background: #181a25;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    html[data-theme="light"] .bhr-card { border-color: #ddd8d0; background: #fff; }
+
+    .bhr-card__head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 16px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .bhr-card__title { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+    .bhr-card__name { font-weight: 600; line-height: 1.5; }
+    .bhr-card__badges { display: flex; flex-wrap: wrap; gap: 6px; }
+    .bhr-card__toggle {
+      font-weight: 700;
+      font-size: 1.25rem;
+      line-height: 1;
+      opacity: .55;
+      transition: transform .25s ease;
+      flex: 0 0 auto;
+      padding-top: 2px;
+    }
+    .bhr-card.open .bhr-card__toggle { transform: rotate(45deg); }
+
+    .bhr-card__body {
+      display: none;
+      padding: 14px 18px;
+      border-top: 1px solid #2d3248;
+      line-height: 1.9;
+    }
+    html[data-theme="light"] .bhr-card__body { border-top-color: #ddd8d0; }
+    .bhr-card.open .bhr-card__body { display: block; }
+    .bhr-card__body p { margin: 0 0 10px; line-height: 1.9; }
+    .bhr-card__body p:last-child { margin-bottom: 0; }
+    .bhr-card__body strong { font-weight: 600; }
+
+    /* Badges */
+    .bhr-badge {
+      display: inline-block;
+      font-size: 0.66rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.045em;
+      padding: 3px 9px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+    /* Dark defaults */
+    .bhr-badge--nepal     { background:#1a2a4a; color:#93c5fd; }
+    .bhr-badge--perennial { background:#0e3a4a; color:#7dd3fc; }
+    .bhr-badge--flood     { background:#3b1c1c; color:#fca5a5; }
+    .bhr-badge--seasonal  { background:#3d2e1a; color:#fcd34d; }
+    .bhr-badge--sacred    { background:#2a1a3d; color:#c4a5f0; }
+    .bhr-badge--major     { background:#1a3a2a; color:#86efac; }
+    .bhr-badge--boundary  { background:#3a1a2a; color:#f9a8d4; }
+    /* Light overrides */
+    html[data-theme="light"] .bhr-badge--nepal     { background:#dbeafe; color:#1e3a8a; }
+    html[data-theme="light"] .bhr-badge--perennial { background:#cffafe; color:#155e75; }
+    html[data-theme="light"] .bhr-badge--flood     { background:#fee2e2; color:#991b1b; }
+    html[data-theme="light"] .bhr-badge--seasonal  { background:#fef3c7; color:#92400e; }
+    html[data-theme="light"] .bhr-badge--sacred    { background:#f3e8ff; color:#6d28d9; }
+    html[data-theme="light"] .bhr-badge--major     { background:#dcfce7; color:#166534; }
+    html[data-theme="light"] .bhr-badge--boundary  { background:#fce7f3; color:#9d174d; }
+
+    /* Rapid fire */
+    .bhr-q {
+      border: 1px solid #2d3248;
+      background: #181a25;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+    html[data-theme="light"] .bhr-q { border-color: #ddd8d0; background: #fff; }
+    .bhr-q p { margin: 0 0 10px; font-weight: 600; line-height: 1.8; }
+    .bhr-q p:last-child { margin-bottom: 0; }
+    .bhr-ans { display: none; line-height: 1.9; }
+    .bhr-q.open .bhr-ans { display: block; }
+
+    /* Mnemonic chip */
+    .bhr-mnem {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-weight: 700;
+      background: rgba(212,167,69,.14);
+      color: #f0d68a;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.9em;
+    }
+    html[data-theme="light"] .bhr-mnem { background: rgba(212,167,69,.22); color: #7a5a10; }
+
+    /* <br>-separated lists inside callouts (spacing rule 5C.4) */
+    .bhr-facts br { content: ""; display: block; margin-top: 12px; }
+
+    .bhr-hint { font-size: 0.8rem; opacity: .65; margin: 0 0 14px; }
+  </style>
+</head>
+
+<body style="background: transparent; margin: 0;">
+  <main class="rev-page">
+
+    <h1>Bihar River System</h1>
+    <p class="rev-subtitle">Two systems, one spine — the Ganga. Tap any card to recall, then reveal.</p>
+
+    <div class="rev-note">
+      <strong>What this page is.</strong> Bihar's drainage is split by the Ganga into two worlds: the Himalayan, perennial,
+      flood-prone <em>North</em>, and the plateau-fed, seasonal <em>South</em>. Every river, confluence and trap below is a
+      tap-to-reveal card — guess before you open. Built for UPSC GS-I (Indian Geography) and Bihar PSC.
+    </div>
+
+    <div class="bhr-stats">
+      <div class="bhr-stat"><span class="bhr-stat__num">~445 km</span><span class="bhr-stat__label">Ganga's run through Bihar</span></div>
+      <div class="bhr-stat"><span class="bhr-stat__num">11</span><span class="bhr-stat__label">Major north-Bihar rivers</span></div>
+      <div class="bhr-stat"><span class="bhr-stat__num">11</span><span class="bhr-stat__label">Major south-Bihar rivers</span></div>
+      <div class="bhr-stat"><span class="bhr-stat__num">12</span><span class="bhr-stat__label">Exam-critical confluences</span></div>
+    </div>
+
+    <p class="bhr-hint">Tap a card to reveal it. Use <strong>Reveal all</strong> / <strong>Hide all</strong> to test yourself in bulk.</p>
+
+    <!-- 1 -->
+    <section class="bhr-section">
+      <h2>1 · The Ganga — the spine that splits Bihar</h2>
+      <p>Before the tributaries, fix the base river and the logic of the split. Everything else hangs off these three cards.</p>
+      <div class="bhr-tools">
+        <button class="bhr-btn" data-bhr-all="open">Reveal all</button>
+        <button class="bhr-btn" data-bhr-all="close">Hide all</button>
+      </div>
+      <div id="gangaCards"></div>
+    </section>
+
+    <!-- 2 -->
+    <section class="bhr-section">
+      <h2>2 · North Bihar — the Himalayan giants</h2>
+      <p>Snow and monsoon fed, perennial, silt-heavy and flood-prone. These are the rivers that make the news every August.</p>
+      <div class="bhr-tools">
+        <button class="bhr-btn" data-bhr-all="open">Reveal all</button>
+        <button class="bhr-btn" data-bhr-all="close">Hide all</button>
+      </div>
+      <div id="northCards"></div>
+    </section>
+
+    <!-- 3 -->
+    <section class="bhr-section">
+      <h2>3 · South Bihar — the plateau streams</h2>
+      <p>Rain-fed, seasonal, and born in the Chotanagpur plateau or the Kaimur range. They dry in May and flood in July.</p>
+      <div class="bhr-tools">
+        <button class="bhr-btn" data-bhr-all="open">Reveal all</button>
+        <button class="bhr-btn" data-bhr-all="close">Hide all</button>
+      </div>
+      <div id="southCards"></div>
+    </section>
+
+    <!-- 4 -->
+    <section class="bhr-section">
+      <h2>4 · Confluences — where the rivers meet</h2>
+      <p>Map-and-place questions live here. Learn the <em>point</em>, the <em>rivers</em>, and the <em>district</em> together.</p>
+      <div class="bhr-tools">
+        <button class="bhr-btn" data-bhr-all="open">Reveal all</button>
+        <button class="bhr-btn" data-bhr-all="close">Hide all</button>
+      </div>
+      <div id="confluenceCards"></div>
+    </section>
+
+    <!-- 5 -->
+    <section class="bhr-section">
+      <h2>5 · Floods — the Kosi story and the flood belt</h2>
+      <p>This is where GS-III (disaster management) and Bihar PSC both land. Know the river, the breach, and the treaty.</p>
+      <div class="bhr-tools">
+        <button class="bhr-btn" data-bhr-all="open">Reveal all</button>
+        <button class="bhr-btn" data-bhr-all="close">Hide all</button>
+      </div>
+      <div id="floodCards"></div>
+    </section>
+
+    <!-- 6 -->
+    <section class="bhr-section">
+      <h2>6 · Memory tricks that save you</h2>
+      <p>Six hooks — say them out loud once, and the list stops being a list.</p>
+
+      <div class="rev-note">
+        <p><strong>North vs South, in two letters.</strong></p>
+        <p><span class="bhr-mnem">N-H = P · S-P = S</span></p>
+        <p>North + Himalaya = Perennial. South + Plateau = Seasonal. If it is snow-fed and floods, it is north; if it dries in May, it is south.</p>
+      </div>
+
+      <div class="rev-note">
+        <p><strong>The Nepal set.</strong></p>
+        <p><span class="bhr-mnem">GGBK · ALL</span></p>
+        <p>Ghaghara, Gandak, Bagmati, Kosi — plus Adhwaa, Lakhandei, Lalbakeya. "Great Gandak Brings Kosi; All Lakes Leak."</p>
+      </div>
+
+      <div class="rev-note">
+        <p><strong>The southern six.</strong></p>
+        <p><span class="bhr-mnem">S-P-K-C-B-A</span></p>
+        <p>Son, Punpun, Kiul, Chandan, Badua, Ajay — "Son Pours Killing Currents, Bad Animals." The rest (Phalgu, Sakri, Karmanasa, Morhar, Dardha) hang off these.</p>
+      </div>
+
+      <div class="rev-note">
+        <p><strong>One river, three names.</strong></p>
+        <p><span class="bhr-mnem">GKS</span></p>
+        <p>Ghaghara = Karnali (Nepal) = Saryu (lower reach near Ayodhya). Same river — do not treat them as three.</p>
+      </div>
+
+      <div class="rev-note">
+        <p><strong>The four traps.</strong></p>
+        <p><span class="bhr-mnem">M-A-F-B</span></p>
+        <p><strong>M</strong>ahananda <em>misses</em> Bihar's Ganga (joins Padma in Bangladesh). <strong>A</strong>jay <em>avoids</em> the Ganga (joins Hooghly). <strong>F</strong>algu <em>follows</em> Punpun. <strong>B</strong>agmati <em>bypasses</em> the Ganga (joins Kosi first).</p>
+      </div>
+
+      <div class="rev-note">
+        <p><strong>The Kosi's westward walk.</strong></p>
+        <p><span class="bhr-mnem">112 km</span></p>
+        <p>After the mid-1950s breach the Kosi shifted roughly 112 km west. "Kosi Kare 112 km Ka Safar" — the single most repeated flood fact in Bihar exams.</p>
+      </div>
+    </section>
+
+    <!-- 7 -->
+    <section class="bhr-section">
+      <h2>7 · Rapid Fire</h2>
+      <p>Twenty questions across the whole page. Answer out loud, then tap to check.</p>
+      <div class="bhr-tools">
+        <button class="bhr-btn" data-bhr-all="open">Reveal all</button>
+        <button class="bhr-btn" data-bhr-all="close">Hide all</button>
+      </div>
+      <div id="rapidFire"></div>
+    </section>
+
+    <p class="rev-subtitle">Closing tip: draw the Ganga as a vertical line, put every north river on the left and every south river on the right — then label the confluences. One sketch beats ten readings.</p>
+
+  </main>
+
+  <!-- Page logic: render cards + toggle behaviour. -->
+  <script>
+    (function () {
+      'use strict';
+
+      var BADGE_LABEL = {
+        nepal: 'Nepal origin',
+        perennial: 'Perennial',
+        flood: 'Flood-prone',
+        seasonal: 'Seasonal',
+        sacred: 'Sacred',
+        major: 'Major',
+        boundary: 'Boundary'
+      };
+
+      var gangaCards = [
+        {
+          name: 'Ganga — the base river',
+          tags: ['major'],
+          body:
+            '<p><strong>Length:</strong> ~2,525 km total · ~445 km in Bihar</p>' +
+            '<p><strong>Origin:</strong> Gangotri glacier, Uttarakhand</p>' +
+            '<p><strong>Entry / exit:</strong> enters Bihar near Chausa (Buxar) from UP; exits near Manihari (Katihar) into West Bengal</p>' +
+            '<p><strong>Left-bank (north) tributaries:</strong> Ghaghara, Gandak, Burhi Gandak, Bagmati, Kosi, Mahananda</p>' +
+            '<p><strong>Right-bank (south) tributaries:</strong> Karmanasa, Son, Punpun, Kiul, Sakri, Chandan</p>' +
+            '<p><strong>Exam point:</strong> the Ganga basin is India’s largest river basin; Bihar sits in the middle Ganga plain. The Ganga is the divider — never classify it as a “north” or “south” river.</p>'
+        },
+        {
+          name: 'North vs South — the great split',
+          tags: ['major'],
+          body:
+            '<p><strong>North Bihar:</strong> Himalayan, snow + monsoon fed, perennial, high silt, flood-prone, Nepal/Tibet origin.</p>' +
+            '<p><strong>South Bihar:</strong> plateau-fed (Chotanagpur, Kaimur), rain-fed, seasonal, lower silt, less flood-prone, Jharkhand/MP origin.</p>' +
+            '<p><strong>Exam point:</strong> the contrast is the classic Himalayan-vs-Peninsular drainage question. Learn one example pair cold — e.g. Gandak (north) vs Son (south).</p>'
+        },
+        {
+          name: 'Why the split matters — the exam angle',
+          tags: ['major'],
+          body:
+            '<p><strong>GS-I:</strong> drainage systems of India — Himalayan vs Peninsular rivers, antecedence, silt, braiding.</p>' +
+            '<p><strong>GS-III:</strong> flood management and transboundary rivers — Kosi Treaty (1954), Gandak Treaty (1959), embankments, the proposed Kosi High Dam.</p>' +
+            '<p><strong>Bihar PSC:</strong> which river joins where, which is the “Sorrow”, which river does <em>not</em> join the Ganga. Those three question types repeat every year.</p>'
+        }
+      ];
+
+      var northRivers = [
+        {
+          name: 'Ghaghara / Saryu (Karnali)',
+          tags: ['nepal', 'perennial', 'major'],
+          body:
+            '<p><strong>Length:</strong> ~1,080 km total · ~83 km in Bihar</p>' +
+            '<p><strong>Origin:</strong> Tibetan Plateau → Nepal (called Karnali there)</p>' +
+            '<p><strong>Joins:</strong> the Ganga at Revelganj, Chhapra (Saran)</p>' +
+            '<p><strong>Exam point:</strong> the Ganga’s largest tributary by volume. Three names, one river — Karnali (Nepal), Ghaghara (plains), Saryu (lower/Ayodhya reach). It also forms part of the Bihar–UP boundary in its lower course.</p>'
+        },
+        {
+          name: 'Gandak (Narayani)',
+          tags: ['nepal', 'perennial', 'flood'],
+          body:
+            '<p><strong>Length:</strong> ~630 km total · ~260 km in Bihar</p>' +
+            '<p><strong>Origin:</strong> Nepal Himalaya (Narayani; the Kali Gandaki is a headstream)</p>' +
+            '<p><strong>Joins:</strong> the Ganga at Sonpur (Saran / Vaishali)</p>' +
+            '<p><strong>Exam point:</strong> also called Narayani. The Gandak Treaty (1959, India–Nepal) built the Gandak Barrage at Valmikinagar. Its floods hit West Champaran, Gopalganj, Saran and Vaishali.</p>'
+        },
+        {
+          name: 'Burhi Gandak',
+          tags: ['perennial', 'flood'],
+          body:
+            '<p><strong>Length:</strong> ~320 km · mostly within Bihar</p>' +
+            '<p><strong>Origin:</strong> Someshwar hills, West Champaran</p>' +
+            '<p><strong>Joins:</strong> the Ganga near Khagaria / Munger</p>' +
+            '<p><strong>Exam point:</strong> it is <em>not</em> a tributary of the Gandak — it is an independent river. One of the longest rivers flowing almost entirely inside Bihar, and notorious for shifting course across Muzaffarpur, Samastipur, Begusarai and Khagaria.</p>'
+        },
+        {
+          name: 'Bagmati',
+          tags: ['nepal', 'flood'],
+          body:
+            '<p><strong>Length:</strong> ~589 km total · ~394 km in Bihar</p>' +
+            '<p><strong>Origin:</strong> Shivapuri hills, Nepal</p>' +
+            '<p><strong>Joins:</strong> the Kosi at Badghat (Khagaria) — <em>not</em> the Ganga directly</p>' +
+            '<p><strong>Exam point:</strong> a classic flood river carrying heavy silt. The Bagmati embankments protect the Darbhanga–Madhubani–Samastipur belt.</p>'
+        },
+        {
+          name: 'Kamla',
+          tags: ['nepal', 'flood'],
+          body:
+            '<p><strong>Length:</strong> ~328 km</p>' +
+            '<p><strong>Origin:</strong> Churia / Siwalik hills, Nepal</p>' +
+            '<p><strong>Joins:</strong> the Balan → Bagmati / Kosi system</p>' +
+            '<p><strong>Exam point:</strong> the lower combined stream is called Kamla–Balan; that combined stream is a separate card below.</p>'
+        },
+        {
+          name: 'Kamla–Balan (combined)',
+          tags: ['flood'],
+          body:
+            '<p><strong>Formed:</strong> within Bihar, where the Kamla meets the Balan</p>' +
+            '<p><strong>Joins:</strong> the Bagmati / Kosi system</p>' +
+            '<p><strong>Exam point:</strong> the Kamla–Balan is not a separate river from the Kamla — it is the lower combined stream. Its flood belt is Madhubani and Darbhanga.</p>'
+        },
+        {
+          name: 'Kosi (Saptakoshi)',
+          tags: ['nepal', 'perennial', 'flood', 'major'],
+          body:
+            '<p><strong>Length:</strong> ~729 km total · ~260 km in Bihar</p>' +
+            '<p><strong>Origin:</strong> High Himalaya / Tibet — the Saptakoshi (seven upper tributaries, incl. Arun, Tamur, Sun Koshi)</p>' +
+            '<p><strong>Joins:</strong> the Ganga at Kursela / Kuresela (Katihar)</p>' +
+            '<p><strong>Exam point:</strong> “Sorrow of Bihar”. The mid-1950s breach shifted its course roughly 112 km west. The Kosi High Dam (Barahakshetra, Nepal) is still proposed; the Kosi–Mechi link is the intra-Bihar interlinking project.</p>'
+        },
+        {
+          name: 'Mahananda',
+          tags: ['perennial', 'boundary'],
+          body:
+            '<p><strong>Length:</strong> ~360 km total · ~176 km in Bihar</p>' +
+            '<p><strong>Origin:</strong> Darjeeling hills, West Bengal — <em>not</em> Nepal</p>' +
+            '<p><strong>Joins:</strong> the Ganga / Padma at Godagari (Bangladesh) — <em>not</em> inside Bihar</p>' +
+            '<p><strong>Exam point:</strong> forms part of the Bihar–West Bengal boundary. It is the classic “does not join the Ganga in Bihar” trap.</p>'
+        },
+        {
+          name: 'Adhwaa group',
+          tags: ['nepal', 'flood'],
+          body:
+            '<p><strong>What it is:</strong> a group of small streams from the Nepal Terai / Churia foothills</p>' +
+            '<p><strong>Joins:</strong> the Bagmati / Kareh system</p>' +
+            '<p><strong>Exam point:</strong> not a single river — a collective name. One of the major flood contributors in the Bagmati belt.</p>'
+        },
+        {
+          name: 'Lakhandei',
+          tags: ['nepal', 'flood'],
+          body:
+            '<p><strong>Origin:</strong> Nepal Terai</p>' +
+            '<p><strong>Joins:</strong> the Bagmati</p>' +
+            '<p><strong>Exam point:</strong> small but flood-relevant; part of the Bagmati system. Often grouped with the Adhwaa streams and the Lalbakeya.</p>'
+        },
+        {
+          name: 'Lalbakeya',
+          tags: ['nepal', 'flood'],
+          body:
+            '<p><strong>Origin:</strong> Nepal</p>' +
+            '<p><strong>Joins:</strong> the Bagmati</p>' +
+            '<p><strong>Exam point:</strong> same flood belt as the Lakhandei and Adhwaa; a transboundary stream whose embankment is a recurring India–Nepal issue.</p>'
+        }
+      ];
+
+      var southRivers = [
+        {
+          name: 'Karmanasa',
+          tags: ['boundary'],
+          body:
+            '<p><strong>Length:</strong> ~192 km</p>' +
+            '<p><strong>Origin:</strong> Kaimur range (Bihar–UP border)</p>' +
+            '<p><strong>Joins:</strong> the Ganga at Chausa (Buxar)</p>' +
+            '<p><strong>Exam point:</strong> forms the UP–Bihar boundary. “Karmanasa” literally means destroyer of good deeds — a legend worth one line in an answer. Chausa is also where Sher Shah defeated Humayun (1539).</p>'
+        },
+        {
+          name: 'Son (Sone)',
+          tags: ['major'],
+          body:
+            '<p><strong>Length:</strong> ~784 km total · ~202 km in Bihar</p>' +
+            '<p><strong>Origin:</strong> Amarkantak, Madhya Pradesh — <em>not</em> Bihar</p>' +
+            '<p><strong>Joins:</strong> the Ganga at Maner / Koliwar (Patna)</p>' +
+            '<p><strong>Exam point:</strong> the longest south-bank tributary of the Ganga. It enters Bihar from the Jharkhand/UP side and drains the Magadh–Shahabad plain. Also a major coalfield and industrial belt.</p>'
+        },
+        {
+          name: 'Punpun',
+          tags: ['seasonal'],
+          body:
+            '<p><strong>Length:</strong> ~200 km · mostly in Bihar</p>' +
+            '<p><strong>Origin:</strong> Chotanagpur plateau, Jharkhand</p>' +
+            '<p><strong>Joins:</strong> the Ganga at Fatuha (Patna)</p>' +
+            '<p><strong>Exam point:</strong> receives the Phalgu, and with it drains the Magadh plain. Seasonal — it is the river that carries Gaya’s sacred water to the Ganga.</p>'
+        },
+        {
+          name: 'Phalgu (Falgu)',
+          tags: ['sacred', 'seasonal'],
+          body:
+            '<p><strong>Length:</strong> ~135 km</p>' +
+            '<p><strong>Formed by:</strong> the Lilajan (Niranjana) and the Mohana near Gaya</p>' +
+            '<p><strong>Joins:</strong> the Punpun — <em>not</em> the Ganga directly</p>' +
+            '<p><strong>Exam point:</strong> the sacred river of Gaya (Pind Daan). The Lilajan and Mohana are its two headstreams, not separate major rivers.</p>'
+        },
+        {
+          name: 'Kiul',
+          tags: ['seasonal'],
+          body:
+            '<p><strong>Length:</strong> ~111 km</p>' +
+            '<p><strong>Origin:</strong> Tisri hills (Jharkhand)</p>' +
+            '<p><strong>Joins:</strong> the Ganga at Surajgarha (Lakhisarai)</p>' +
+            '<p><strong>Exam point:</strong> the Harohar is its tributary. Kiul is also a well-known rail junction — an easy way to place it on the map.</p>'
+        },
+        {
+          name: 'Sakri',
+          tags: ['seasonal'],
+          body:
+            '<p><strong>Length:</strong> ~145 km</p>' +
+            '<p><strong>Origin:</strong> Chotanagpur plateau (Jharkhand)</p>' +
+            '<p><strong>Joins:</strong> the Ganga near Barh (Patna) / the Kiul system</p>' +
+            '<p><strong>Exam point:</strong> a seasonal river of the south-Bihar drought–flood paradox: dry most of the year, dangerous in a heavy monsoon.</p>'
+        },
+        {
+          name: 'Chandan',
+          tags: ['seasonal'],
+          body:
+            '<p><strong>Length:</strong> ~118 km</p>' +
+            '<p><strong>Origin:</strong> Jharkhand / Chotanagpur</p>' +
+            '<p><strong>Joins:</strong> the Ganga near Bhagalpur / Kahalgaon</p>' +
+            '<p><strong>Exam point:</strong> seasonal and often dry in summer; one of the easternmost of the south-Bihar group.</p>'
+        },
+        {
+          name: 'Ajay',
+          tags: ['seasonal', 'boundary'],
+          body:
+            '<p><strong>Length:</strong> ~288 km</p>' +
+            '<p><strong>Origin:</strong> Chotanagpur (Jharkhand)</p>' +
+            '<p><strong>Joins:</strong> the Hooghly / Bhagirathi at Katwa (West Bengal) — <em>not</em> the Ganga</p>' +
+            '<p><strong>Exam point:</strong> the classic “joins Hooghly, not Ganga” trap. It also forms part of the Jharkhand–West Bengal boundary.</p>'
+        },
+        {
+          name: 'Badua',
+          tags: ['seasonal'],
+          body:
+            '<p><strong>Length:</strong> ~130 km</p>' +
+            '<p><strong>Origin:</strong> Santhal Pargana (Jharkhand)</p>' +
+            '<p><strong>Joins:</strong> the Ganga at Kahalgaon / Bhagalpur</p>' +
+            '<p><strong>Exam point:</strong> the easternmost of the south-Bihar group; seasonal, and easy to forget — which is exactly why examiners pick it.</p>'
+        },
+        {
+          name: 'Morhar',
+          tags: ['seasonal'],
+          body:
+            '<p><strong>Origin:</strong> Chotanagpur (Jharkhand)</p>' +
+            '<p><strong>Joins:</strong> the Punpun</p>' +
+            '<p><strong>Exam point:</strong> a Punpun tributary; part of the Magadh drainage. If a question asks for “tributaries of the Punpun”, the answer is Phalgu, Morhar and Dardha.</p>'
+        },
+        {
+          name: 'Dardha',
+          tags: ['seasonal'],
+          body:
+            '<p><strong>Origin:</strong> Chotanagpur (Jharkhand)</p>' +
+            '<p><strong>Joins:</strong> the Punpun</p>' +
+            '<p><strong>Exam point:</strong> same belt as the Morhar; a small seasonal stream that appears only in the tributary list.</p>'
+        }
+      ];
+
+      var confluences = [
+        {
+          name: 'Revelganj / Chhapra (Saran)',
+          tags: ['major'],
+          body:
+            '<p><strong>Rivers:</strong> Ghaghara + Ganga</p>' +
+            '<p><strong>District:</strong> Saran</p>' +
+            '<p><strong>Exam point:</strong> the Ghaghara is the Ganga’s largest tributary by volume — pair “Ghaghara → Chhapra” in one breath.</p>'
+        },
+        {
+          name: 'Sonpur (Saran / Vaishali)',
+          tags: ['major'],
+          body:
+            '<p><strong>Rivers:</strong> Gandak + Ganga</p>' +
+            '<p><strong>District:</strong> Saran / Vaishali</p>' +
+            '<p><strong>Exam point:</strong> “Gandak’s gold is at Sonpur.” The Sonpur cattle fair sits at this confluence.</p>'
+        },
+        {
+          name: 'Khagaria / Munger belt',
+          tags: ['flood'],
+          body:
+            '<p><strong>Rivers:</strong> Burhi Gandak + Ganga</p>' +
+            '<p><strong>District:</strong> Khagaria / Munger</p>' +
+            '<p><strong>Exam point:</strong> the Burhi Gandak reaches the Ganga only in its last stretch — it is independent for almost its whole length.</p>'
+        },
+        {
+          name: 'Badghat (Khagaria)',
+          tags: ['flood'],
+          body:
+            '<p><strong>Rivers:</strong> Bagmati + Kosi</p>' +
+            '<p><strong>District:</strong> Khagaria</p>' +
+            '<p><strong>Exam point:</strong> the Bagmati meets the Kosi <em>before</em> the Kosi meets the Ganga. This single fact kills the “Bagmati joins Ganga” error.</p>'
+        },
+        {
+          name: 'Kursela / Kuresela (Katihar)',
+          tags: ['flood', 'major'],
+          body:
+            '<p><strong>Rivers:</strong> Kosi + Ganga</p>' +
+            '<p><strong>District:</strong> Katihar</p>' +
+            '<p><strong>Exam point:</strong> the Kosi’s mouth. Pair “Kosi → Kursela” with “Sorrow of Bihar” in the same answer.</p>'
+        },
+        {
+          name: 'Maner / Koliwar (Patna)',
+          tags: ['major'],
+          body:
+            '<p><strong>Rivers:</strong> Son + Ganga</p>' +
+            '<p><strong>District:</strong> Patna</p>' +
+            '<p><strong>Exam point:</strong> the Son is the longest south-bank tributary; its mouth is just west of Patna.</p>'
+        },
+        {
+          name: 'Fatuha (Patna)',
+          tags: ['seasonal'],
+          body:
+            '<p><strong>Rivers:</strong> Punpun + Ganga</p>' +
+            '<p><strong>District:</strong> Patna</p>' +
+            '<p><strong>Exam point:</strong> Fatuha is also an industrial node; the Punpun arrives here after collecting the Phalgu.</p>'
+        },
+        {
+          name: 'Masaurhi / Fatuha belt (Patna)',
+          tags: ['sacred'],
+          body:
+            '<p><strong>Rivers:</strong> Phalgu + Punpun</p>' +
+            '<p><strong>District:</strong> Patna</p>' +
+            '<p><strong>Exam point:</strong> the Phalgu never reaches the Ganga directly — it hands over to the Punpun here.</p>'
+        },
+        {
+          name: 'Surajgarha (Lakhisarai)',
+          tags: ['seasonal'],
+          body:
+            '<p><strong>Rivers:</strong> Kiul + Ganga</p>' +
+            '<p><strong>District:</strong> Lakhisarai</p>' +
+            '<p><strong>Exam point:</strong> the Kiul’s mouth; the Harohar joins the Kiul upstream.</p>'
+        },
+        {
+          name: 'Chausa (Buxar)',
+          tags: ['boundary'],
+          body:
+            '<p><strong>Rivers:</strong> Karmanasa + Ganga</p>' +
+            '<p><strong>District:</strong> Buxar</p>' +
+            '<p><strong>Exam point:</strong> the Karmanasa marks the UP–Bihar boundary; Chausa is also the 1539 battlefield (Sher Shah vs Humayun).</p>'
+        },
+        {
+          name: 'Katwa (West Bengal)',
+          tags: ['boundary'],
+          body:
+            '<p><strong>Rivers:</strong> Ajay + Hooghly</p>' +
+            '<p><strong>District:</strong> West Bengal</p>' +
+            '<p><strong>Exam point:</strong> the Ajay leaves Bihar and joins the Hooghly, not the Ganga. A favourite “odd one out” question.</p>'
+        },
+        {
+          name: 'Godagari (Bangladesh)',
+          tags: ['boundary'],
+          body:
+            '<p><strong>Rivers:</strong> Mahananda + Ganga / Padma</p>' +
+            '<p><strong>District:</strong> Bangladesh</p>' +
+            '<p><strong>Exam point:</strong> the Mahananda’s mouth is outside Bihar. If a question says “Mahananda joins the Ganga in Bihar”, it is false.</p>'
+        }
+      ];
+
+      var floodCards = [
+        {
+          name: 'Kosi — the Sorrow of Bihar',
+          tags: ['flood', 'major'],
+          body:
+            '<p><strong>Why it floods:</strong> among the highest silt loads of any river in the world; the bed rises, the channel braids, and the embankments breach.</p>' +
+            '<p><strong>Course shift:</strong> the mid-1950s breach pushed the river roughly 112 km west, from near Purnea toward Saharsa / Madhepura.</p>' +
+            '<p><strong>Exam point:</strong> “Sorrow of Bihar” = Kosi. Also called Saptakoshi (seven upper tributaries).</p>'
+        },
+        {
+          name: 'The mid-1950s breach and the westward shift',
+          tags: ['flood'],
+          body:
+            '<p><strong>What happened:</strong> a major breach near Bhimnagar changed the Kosi’s course permanently; embankments were built on both banks afterwards.</p>' +
+            '<p><strong>Treaty angle:</strong> the Kosi Treaty (1954, India–Nepal) covers the Bhimnagar barrage and the embankments.</p>' +
+            '<p><strong>Unbuilt fix:</strong> the Kosi High Dam at Barahakshetra (Nepal) and the Sunkosi–Kamala diversion are still proposed, not built.</p>'
+        },
+        {
+          name: 'Bagmati–Kamla–Balan flood belt',
+          tags: ['flood'],
+          body:
+            '<p><strong>Districts:</strong> Muzaffarpur, Darbhanga, Madhubani, Samastipur, Khagaria.</p>' +
+            '<p><strong>Why:</strong> the Bagmati, Kamla, Balan, Adhwaa, Lakhandei and Lalbakeya all drain into the same low, silted belt.</p>' +
+            '<p><strong>Exam point:</strong> the Bagmati joins the Kosi, not the Ganga — so this belt is a Kosi-system flood, not a Ganga flood.</p>'
+        },
+        {
+          name: 'Gandak and Burhi Gandak flood belt',
+          tags: ['flood'],
+          body:
+            '<p><strong>Gandak belt:</strong> West Champaran, Gopalganj, Saran, Vaishali.</p>' +
+            '<p><strong>Burhi Gandak belt:</strong> Muzaffarpur, Samastipur, Begusarai, Khagaria.</p>' +
+            '<p><strong>Treaty angle:</strong> the Gandak Treaty (1959, India–Nepal) built the Gandak Barrage at Valmikinagar.</p>'
+        },
+        {
+          name: 'Why North Bihar floods — the exam answer',
+          tags: ['flood', 'major'],
+          body:
+            '<p><strong>Gradient:</strong> Himalayan rivers enter the plains steeply and flatten suddenly — the flow slows and spreads.</p>' +
+            '<p><strong>Silt:</strong> huge sediment loads raise the bed and force braiding and breaches.</p>' +
+            '<p><strong>Catchment:</strong> the Nepal catchment gets intense monsoon rain, and the rivers cross a border mid-flow.</p>' +
+            '<p><strong>Embankments:</strong> they protect one stretch and trap water in another, worsening drainage congestion.</p>' +
+            '<p><strong>GS-III hook:</strong> flood management, the Kosi–Mechi link, the proposed Kosi High Dam, and India–Nepal water treaties.</p>'
+        }
+      ];
+
+      var rapidFire = [
+        { q: 'Which river is called the “Sorrow of Bihar”?', a: 'The Kosi.' },
+        { q: 'The longest south-bank tributary of the Ganga is?', a: 'The Son (Sone).' },
+        { q: 'The Ghaghara joins the Ganga at?', a: 'Revelganj, Chhapra (Saran).' },
+        { q: 'The Gandak joins the Ganga at?', a: 'Sonpur (Saran / Vaishali).' },
+        { q: 'The Kosi joins the Ganga at?', a: 'Kursela / Kuresela (Katihar).' },
+        { q: 'Which river is called Saptakoshi?', a: 'The Kosi — seven upper tributaries.' },
+        { q: 'Is the Burhi Gandak a tributary of the Gandak?', a: 'No — it is an independent river, originating in West Champaran.' },
+        { q: 'The Bagmati joins which river before the Ganga?', a: 'The Kosi (at Badghat, Khagaria).' },
+        { q: 'The Phalgu joins which river?', a: 'The Punpun.' },
+        { q: 'The Ajay joins which river?', a: 'The Hooghly / Bhagirathi (at Katwa, West Bengal) — not the Ganga.' },
+        { q: 'The Mahananda joins which river, and where?', a: 'The Ganga / Padma at Godagari, Bangladesh.' },
+        { q: 'The Ghaghara is also known as?', a: 'Karnali (in Nepal) and Saryu (lower reaches).' },
+        { q: 'Which river forms the UP–Bihar boundary?', a: 'The Karmanasa.' },
+        { q: 'The Son originates at?', a: 'Amarkantak (Madhya Pradesh).' },
+        { q: 'The Punpun originates in?', a: 'The Chotanagpur plateau (Jharkhand).' },
+        { q: 'Which river shifted roughly 112 km west after a major breach?', a: 'The Kosi (mid-1950s).' },
+        { q: 'The longest river in Bihar is?', a: 'The Ganga.' },
+        { q: 'The Ganga divides Bihar into which two regions?', a: 'North Bihar and South Bihar.' },
+        { q: 'Which sacred south-Bihar river is linked to Gaya?', a: 'The Phalgu.' },
+        { q: 'The Phalgu is formed by which two streams?', a: 'The Lilajan (Niranjana) and the Mohana.' }
+      ];
+
+      function badge(tag) {
+        return '<span class="bhr-badge bhr-badge--' + tag + '">' + (BADGE_LABEL[tag] || tag) + '</span>';
+      }
+
+      function renderCards(targetId, items) {
+        var host = document.getElementById(targetId);
+        if (!host) return;
+        host.innerHTML = items.map(function (it) {
+          var badges = (it.tags || []).map(badge).join('');
+          return '<div class="bhr-card">' +
+            '<div class="bhr-card__head">' +
+              '<div class="bhr-card__title">' +
+                '<span class="bhr-card__name">' + it.name + '</span>' +
+                (badges ? '<span class="bhr-card__badges">' + badges + '</span>' : '') +
+              '</div>' +
+              '<span class="bhr-card__toggle">+</span>' +
+            '</div>' +
+            '<div class="bhr-card__body">' + it.body + '</div>' +
+          '</div>';
+        }).join('');
+      }
+
+      function renderQuiz(targetId, items) {
+        var host = document.getElementById(targetId);
+        if (!host) return;
+        host.innerHTML = items.map(function (q) {
+          return '<div class="bhr-q">' +
+            '<p>' + q.q + '</p>' +
+            '<div class="bhr-ans">' + q.a + '</div>' +
+          '</div>';
+        }).join('');
+      }
+
+      renderCards('gangaCards', gangaCards);
+      renderCards('northCards', northRivers);
+      renderCards('southCards', southRivers);
+      renderCards('confluenceCards', confluences);
+      renderCards('floodCards', floodCards);
+      renderQuiz('rapidFire', rapidFire);
+
+      document.addEventListener('click', function (e) {
+        var head = e.target.closest ? e.target.closest('.bhr-card__head') : null;
+        if (head) { head.parentElement.classList.toggle('open'); return; }
+        var q = e.target.closest ? e.target.closest('.bhr-q') : null;
+        if (q) { q.classList.toggle('open'); }
+      });
+
+      Array.prototype.forEach.call(document.querySelectorAll('.bhr-section'), function (sec) {
+        var tools = sec.querySelector('.bhr-tools');
+        if (!tools) return;
+        Array.prototype.forEach.call(tools.querySelectorAll('button[data-bhr-all]'), function (btn) {
+          btn.addEventListener('click', function () {
+            var open = btn.getAttribute('data-bhr-all') === 'open';
+            Array.prototype.forEach.call(sec.querySelectorAll('.bhr-card, .bhr-q'), function (c) {
+              c.classList.toggle('open', open);
+            });
+          });
+        });
+      });
+    })();
+  </script>
+
+  <!-- Report true content height to the parent app.
+       Measures <main class="rev-page"> directly, NOT document.body. -->
+  <script>
+    (function () {
+      function sendHeight() {
+        var el = document.querySelector('.rev-page') || document.body;
+        var h = Math.ceil(el.getBoundingClientRect().height);
+        if (!h) h = el.scrollHeight || 0;
+        if (!h) return;
+        try {
+          window.parent.postMessage({ type: 'revision-height', height: h }, '*');
+        } catch (e) {}
+      }
+      window.addEventListener('load', sendHeight);
+      window.addEventListener('resize', sendHeight);
+      setTimeout(sendHeight, 0);
+      setTimeout(sendHeight, 50);
+      setTimeout(sendHeight, 300);
+      setTimeout(sendHeight, 1000);
+      if (window.ResizeObserver) {
+        new ResizeObserver(sendHeight).observe(document.body);
+      }
+    })();
+  </script>
+</body>
+</html>

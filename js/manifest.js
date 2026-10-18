@@ -55,7 +55,9 @@ const REVISIONS = [
   { id: "19_foreign_travellers", title: "FOREIGN TRAVELLERS",page: "revision/19_foreign_travellers.html"},
   { id: "20_modern_india_1857_1947_overview", title: "MODERN INDIA (1857-1947): OVERVIEW",page: "revision/20_modern_india_1857_1947_overview.html"},
   { id: "21_viceroys", title: "VICEROYS OF INDIA",page: "revision/21_viceroys.html"},
-  { id: "22_president_of_india", title: "PRESIDENT OF INDIA",page: "revision/22_president_of_india.html"}
+  { id: "22_president_of_india", title: "PRESIDENT OF INDIA",page: "revision/22_president_of_india.html"},
+  { id: "23_mountains_peaks", title: "MOUNTAINS AND PEAKS",page: "revision/23_mountains_peaks.html"},
+  { id: "24_bihar_rivers_system", title: "BIHAR RIVERS SYSTEM",page: "revision/24_bihar_rivers_system.html"}
   
   
 

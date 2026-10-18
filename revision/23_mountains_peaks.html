@@ -1,0 +1,1967 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mountain Ranges & Peaks of India — Revision</title>
+
+  <!--
+    Revision page for "Mountain Ranges & Peaks of India".
+    Loaded inside the main app's iframe.
+    • Theme is passed via URL hash: #theme=dark or #theme=light
+    • Styles come from ../css/style.css
+  -->
+
+  <!-- Read theme from URL hash BEFORE paint (no flash). -->
+  <script>
+    (function () {
+      var m = location.hash.match(/theme=(light|dark)/);
+      document.documentElement.setAttribute('data-theme', m ? m[1] : 'dark');
+    })();
+  </script>
+
+  <!-- Shared app styles — this links the file to the MAIN stylesheet. -->
+  <link rel="stylesheet" href="../css/style.css">
+
+  <!-- Match the app's font stack. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* Page-specific styles for Mountain Ranges & Peaks of India. */
+
+    .mtn-section {
+      margin-top: 28px;
+    }
+
+    .mtn-section > h2 {
+      margin-bottom: 8px;
+    }
+
+    .mtn-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0 14px;
+    }
+
+    .mtn-btn {
+      border: 1px solid rgba(129, 140, 248, 0.45);
+      background: rgba(79, 70, 229, 0.12);
+      color: inherit;
+      border-radius: 9px;
+      padding: 8px 12px;
+      font: inherit;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.18s ease;
+    }
+
+    .mtn-btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(129, 140, 248, 0.8);
+      background: rgba(79, 70, 229, 0.2);
+    }
+
+    html[data-theme="light"] .mtn-btn {
+      background: #eef2ff;
+      border-color: #c7d2fe;
+      color: #3730a3;
+    }
+
+    .mtn-card,
+    .mtn-q {
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      border-radius: 14px;
+      margin-bottom: 12px;
+      overflow: hidden;
+      background: rgba(15, 23, 42, 0.48);
+      box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
+    }
+
+    html[data-theme="light"] .mtn-card,
+    html[data-theme="light"] .mtn-q {
+      background: #ffffff;
+      border-color: #dbe2ea;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+    }
+
+    .mtn-card__head,
+    .mtn-q__head {
+      min-height: 54px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      cursor: pointer;
+      user-select: none;
+      font-weight: 800;
+      line-height: 1.8;
+    }
+
+    .mtn-card__head:hover,
+    .mtn-q__head:hover {
+      background: rgba(99, 102, 241, 0.08);
+    }
+
+    .mtn-card__head:focus,
+    .mtn-q__head:focus {
+      outline: 2px solid #818cf8;
+      outline-offset: -2px;
+    }
+
+    .mtn-card__title,
+    .mtn-q__title {
+      flex: 1;
+    }
+
+    .mtn-card__arrow,
+    .mtn-q__arrow {
+      font-size: 0.9rem;
+      opacity: 0.65;
+      transition: transform 0.18s ease;
+      flex: 0 0 auto;
+    }
+
+    .mtn-open .mtn-card__arrow,
+    .mtn-open .mtn-q__arrow {
+      transform: rotate(180deg);
+    }
+
+    .mtn-card__body,
+    .mtn-q__body {
+      padding: 14px 18px 18px;
+      line-height: 1.9;
+      border-top: 1px solid rgba(148, 163, 184, 0.16);
+    }
+
+    .mtn-card__body p,
+    .mtn-q__body p {
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
+
+    .mtn-card__body ul,
+    .mtn-card__body ol,
+    .mtn-q__body ul,
+    .mtn-q__body ol {
+      margin-top: 6px;
+      margin-bottom: 8px;
+      padding-left: 22px;
+    }
+
+    .mtn-card__body li,
+    .mtn-q__body li {
+      margin-bottom: 7px;
+    }
+
+    .mtn-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      border-radius: 999px;
+      padding: 4px 9px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      line-height: 1.2;
+    }
+
+    .mtn-badge--himalaya {
+      background: #312e81;
+      color: #e0e7ff;
+    }
+
+    html[data-theme="light"] .mtn-badge--himalaya {
+      background: #e0e7ff;
+      color: #3730a3;
+    }
+
+    .mtn-badge--trans {
+      background: #115e59;
+      color: #ccfbf1;
+    }
+
+    html[data-theme="light"] .mtn-badge--trans {
+      background: #ccfbf1;
+      color: #115e59;
+    }
+
+    .mtn-badge--peninsular {
+      background: #92400e;
+      color: #fef3c7;
+    }
+
+    html[data-theme="light"] .mtn-badge--peninsular {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .mtn-badge--ghats {
+      background: #166534;
+      color: #dcfce7;
+    }
+
+    html[data-theme="light"] .mtn-badge--ghats {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .mtn-badge--peak {
+      background: #9f1239;
+      color: #ffe4e6;
+    }
+
+    html[data-theme="light"] .mtn-badge--peak {
+      background: #ffe4e6;
+      color: #9f1239;
+    }
+
+    .mtn-badge--pass {
+      background: #1d4ed8;
+      color: #dbeafe;
+    }
+
+    html[data-theme="light"] .mtn-badge--pass {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    .mtn-badge--concept {
+      background: #6d28d9;
+      color: #ede9fe;
+    }
+
+    html[data-theme="light"] .mtn-badge--concept {
+      background: #ede9fe;
+      color: #6d28d9;
+    }
+
+    .mtn-badge--environment {
+      background: #15803d;
+      color: #dcfce7;
+    }
+
+    html[data-theme="light"] .mtn-badge--environment {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .mtn-badge--trap {
+      background: #b45309;
+      color: #fef3c7;
+    }
+
+    html[data-theme="light"] .mtn-badge--trap {
+      background: #fef3c7;
+      color: #b45309;
+    }
+
+    .mtn-badge--map {
+      background: #0369a1;
+      color: #e0f2fe;
+    }
+
+    html[data-theme="light"] .mtn-badge--map {
+      background: #e0f2fe;
+      color: #0369a1;
+    }
+
+    .mtn-keyline {
+      border-left: 3px solid #818cf8;
+      padding: 8px 12px;
+      margin: 10px 0;
+      background: rgba(99, 102, 241, 0.07);
+      border-radius: 0 8px 8px 0;
+    }
+
+    html[data-theme="light"] .mtn-keyline {
+      background: #eef2ff;
+    }
+
+    .mtn-flow {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin: 12px 0;
+    }
+
+    .mtn-flow__item {
+      padding: 13px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 11px;
+      text-align: center;
+      font-weight: 800;
+      line-height: 1.7;
+      background: rgba(30, 41, 59, 0.35);
+    }
+
+    html[data-theme="light"] .mtn-flow__item {
+      background: #f8fafc;
+      border-color: #dbe2ea;
+    }
+
+    .mtn-flow__arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      opacity: 0.6;
+      border: 0;
+      background: transparent;
+    }
+
+    .mtn-table-wrap {
+      overflow-x: auto;
+      margin: 14px 0;
+    }
+
+    .mtn-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 680px;
+    }
+
+    .mtn-table th,
+    .mtn-table td {
+      border: 1px solid rgba(148, 163, 184, 0.24);
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+      line-height: 1.7;
+    }
+
+    .mtn-table th {
+      font-weight: 800;
+    }
+
+    .mtn-mini {
+      font-size: 0.9rem;
+      opacity: 0.88;
+    }
+
+    .mtn-mnem {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+
+    .mtn-q__head {
+      justify-content: flex-start;
+    }
+
+    .mtn-q__num {
+      flex: 0 0 auto;
+      width: 28px;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(99, 102, 241, 0.18);
+      color: #c7d2fe;
+      font-size: 0.8rem;
+    }
+
+    html[data-theme="light"] .mtn-q__num {
+      background: #e0e7ff;
+      color: #3730a3;
+    }
+
+    .mtn-answer {
+      padding: 10px 12px;
+      border-left: 3px solid #22c55e;
+      background: rgba(34, 197, 94, 0.08);
+      border-radius: 0 8px 8px 0;
+      margin-top: 4px;
+    }
+
+    html[data-theme="light"] .mtn-answer {
+      background: #f0fdf4;
+    }
+
+    .mtn-section-note {
+      margin-top: -4px;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 700px) {
+      .mtn-flow {
+        grid-template-columns: 1fr;
+      }
+
+      .mtn-flow__arrow {
+        min-height: 28px;
+      }
+
+      .mtn-card__head,
+      .mtn-q__head {
+        padding: 13px 14px;
+      }
+
+      .mtn-card__body,
+      .mtn-q__body {
+        padding: 14px 15px 17px;
+      }
+    }
+  </style>
+</head>
+
+<body style="background: transparent; margin: 0;">
+  <main class="rev-page">
+
+    <h1>Mountain Ranges &amp; Peaks of India</h1>
+    <p class="rev-subtitle">
+      UPSC / BPSC active-recall revision: Himalayan divisions, Trans-Himalaya, Peninsular ranges,
+      Western &amp; Eastern Ghats, major peaks, passes, rivers, climate and exam traps.
+    </p>
+
+    <div class="rev-note">
+      <strong>What this page is really for:</strong>
+      Do not memorize the map as a picture alone. Build a chain:
+      <code>range → location → peak → river → climate → ecosystem → map trap</code>.
+      That turns a one-off geography image into reusable UPSC/BPSC map knowledge.
+    </div>
+
+<figure class="rev-figure">
+  <img src="../images/23_01_mountains-peaks.jpg"
+       class="rev-img rev-img-wide"
+       alt="Major mountain ranges and peaks of India, including Himalayas, Trans-Himalaya, Peninsular ranges, Western and Eastern Ghats.">
+  <figcaption>Major mountain ranges and peaks of India.</figcaption>
+</figure>
+
+
+    <!-- ========================================================= -->
+    <!-- SECTION 1 -->
+    <!-- ========================================================= -->
+
+    <section class="mtn-section">
+      <h2>1 · Start with the map — two great mountain families</h2>
+      <p class="rev-subtitle mtn-section-note">
+        First separate the young Himalayan system from the ancient Peninsular mountain systems.
+      </p>
+
+      <div class="mtn-tools">
+        <button class="mtn-btn" type="button" data-mtn-all="open">Reveal all</button>
+        <button class="mtn-btn" type="button" data-mtn-all="close">Hide all</button>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Himalayan Mountain System</span>
+          <span class="mtn-badge mtn-badge--himalaya">Young Fold Mountains</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <p><strong>Core idea:</strong> The Himalayas are geologically young, tectonically active fold mountains.</p>
+          <ul>
+            <li>They form a huge arc along the northern margin of the Indian subcontinent.</li>
+            <li>The Himalayan region extends broadly from the <strong>Indus valley in the west to the Brahmaputra valley in the east</strong>.</li>
+            <li>The three main longitudinal ranges are <strong>Himadri, Himachal and Shiwalik</strong>.</li>
+            <li>North of the Himalaya proper lie the <strong>Trans-Himalayan ranges</strong>, especially Karakoram, Ladakh and Zanskar.</li>
+            <li>High relief, active tectonics, glaciers, snowfields, earthquakes and landslides make the Himalaya extremely significant for both physical geography and disaster geography.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Peninsular Mountain Systems</span>
+          <span class="mtn-badge mtn-badge--peninsular">Ancient Landmass</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <p><strong>Core idea:</strong> The Peninsular Plateau is an ancient, relatively stable landmass.</p>
+          <ul>
+            <li>Its major ranges are generally much older and more deeply eroded than the Himalayas.</li>
+            <li>Important systems include <strong>Aravalli, Vindhya, Satpura, Western Ghats and Eastern Ghats</strong>.</li>
+            <li>These ranges are closely linked with river basins, plateau edges, monsoon behaviour and biodiversity.</li>
+            <li>Do not imagine every Peninsular range as a single sharp continuous mountain wall; many are old, broken, eroded or structurally complex.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">North-Eastern Hills — the Himalayan arc bends toward Myanmar</span>
+          <span class="mtn-badge mtn-badge--map">Map Link</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <p>At the eastern end of the Himalayas, the mountain system bends sharply southward.</p>
+          <ul>
+            <li>Important hill groups include the <strong>Patkai, Naga, Manipur and Mizo hills</strong>.</li>
+            <li>Further west in Meghalaya are the <strong>Garo, Khasi and Jaintia Hills</strong>.</li>
+            <li>This eastern extension is important for extremely high rainfall, dense forests, biodiversity and strategic connectivity toward Myanmar and Southeast Asia.</li>
+            <li>For map questions, do not isolate the North-Eastern Hills from the larger Himalayan story.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mtn-table-wrap">
+        <table class="mtn-table">
+          <thead>
+            <tr>
+              <th>Big family</th>
+              <th>Age / nature</th>
+              <th>Key ranges to remember</th>
+              <th>Typical exam angle</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Himalayan</td>
+              <td>Young fold, tectonically active</td>
+              <td>Himadri, Himachal, Shiwalik</td>
+              <td>Peaks, glaciers, rivers, earthquakes, passes</td>
+            </tr>
+            <tr>
+              <td>Trans-Himalayan</td>
+              <td>High mountain system north of Himalaya proper</td>
+              <td>Karakoram, Ladakh, Zanskar</td>
+              <td>K2, cold desert, glaciers, passes</td>
+            </tr>
+            <tr>
+              <td>Peninsular</td>
+              <td>Ancient, eroded, relatively stable</td>
+              <td>Aravalli, Vindhya, Satpura, Ghats</td>
+              <td>Rivers, plateau structure, monsoon, biodiversity</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- SECTION 2 -->
+    <!-- ========================================================= -->
+
+    <section class="mtn-section">
+      <h2>2 · The three parallel Himalayas — high → middle → outer</h2>
+      <p class="rev-subtitle mtn-section-note">
+        Read these from north to south. That order itself is a memory tool.
+      </p>
+
+      <div class="mtn-tools">
+        <button class="mtn-btn" type="button" data-mtn-all="open">Reveal all</button>
+        <button class="mtn-btn" type="button" data-mtn-all="close">Hide all</button>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Himadri — Greater / Great / Inner Himalaya</span>
+          <span class="mtn-badge mtn-badge--himalaya">Highest Belt</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li><strong>Position:</strong> Northernmost of the three main longitudinal Himalayan ranges.</li>
+            <li><strong>Nature:</strong> The most continuous and highest Himalayan belt.</li>
+            <li><strong>Average elevation:</strong> Around <strong>6,000 m</strong> in standard NCERT descriptions.</li>
+            <li><strong>Peaks:</strong> Many of the great Himalayan peaks are associated with this high mountain zone.</li>
+            <li><strong>Glaciers:</strong> Major glaciers originate in the high Himalayan region.</li>
+            <li><strong>Importance:</strong> Snow and glaciers help sustain the perennial character of many Himalayan river systems.</li>
+          </ul>
+          <div class="mtn-keyline">
+            <strong>Recall:</strong> <code>Himadri = Highest + Hardest + High glaciers</code>.
+          </div>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Himachal — Lesser / Middle Himalaya</span>
+          <span class="mtn-badge mtn-badge--himalaya">Middle Belt</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li>Lies <strong>south of Himadri</strong>.</li>
+            <li>More discontinuous and generally lower than the Great Himalaya.</li>
+            <li>Contains important mountain systems such as the <strong>Pir Panjal</strong> and <strong>Dhauladhar</strong>.</li>
+            <li>Known for numerous valleys, including the <strong>Kashmir, Kangra and Kullu valleys</strong>.</li>
+            <li>Many Himalayan settlements and hill stations developed in or around this belt because of relatively accessible valleys and slopes.</li>
+          </ul>
+          <div class="mtn-keyline">
+            <strong>Recall:</strong> <code>Himachal = Middle Himalaya + Mountains + Valleys</code>.
+          </div>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Shiwalik — Outer Himalaya</span>
+          <span class="mtn-badge mtn-badge--himalaya">Outer Foothills</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li><strong>Southernmost</strong> of the three major longitudinal Himalayan ranges.</li>
+            <li>Generally the <strong>lowest</strong> Himalayan belt.</li>
+            <li>Made substantially of relatively unconsolidated sediments deposited by rivers draining from the higher Himalayas.</li>
+            <li>Because of its loose material and steep slopes, erosion and landslides are important geomorphic issues.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Duns — valleys between Himalaya belts</span>
+          <span class="mtn-badge mtn-badge--concept">Landform</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <p>Longitudinal valleys between the <strong>Lesser Himalaya and Shiwalik</strong> are called <strong>Duns</strong>.</p>
+          <ul>
+            <li><strong>Dehra Dun</strong> is the classic example.</li>
+            <li>Other examples include <strong>Kotli Dun</strong> and <strong>Patli Dun</strong>.</li>
+            <li>Do not confuse a <strong>Deccan valley</strong> or ordinary river valley with a Dun.</li>
+          </ul>
+          <div class="mtn-keyline">
+            <strong>Sequence:</strong> <code>Himadri → Himachal → Dun → Shiwalik</code>
+            is a useful simplified southward mental picture.
+          </div>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Bhabar → Terai — the foothill drainage story</span>
+          <span class="mtn-badge mtn-badge--concept">Foothill Belt</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <p><strong>Bhabar</strong> is a narrow belt of coarse, porous deposits along the Himalayan foothills.</p>
+          <ul>
+            <li>Streams descending from the mountains may <strong>disappear underground</strong> because the coarse material is highly permeable.</li>
+          </ul>
+          <p><strong>Terai</strong> lies south of Bhabar.</p>
+          <ul>
+            <li>Streams re-emerge closer to the surface.</li>
+            <li>It is wetter and historically supported dense forests and marshy conditions.</li>
+          </ul>
+          <div class="mtn-keyline">
+            <strong>Southward sequence:</strong> <code>Himalaya → Shiwalik → Bhabar → Terai → Plains</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="mtn-table-wrap">
+        <table class="mtn-table">
+          <thead>
+            <tr>
+              <th>Range</th>
+              <th>Position</th>
+              <th>Relative height</th>
+              <th>Classic association</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Himadri</strong></td>
+              <td>North</td>
+              <td>Highest</td>
+              <td>Great peaks, snow, glaciers</td>
+            </tr>
+            <tr>
+              <td><strong>Himachal</strong></td>
+              <td>Middle</td>
+              <td>Intermediate</td>
+              <td>Pir Panjal, Dhauladhar, valleys</td>
+            </tr>
+            <tr>
+              <td><strong>Shiwalik</strong></td>
+              <td>South / outer</td>
+              <td>Lowest</td>
+              <td>Loose sediments, foothills, Duns nearby</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- SECTION 3 -->
+    <!-- ========================================================= -->
+
+    <section class="mtn-section">
+      <h2>3 · Beyond the Himalaya proper — Trans-Himalaya</h2>
+      <p class="rev-subtitle mtn-section-note">
+        K2 belongs here. This single distinction prevents a large number of map-based mistakes.
+      </p>
+
+      <div class="mtn-tools">
+        <button class="mtn-btn" type="button" data-mtn-all="open">Reveal all</button>
+        <button class="mtn-btn" type="button" data-mtn-all="close">Hide all</button>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Karakoram Range</span>
+          <span class="mtn-badge mtn-badge--trans">Trans-Himalaya</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li>Lies <strong>north of the main Himalayan ranges</strong>.</li>
+            <li>Part of the broader <strong>Trans-Himalayan mountain system</strong>.</li>
+            <li>Extremely high relief and extensive glaciation.</li>
+            <li>Contains the world's second-highest mountain, <strong>K2</strong>.</li>
+            <li>Important glaciers include the <strong>Siachen Glacier</strong> in the eastern Karakoram.</li>
+            <li>Important for physical geography, cryosphere studies, strategic geography and high-altitude environmental issues.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">K2 — 8,611 m</span>
+          <span class="mtn-badge mtn-badge--peak">World Rank 2</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li><strong>Elevation:</strong> 8,611 m.</li>
+            <li><strong>Mountain system:</strong> Karakoram.</li>
+            <li><strong>World position:</strong> Second-highest mountain after Mount Everest.</li>
+            <li>Its summit lies in the <strong>Pakistan-administered Gilgit-Baltistan region</strong>.</li>
+            <li>In Indian map practice, treat it carefully: it is a major peak of the Karakoram and a key territorial/geographical reference, but do not casually label it as the highest peak of present-day India.</li>
+          </ul>
+          <div class="mtn-keyline">
+            <strong>Exam lock:</strong> <code>K2 → Karakoram → 8,611 m → 2nd highest in world</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Ladakh Range</span>
+          <span class="mtn-badge mtn-badge--trans">Trans-Himalaya</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li>Major high-altitude range of the Trans-Himalayan region.</li>
+            <li>Closely associated with the <strong>Ladakh cold desert</strong>.</li>
+            <li>The <strong>Indus</strong>, <strong>Shyok</strong> and related drainage systems are important map references in this region.</li>
+            <li>Extremely dry conditions result from rain-shadow effects and the region's high-altitude continental environment.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Zanskar Range</span>
+          <span class="mtn-badge mtn-badge--trans">Western High Himalaya</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li>A major high-altitude mountain system associated with the western Trans-Himalayan / Himalayan transition zone.</li>
+            <li>Known for spectacular deeply incised valleys and high passes.</li>
+            <li>For map questions, place it broadly <strong>south of the Ladakh region and north of the Great Himalayan zone</strong>.</li>
+            <li>The Zanskar–Great Himalaya transition is important in understanding the geography of Uttarakhand and the western/central Himalayan structure.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Nanga Parbat — 8,126 m</span>
+          <span class="mtn-badge mtn-badge--peak">Western Himalaya</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li><strong>Elevation:</strong> 8,126 m.</li>
+            <li>One of the world's great high Himalayan peaks.</li>
+            <li>Located in the western Himalayan region on the Pakistan-administered side.</li>
+            <li>NCERT map practice includes Nanga Parbat among the major peaks students should recognize.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">High-value Himalayan passes</span>
+          <span class="mtn-badge mtn-badge--pass">Map Practice</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li><strong>Zoji La:</strong> important route between Kashmir and Ladakh.</li>
+            <li><strong>Rohtang Pass:</strong> important Himachal route connecting Kullu with the Lahaul region.</li>
+            <li><strong>Shipki La:</strong> Himachal Pradesh; important India–Tibet route in the Satluj region.</li>
+            <li><strong>Nathu La:</strong> Sikkim; major India–Tibet route.</li>
+            <li><strong>Jelep La:</strong> historic route in the Sikkim–Tibet region.</li>
+            <li><strong>Lipulekh Pass:</strong> Uttarakhand; important high-altitude route toward Tibet.</li>
+            <li><strong>Karakoram Pass:</strong> important historical route in the Karakoram region.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- SECTION 4 -->
+    <!-- ========================================================= -->
+
+    <section class="mtn-section">
+      <h2>4 · The peaks you must be able to place without hesitation</h2>
+      <p class="rev-subtitle mtn-section-note">
+        Memorize the mountain + height + location + special distinction together.
+      </p>
+
+      <div class="mtn-tools">
+        <button class="mtn-btn" type="button" data-mtn-all="open">Reveal all</button>
+        <button class="mtn-btn" type="button" data-mtn-all="close">Hide all</button>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Mount Everest — 8,848.86 m</span>
+          <span class="mtn-badge mtn-badge--peak">World Rank 1</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li><strong>World's highest mountain.</strong></li>
+            <li>Located on the <strong>Nepal–China frontier</strong>.</li>
+            <li>It is part of the Himalayan mountain system but is <strong>not in India</strong>.</li>
+            <li>For Indian geography, it is useful as the reference against which K2 and Kangchenjunga are often compared.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Kangchenjunga / Khangchendzonga — 8,586 m</span>
+          <span class="mtn-badge mtn-badge--peak">India–Nepal Border</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li><strong>Elevation:</strong> 8,586 m.</li>
+            <li><strong>World rank:</strong> Third-highest mountain.</li>
+            <li><strong>Region:</strong> Eastern Himalaya.</li>
+            <li><strong>Indian association:</strong> Sikkim.</li>
+            <li>It lies on the <strong>India–Nepal border</strong>.</li>
+            <li>Extremely important in questions involving Sikkim, Himalayan peaks and mountain mapping.</li>
+          </ul>
+          <div class="mtn-keyline">
+            <strong>Exam lock:</strong> <code>Sikkim → Khangchendzonga → 8,586 m → 3rd highest globally</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Nanda Devi — 7,816 m</span>
+          <span class="mtn-badge mtn-badge--peak">Uttarakhand</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li><strong>Elevation:</strong> 7,816 m.</li>
+            <li><strong>State:</strong> Uttarakhand.</li>
+            <li>Highest peak of Uttarakhand.</li>
+            <li>Commonly described in Indian geography as the <strong>highest mountain entirely within India</strong>.</li>
+            <li>Associated with the <strong>Nanda Devi National Park</strong> and the larger UNESCO World Heritage property involving Nanda Devi and Valley of Flowers.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Kamet — about 7,756 m</span>
+          <span class="mtn-badge mtn-badge--peak">Uttarakhand</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li>One of the highest peaks of Uttarakhand.</li>
+            <li>Located in the Garhwal Himalaya region.</li>
+            <li>Useful as a secondary peak after Nanda Devi for Uttarakhand map practice.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Anamudi — 2,695 m</span>
+          <span class="mtn-badge mtn-badge--ghats">Western Ghats</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li><strong>State:</strong> Kerala.</li>
+            <li><strong>Mountain system:</strong> Western Ghats.</li>
+            <li><strong>Height:</strong> 2,695 m.</li>
+            <li><strong>Highest peak of:</strong> Western Ghats, South India and Peninsular India.</li>
+            <li>Located in the <strong>Eravikulam National Park</strong> landscape.</li>
+            <li>Associated with high-altitude shola-grassland ecosystems and the <strong>Nilgiri tahr</strong>.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Doddabetta — 2,637 m</span>
+          <span class="mtn-badge mtn-badge--ghats">Nilgiri Hills</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li><strong>Height:</strong> 2,637 m.</li>
+            <li><strong>Location:</strong> Nilgiri Hills, Tamil Nadu.</li>
+            <li><strong>Special distinction:</strong> Highest peak of the Nilgiri Hills.</li>
+            <li>Do not confuse it with Anamudi, which is higher and is the highest peak of the Western Ghats and Peninsular India.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Guru Shikhar — 1,722 m</span>
+          <span class="mtn-badge mtn-badge--peninsular">Aravalli</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li><strong>Height:</strong> 1,722 m.</li>
+            <li><strong>Location:</strong> Mount Abu, Rajasthan.</li>
+            <li><strong>Special distinction:</strong> Highest point of the Aravalli Range.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Mahendragiri — 1,501 m</span>
+          <span class="mtn-badge mtn-badge--peninsular">Eastern Ghats</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li><strong>Height:</strong> 1,501 m.</li>
+            <li><strong>Location:</strong> Odisha.</li>
+            <li><strong>Standard NCERT distinction:</strong> Highest peak of the Eastern Ghats.</li>
+            <li>Useful in direct matching questions involving range → state → highest peak.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mtn-table-wrap">
+        <table class="mtn-table">
+          <thead>
+            <tr>
+              <th>Question wording</th>
+              <th>Answer to lock</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Highest mountain in the world</td>
+              <td><strong>Mount Everest — 8,848.86 m</strong></td>
+            </tr>
+            <tr>
+              <td>Second-highest mountain in the world</td>
+              <td><strong>K2 — 8,611 m</strong></td>
+            </tr>
+            <tr>
+              <td>Third-highest mountain in the world</td>
+              <td><strong>Kangchenjunga — 8,586 m</strong></td>
+            </tr>
+            <tr>
+              <td>Highest mountain entirely within India</td>
+              <td><strong>Nanda Devi — 7,816 m</strong></td>
+            </tr>
+            <tr>
+              <td>Highest peak of Western Ghats</td>
+              <td><strong>Anamudi — 2,695 m</strong></td>
+            </tr>
+            <tr>
+              <td>Highest peak of Nilgiri Hills</td>
+              <td><strong>Doddabetta — 2,637 m</strong></td>
+            </tr>
+            <tr>
+              <td>Highest peak of Aravalli</td>
+              <td><strong>Guru Shikhar — 1,722 m</strong></td>
+            </tr>
+            <tr>
+              <td>Highest peak of Eastern Ghats</td>
+              <td><strong>Mahendragiri — 1,501 m</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- SECTION 5 -->
+    <!-- ========================================================= -->
+
+    <section class="mtn-section">
+      <h2>5 · Central India — Aravalli, Vindhya &amp; Satpura</h2>
+      <p class="rev-subtitle mtn-section-note">
+        The crucial relationship here is not just the range name — it is the <strong>range + river + direction</strong>.
+      </p>
+
+      <div class="mtn-tools">
+        <button class="mtn-btn" type="button" data-mtn-all="open">Reveal all</button>
+        <button class="mtn-btn" type="button" data-mtn-all="close">Hide all</button>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Aravalli Range</span>
+          <span class="mtn-badge mtn-badge--peninsular">Ancient Range</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li>One of India's most ancient surviving mountain systems.</li>
+            <li>Runs broadly in a <strong>NE–SW direction</strong>.</li>
+            <li>Passes through / influences the geography of <strong>Delhi–Haryana–Rajasthan–Gujarat</strong>.</li>
+            <li>Highly eroded compared with the Himalayas.</li>
+            <li>Important in Rajasthan's drainage, climate and desert-margin geography.</li>
+            <li><strong>Highest point:</strong> Guru Shikhar, 1,722 m, near Mount Abu.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Guru Shikhar — the Aravalli topper</span>
+          <span class="mtn-badge mtn-badge--peak">1,722 m</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <p><strong>Guru Shikhar</strong> is the highest point of the Aravalli Range.</p>
+          <ul>
+            <li>Located near <strong>Mount Abu, Rajasthan</strong>.</li>
+            <li>Do not confuse the <strong>Aravalli Range</strong> with the Vindhya or Satpura ranges of central India.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Vindhya Range</span>
+          <span class="mtn-badge mtn-badge--peninsular">Central India</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li>Located broadly north of the <strong>Narmada Valley</strong>.</li>
+            <li>The term <strong>Vindhyas</strong> represents a broad and geologically complex system rather than a single perfectly continuous ridge.</li>
+            <li>The <strong>Kaimur Range</strong> is an important eastern continuation associated with the Vindhyan system.</li>
+            <li>Important in the physiographic division of central India.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Satpura Range</span>
+          <span class="mtn-badge mtn-badge--peninsular">South of Narmada</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li>Located broadly <strong>south of the Narmada Valley</strong>.</li>
+            <li>Important associated ranges/hills include the <strong>Mahadeo Hills</strong> and the <strong>Maikal Range</strong>.</li>
+            <li>The <strong>Dhupgarh</strong> peak near Pachmarhi in the Mahadeo Hills is the highest point of the Satpura region.</li>
+            <li>Closely associated with the drainage of central India.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Narmada — the key between Vindhya and Satpura</span>
+          <span class="mtn-badge mtn-badge--concept">River–Relief Link</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <p>The most useful mental picture is:</p>
+          <div class="mtn-flow">
+            <div class="mtn-flow__item">Vindhya<br><span class="mtn-mini">North</span></div>
+            <div class="mtn-flow__item">Narmada Valley<br><span class="mtn-mini">West-flowing river</span></div>
+            <div class="mtn-flow__item">Satpura<br><span class="mtn-mini">South</span></div>
+          </div>
+          <ul>
+            <li><strong>Narmada:</strong> major west-flowing Peninsular river.</li>
+            <li><strong>Tapti/Tapi:</strong> another major west-flowing Peninsular river to the south.</li>
+            <li>The Narmada's course is strongly associated with a structural / rift-valley setting.</li>
+          </ul>
+          <div class="mtn-keyline">
+            <strong>Map lock:</strong> <code>Vindhya ↑ | Narmada → | Satpura ↓</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Kaimur &amp; Maikal — the eastern extensions worth knowing</span>
+          <span class="mtn-badge mtn-badge--map">Higher-Level Map</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li><strong>Kaimur Range:</strong> important eastern extension associated with the Vindhyan system.</li>
+            <li><strong>Maikal Range:</strong> important eastern component associated with the Satpura system.</li>
+            <li>Both help connect central Indian physiography with the upper drainage areas of major rivers.</li>
+            <li>These names are useful especially in BPSC/UPSC map matching and river-origin questions.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- SECTION 6 -->
+    <!-- ========================================================= -->
+
+    <section class="mtn-section">
+      <h2>6 · Western Ghats — India's great monsoon wall</h2>
+      <p class="rev-subtitle mtn-section-note">
+        Remember Western Ghats through <strong>continuity + height + monsoon + biodiversity + passes</strong>.
+      </p>
+
+      <div class="mtn-tools">
+        <button class="mtn-btn" type="button" data-mtn-all="open">Reveal all</button>
+        <button class="mtn-btn" type="button" data-mtn-all="close">Hide all</button>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Western Ghats / Sahyadri</span>
+          <span class="mtn-badge mtn-badge--ghats">Western Edge</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li>Run broadly parallel to India's <strong>western coast</strong>.</li>
+            <li>Associated with the states from the western/north-western part of the chain through <strong>Maharashtra, Goa, Karnataka and Kerala</strong>, continuing toward the Nilgiris and southern hills.</li>
+            <li>Generally <strong>higher and more continuous</strong> than the Eastern Ghats.</li>
+            <li>Average elevation is commonly given around <strong>900–1,600 m</strong>.</li>
+            <li>The Ghats form a major barrier to moisture-bearing southwest monsoon winds.</li>
+            <li>They are a globally significant centre of biodiversity and endemism.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Orographic rainfall — why the western slopes are wet</span>
+          <span class="mtn-badge mtn-badge--concept">Monsoon</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <p>The southwest monsoon carries moisture from the Arabian Sea toward the Indian landmass.</p>
+          <ul>
+            <li>The Western Ghats force moist air to <strong>rise</strong>.</li>
+            <li>Rising air cools, condensation increases and rainfall occurs.</li>
+            <li>The western / windward side therefore receives heavy rainfall in many sectors.</li>
+            <li>The eastern / leeward side can fall in a <strong>rain-shadow zone</strong>.</li>
+          </ul>
+          <div class="mtn-keyline">
+            <strong>Process:</strong> <code>Moist wind → uplift → cooling → condensation → rainfall → rain shadow</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Anamudi — highest point of the Western Ghats</span>
+          <span class="mtn-badge mtn-badge--peak">2,695 m</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li><strong>State:</strong> Kerala.</li>
+            <li><strong>Height:</strong> 2,695 m.</li>
+            <li><strong>Highest peak:</strong> Western Ghats and Peninsular / South India.</li>
+            <li>Located in the <strong>Eravikulam National Park</strong> landscape.</li>
+            <li>Ecologically important for high-altitude grasslands, shola forests and the Nilgiri tahr.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Nilgiri Hills</span>
+          <span class="mtn-badge mtn-badge--ghats">Blue Mountains</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li>Located near the broad junction of the <strong>Western and Eastern Ghats</strong>.</li>
+            <li>The name literally means the <strong>Blue Mountains</strong>.</li>
+            <li>Located mainly around the Tamil Nadu–Kerala–Karnataka highland meeting zone.</li>
+            <li><strong>Doddabetta (2,637 m)</strong> is the highest peak of the Nilgiri Hills.</li>
+            <li>Important for montane ecosystems and southern Indian hill geography.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Palghat / Palakkad Gap</span>
+          <span class="mtn-badge mtn-badge--pass">Major Gap</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li>Important break in the otherwise broadly continuous Western Ghats.</li>
+            <li>Located between the highlands of Kerala and Tamil Nadu.</li>
+            <li>Historically and economically important as a route of movement and connectivity.</li>
+            <li>Climatically important because it allows some air movement through the Ghats rather than forcing a continuous barrier effect.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Bhor Ghat &amp; Thal Ghat</span>
+          <span class="mtn-badge mtn-badge--pass">Maharashtra Passes</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li><strong>Bhor Ghat:</strong> important route across the Western Ghats in Maharashtra; historically significant for Mumbai–Pune connectivity.</li>
+            <li><strong>Thal Ghat:</strong> important route through the northern Western Ghats; associated with the Mumbai–Nashik corridor.</li>
+            <li>Remember both as major transport corridors through the Western Ghats.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Western Ghats &amp; biodiversity</span>
+          <span class="mtn-badge mtn-badge--environment">Environment</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li>Recognized as a major global biodiversity hotspot.</li>
+            <li>High levels of <strong>endemism</strong> occur because of long-term ecological isolation and varied elevation.</li>
+            <li>Important ecosystems include tropical evergreen forests, montane forests, shola-grassland systems and high-rainfall landscapes.</li>
+            <li>Species commonly discussed in exams include <strong>lion-tailed macaque, Nilgiri tahr, Nilgiri langur, tiger and Asian elephant</strong>.</li>
+            <li>The Western Ghats were inscribed as a <strong>UNESCO World Heritage Site in 2012</strong>.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- SECTION 7 -->
+    <!-- ========================================================= -->
+
+    <section class="mtn-section">
+      <h2>7 · Eastern Ghats — lower, broken and river-dissected</h2>
+      <p class="rev-subtitle mtn-section-note">
+        The easiest contrast: <strong>Western = continuous and higher; Eastern = discontinuous and dissected</strong>.
+      </p>
+
+      <div class="mtn-tools">
+        <button class="mtn-btn" type="button" data-mtn-all="open">Reveal all</button>
+        <button class="mtn-btn" type="button" data-mtn-all="close">Hide all</button>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Eastern Ghats</span>
+          <span class="mtn-badge mtn-badge--ghats">Eastern Edge</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li>Lie along the eastern margin of the Peninsular Plateau.</li>
+            <li>Extend broadly from the <strong>Mahanadi Valley toward the Nilgiris</strong>.</li>
+            <li>Lower on average than the Western Ghats.</li>
+            <li>Markedly <strong>discontinuous and irregular</strong>.</li>
+            <li>Major east-flowing rivers such as the <strong>Mahanadi, Godavari, Krishna, Pennar and Cauvery</strong> cut through the Eastern Ghats.</li>
+            <li>These river gaps are a major reason the range is not as continuous as the Western Ghats.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Mahendragiri — highest peak of the Eastern Ghats</span>
+          <span class="mtn-badge mtn-badge--peak">1,501 m</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li><strong>Height:</strong> 1,501 m.</li>
+            <li><strong>State:</strong> Odisha.</li>
+            <li><strong>Standard exam distinction:</strong> Highest peak of the Eastern Ghats.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Nallamala, Velikonda, Palkonda, Javadi &amp; Shevaroy Hills</span>
+          <span class="mtn-badge mtn-badge--map">Associated Hills</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <p>These names are useful as associated hill groups of the Eastern Ghats region.</p>
+          <ul>
+            <li><strong>Nallamala Hills:</strong> important forested hill system of Andhra Pradesh.</li>
+            <li><strong>Velikonda Hills:</strong> eastern Andhra region.</li>
+            <li><strong>Palkonda Hills:</strong> Andhra Pradesh / southern Eastern Ghats region.</li>
+            <li><strong>Javadi Hills:</strong> Tamil Nadu.</li>
+            <li><strong>Shevaroy Hills:</strong> Tamil Nadu.</li>
+          </ul>
+          <p class="mtn-mini">
+            These should be treated as associated hill groups rather than forced into one rigid,
+            universally agreed sequence.
+          </p>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Why are the Eastern Ghats discontinuous?</span>
+          <span class="mtn-badge mtn-badge--concept">Geomorphology</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <p>The key reason for exam purposes is <strong>river incision and long-term erosion</strong>.</p>
+          <ul>
+            <li>Large rivers flowing eastward to the Bay of Bengal cut across the old uplands.</li>
+            <li>This produces a more broken landscape than the comparatively continuous Western Ghats.</li>
+            <li>Hence the classic comparison:
+              <code>Western Ghats = continuous</code> vs <code>Eastern Ghats = discontinuous</code>.
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mtn-table-wrap">
+        <table class="mtn-table">
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>Western Ghats</th>
+              <th>Eastern Ghats</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Position</td>
+              <td>Western edge of Deccan Plateau</td>
+              <td>Eastern edge of Peninsular Plateau</td>
+            </tr>
+            <tr>
+              <td>Continuity</td>
+              <td><strong>More continuous</strong></td>
+              <td><strong>Discontinuous</strong></td>
+            </tr>
+            <tr>
+              <td>General elevation</td>
+              <td>Higher</td>
+              <td>Lower</td>
+            </tr>
+            <tr>
+              <td>Major rivers cutting through</td>
+              <td>Fewer major cross-cutting rivers</td>
+              <td>Many major east-flowing rivers</td>
+            </tr>
+            <tr>
+              <td>Highest peak</td>
+              <td><strong>Anamudi — 2,695 m</strong></td>
+              <td><strong>Mahendragiri — 1,501 m</strong></td>
+            </tr>
+            <tr>
+              <td>Monsoon role</td>
+              <td>Strong barrier / orographic rainfall effect</td>
+              <td>Less effective as a continuous barrier</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- SECTION 8 -->
+    <!-- ========================================================= -->
+
+    <section class="mtn-section">
+      <h2>8 · The river–mountain–climate connections UPSC loves</h2>
+      <p class="rev-subtitle mtn-section-note">
+        These are the links that turn factual geography into analytical geography.
+      </p>
+
+      <div class="mtn-tools">
+        <button class="mtn-btn" type="button" data-mtn-all="open">Reveal all</button>
+        <button class="mtn-btn" type="button" data-mtn-all="close">Hide all</button>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Himalaya → glaciers → perennial rivers</span>
+          <span class="mtn-badge mtn-badge--concept">Hydrology</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li>High Himalayan areas store water as snow and ice.</li>
+            <li>Seasonal snowmelt and glacier melt contribute to river discharge.</li>
+            <li>Monsoon rainfall also adds large seasonal inputs.</li>
+            <li>This combination contributes to the perennial nature of the major Himalayan river systems.</li>
+          </ul>
+          <div class="mtn-keyline">
+            <strong>Major systems:</strong> <code>Indus + Ganga + Brahmaputra</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Himalaya as a climatic divide</span>
+          <span class="mtn-badge mtn-badge--concept">Climate</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li>The Himalayas obstruct the free movement of very cold continental air from the north.</li>
+            <li>They interact with moisture-bearing monsoon winds and influence rainfall distribution.</li>
+            <li>Thus the mountain chain is both a <strong>physical barrier</strong> and a major <strong>climatic control</strong>.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Western Ghats → monsoon uplift → rain shadow</span>
+          <span class="mtn-badge mtn-badge--ghats">Monsoon Geography</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li>Moist air from the Arabian Sea reaches the west coast.</li>
+            <li>Western Ghats force air upward.</li>
+            <li>Heavy rainfall occurs on many western slopes.</li>
+            <li>Areas east of the crest may lie in a <strong>rain-shadow region</strong>.</li>
+            <li>This helps explain strong rainfall contrasts over relatively short horizontal distances in peninsular India.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Mountain barriers → biodiversity</span>
+          <span class="mtn-badge mtn-badge--environment">Environment</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li>Altitude creates strong changes in temperature and moisture.</li>
+            <li>Different elevation bands therefore support different vegetation and animal communities.</li>
+            <li>Isolation of mountain habitats can increase endemism.</li>
+            <li>This is particularly visible in the <strong>Western Ghats</strong> and the high mountains of the <strong>Himalaya</strong>.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- SECTION 9 -->
+    <!-- ========================================================= -->
+
+    <section class="mtn-section">
+      <h2>9 · Map traps — the distinctions that save marks</h2>
+      <p class="rev-subtitle mtn-section-note">
+        Read the question wording carefully. Many wrong answers are technically plausible but belong to the wrong category.
+      </p>
+
+      <div class="mtn-tools">
+        <button class="mtn-btn" type="button" data-mtn-all="open">Reveal all</button>
+        <button class="mtn-btn" type="button" data-mtn-all="close">Hide all</button>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Karakoram is not one of the three main Himalayan longitudinal ranges</span>
+          <span class="mtn-badge mtn-badge--trap">Common Trap</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <p>The three principal parallel ranges of the Himalaya proper are:</p>
+          <p><strong>Himadri → Himachal → Shiwalik</strong></p>
+          <p><strong>Karakoram</strong> belongs to the broader <strong>Trans-Himalayan</strong> system.</p>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Anamudi ≠ Doddabetta</span>
+          <span class="mtn-badge mtn-badge--trap">Peak Trap</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li><strong>Anamudi — 2,695 m:</strong> highest peak of Western Ghats / Peninsular India.</li>
+            <li><strong>Doddabetta — 2,637 m:</strong> highest peak of Nilgiri Hills.</li>
+          </ul>
+          <div class="mtn-keyline">
+            <code>Anamudi = Ghats topper</code> &nbsp;|&nbsp; <code>Doddabetta = Nilgiri topper</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">K2 ≠ highest mountain entirely within India</span>
+          <span class="mtn-badge mtn-badge--trap">Wording Trap</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <p>
+            K2 is the world's second-highest mountain and lies in the Karakoram on the
+            Pakistan-administered side of the region.
+          </p>
+          <p>
+            For standard Indian geography wording, <strong>Nanda Devi</strong> is the highest mountain
+            entirely within India.
+          </p>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Western Ghats ≠ Eastern Ghats in continuity</span>
+          <span class="mtn-badge mtn-badge--trap">Range Trap</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <ul>
+            <li><strong>Western Ghats:</strong> comparatively continuous and higher.</li>
+            <li><strong>Eastern Ghats:</strong> discontinuous and heavily dissected by major rivers.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mtn-card">
+        <div class="mtn-card__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-card__title">Vindhya is north of Narmada; Satpura is south</span>
+          <span class="mtn-badge mtn-badge--map">Map Lock</span>
+          <span class="mtn-card__arrow">⌄</span>
+        </div>
+        <div class="mtn-card__body" hidden>
+          <div class="mtn-flow">
+            <div class="mtn-flow__item">VINDHYA<br><span class="mtn-mini">North</span></div>
+            <div class="mtn-flow__item">NARMADA<br><span class="mtn-mini">Between them</span></div>
+            <div class="mtn-flow__item">SATPURA<br><span class="mtn-mini">South</span></div>
+          </div>
+          <p>This simple arrangement is extremely useful in central Indian map questions.</p>
+        </div>
+      </div>
+
+      <div class="mtn-table-wrap">
+        <table class="mtn-table">
+          <thead>
+            <tr>
+              <th>Confusing pair</th>
+              <th>Remember this</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Himadri vs Himachal</td>
+              <td>Himadri is the highest/innermost; Himachal is the Lesser/Middle Himalaya.</td>
+            </tr>
+            <tr>
+              <td>Himachal vs Shiwalik</td>
+              <td>Shiwalik is the outermost southern belt.</td>
+            </tr>
+            <tr>
+              <td>Karakoram vs Himalaya proper</td>
+              <td>Karakoram belongs to the Trans-Himalayan system.</td>
+            </tr>
+            <tr>
+              <td>Nanda Devi vs Kangchenjunga</td>
+              <td>Nanda Devi is entirely within India; Kangchenjunga is on the India–Nepal border.</td>
+            </tr>
+            <tr>
+              <td>Anamudi vs Doddabetta</td>
+              <td>Anamudi = Western Ghats; Doddabetta = Nilgiris.</td>
+            </tr>
+            <tr>
+              <td>Western vs Eastern Ghats</td>
+              <td>Western = higher/more continuous; Eastern = lower/discontinuous.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- SECTION 10 — MEMORY -->
+    <!-- ========================================================= -->
+
+    <section class="mtn-section">
+      <h2>10 · Memory tricks that save you</h2>
+
+      <div class="rev-note">
+        <strong>Trick 1 — Three Himalayas:</strong>
+        <span class="mtn-mnem">H-H-S = High → Middle → Small</span><br>
+        Himadri is highest, Himachal is middle, Shiwalik is outer and lowest.
+      </div>
+
+      <div class="rev-note">
+        <strong>Trick 2 — Central India sandwich:</strong>
+        <span class="mtn-mnem">VINDHYA ↑ | NARMADA → | SATPURA ↓</span><br>
+        Place Narmada between Vindhya and Satpura whenever a central-India map appears.
+      </div>
+
+      <div class="rev-note">
+        <strong>Trick 3 — Four famous non-Himalayan peak keys:</strong>
+        <span class="mtn-mnem">A-D-M-G</span><br>
+        <strong>A</strong>namudi = Western Ghats, <strong>D</strong>oddabetta = Nilgiri,
+        <strong>M</strong>ahendragiri = Eastern Ghats, <strong>G</strong>uru Shikhar = Aravalli.
+      </div>
+
+      <div class="rev-note">
+        <strong>Trick 4 — West vs East Ghats:</strong>
+        <span class="mtn-mnem">WEST = WALL</span><br>
+        Western Ghats behave more like a continuous high wall; Eastern Ghats are broken by major rivers.
+      </div>
+
+      <div class="rev-note">
+        <strong>Trick 5 — The big peak ladder:</strong>
+        <span class="mtn-mnem">Everest 1 → K2 2 → Kangchenjunga 3</span><br>
+        Then switch from world ranking to India-specific geography: <strong>Nanda Devi</strong> is the key “entirely within India” answer.
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- SECTION 11 — RAPID FIRE -->
+    <!-- ========================================================= -->
+
+    <section class="mtn-section">
+      <h2>11 · Rapid Fire</h2>
+      <p class="rev-subtitle mtn-section-note">
+        Hide everything first. Answer mentally. Then tap only the questions you actually need to check.
+      </p>
+
+      <div class="mtn-tools">
+        <button class="mtn-btn" type="button" data-mtn-all="open">Reveal all</button>
+        <button class="mtn-btn" type="button" data-mtn-all="close">Hide all</button>
+      </div>
+
+      <div class="mtn-q">
+        <div class="mtn-q__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-q__num">1</span>
+          <span class="mtn-q__title">What are the three main longitudinal ranges of the Himalayas?</span>
+          <span class="mtn-q__arrow">⌄</span>
+        </div>
+        <div class="mtn-q__body" hidden>
+          <div class="mtn-answer"><strong>Himadri, Himachal and Shiwalik.</strong></div>
+        </div>
+      </div>
+
+      <div class="mtn-q">
+        <div class="mtn-q__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-q__num">2</span>
+          <span class="mtn-q__title">Which is the highest and most continuous of the three main Himalayan ranges?</span>
+          <span class="mtn-q__arrow">⌄</span>
+        </div>
+        <div class="mtn-q__body" hidden>
+          <div class="mtn-answer"><strong>Himadri / Greater Himalaya.</strong></div>
+        </div>
+      </div>
+
+      <div class="mtn-q">
+        <div class="mtn-q__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-q__num">3</span>
+          <span class="mtn-q__title">Between which two Himalayan belts are the Duns found?</span>
+          <span class="mtn-q__arrow">⌄</span>
+        </div>
+        <div class="mtn-q__body" hidden>
+          <div class="mtn-answer">Between the <strong>Lesser Himalaya (Himachal) and Shiwalik</strong>.</div>
+        </div>
+      </div>
+
+      <div class="mtn-q">
+        <div class="mtn-q__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-q__num">4</span>
+          <span class="mtn-q__title">Which Trans-Himalayan range contains K2?</span>
+          <span class="mtn-q__arrow">⌄</span>
+        </div>
+        <div class="mtn-q__body" hidden>
+          <div class="mtn-answer"><strong>Karakoram Range.</strong></div>
+        </div>
+      </div>
+
+      <div class="mtn-q">
+        <div class="mtn-q__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-q__num">5</span>
+          <span class="mtn-q__title">What is the height of K2?</span>
+          <span class="mtn-q__arrow">⌄</span>
+        </div>
+        <div class="mtn-q__body" hidden>
+          <div class="mtn-answer"><strong>8,611 m.</strong></div>
+        </div>
+      </div>
+
+      <div class="mtn-q">
+        <div class="mtn-q__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-q__num">6</span>
+          <span class="mtn-q__title">Which is the third-highest mountain in the world?</span>
+          <span class="mtn-q__arrow">⌄</span>
+        </div>
+        <div class="mtn-q__body" hidden>
+          <div class="mtn-answer"><strong>Kangchenjunga — 8,586 m.</strong></div>
+        </div>
+      </div>
+
+      <div class="mtn-q">
+        <div class="mtn-q__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-q__num">7</span>
+          <span class="mtn-q__title">Which is the highest mountain entirely within India?</span>
+          <span class="mtn-q__arrow">⌄</span>
+        </div>
+        <div class="mtn-q__body" hidden>
+          <div class="mtn-answer"><strong>Nanda Devi — 7,816 m.</strong></div>
+        </div>
+      </div>
+
+      <div class="mtn-q">
+        <div class="mtn-q__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-q__num">8</span>
+          <span class="mtn-q__title">Which mountain is strongly associated with Sikkim?</span>
+          <span class="mtn-q__arrow">⌄</span>
+        </div>
+        <div class="mtn-q__body" hidden>
+          <div class="mtn-answer"><strong>Kangchenjunga / Khangchendzonga.</strong></div>
+        </div>
+      </div>
+
+      <div class="mtn-q">
+        <div class="mtn-q__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-q__num">9</span>
+          <span class="mtn-q__title">Which peak is the highest in the Western Ghats?</span>
+          <span class="mtn-q__arrow">⌄</span>
+        </div>
+        <div class="mtn-q__body" hidden>
+          <div class="mtn-answer"><strong>Anamudi — 2,695 m.</strong></div>
+        </div>
+      </div>
+
+      <div class="mtn-q">
+        <div class="mtn-q__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-q__num">10</span>
+          <span class="mtn-q__title">Which is the highest peak of the Nilgiri Hills?</span>
+          <span class="mtn-q__arrow">⌄</span>
+        </div>
+        <div class="mtn-q__body" hidden>
+          <div class="mtn-answer"><strong>Doddabetta — 2,637 m.</strong></div>
+        </div>
+      </div>
+
+      <div class="mtn-q">
+        <div class="mtn-q__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-q__num">11</span>
+          <span class="mtn-q__title">Which is the highest peak of the Eastern Ghats in standard NCERT-based preparation?</span>
+          <span class="mtn-q__arrow">⌄</span>
+        </div>
+        <div class="mtn-q__body" hidden>
+          <div class="mtn-answer"><strong>Mahendragiri — 1,501 m.</strong></div>
+        </div>
+      </div>
+
+      <div class="mtn-q">
+        <div class="mtn-q__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-q__num">12</span>
+          <span class="mtn-q__title">Which is the highest peak of the Aravalli Range?</span>
+          <span class="mtn-q__arrow">⌄</span>
+        </div>
+        <div class="mtn-q__body" hidden>
+          <div class="mtn-answer"><strong>Guru Shikhar — 1,722 m.</strong></div>
+        </div>
+      </div>
+
+      <div class="mtn-q">
+        <div class="mtn-q__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-q__num">13</span>
+          <span class="mtn-q__title">What lies broadly between Vindhya and Satpura?</span>
+          <span class="mtn-q__arrow">⌄</span>
+        </div>
+        <div class="mtn-q__body" hidden>
+          <div class="mtn-answer"><strong>The Narmada Valley / Narmada River system.</strong></div>
+        </div>
+      </div>
+
+      <div class="mtn-q">
+        <div class="mtn-q__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-q__num">14</span>
+          <span class="mtn-q__title">Which two major Peninsular rivers are famous for flowing westward?</span>
+          <span class="mtn-q__arrow">⌄</span>
+        </div>
+        <div class="mtn-q__body" hidden>
+          <div class="mtn-answer"><strong>Narmada and Tapi/Tapti.</strong></div>
+        </div>
+      </div>
+
+      <div class="mtn-q">
+        <div class="mtn-q__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-q__num">15</span>
+          <span class="mtn-q__title">Which Ghats are generally more continuous and higher?</span>
+          <span class="mtn-q__arrow">⌄</span>
+        </div>
+        <div class="mtn-q__body" hidden>
+          <div class="mtn-answer"><strong>Western Ghats.</strong></div>
+        </div>
+      </div>
+
+      <div class="mtn-q">
+        <div class="mtn-q__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-q__num">16</span>
+          <span class="mtn-q__title">Which Ghats are heavily dissected by major east-flowing rivers?</span>
+          <span class="mtn-q__arrow">⌄</span>
+        </div>
+        <div class="mtn-q__body" hidden>
+          <div class="mtn-answer"><strong>Eastern Ghats.</strong></div>
+        </div>
+      </div>
+
+      <div class="mtn-q">
+        <div class="mtn-q__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-q__num">17</span>
+          <span class="mtn-q__title">Which famous gap significantly interrupts the Western Ghats between Kerala and Tamil Nadu?</span>
+          <span class="mtn-q__arrow">⌄</span>
+        </div>
+        <div class="mtn-q__body" hidden>
+          <div class="mtn-answer"><strong>Palghat / Palakkad Gap.</strong></div>
+        </div>
+      </div>
+
+      <div class="mtn-q">
+        <div class="mtn-q__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-q__num">18</span>
+          <span class="mtn-q__title">Why does the western side of the Western Ghats receive heavy rainfall?</span>
+          <span class="mtn-q__arrow">⌄</span>
+        </div>
+        <div class="mtn-q__body" hidden>
+          <div class="mtn-answer">
+            Moist southwest monsoon air is forced upward by the Ghats, producing <strong>orographic rainfall</strong>.
+          </div>
+        </div>
+      </div>
+
+      <div class="mtn-q">
+        <div class="mtn-q__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-q__num">19</span>
+          <span class="mtn-q__title">Which range is associated with the cold desert of Ladakh?</span>
+          <span class="mtn-q__arrow">⌄</span>
+        </div>
+        <div class="mtn-q__body" hidden>
+          <div class="mtn-answer">The <strong>Ladakh Range / Trans-Himalayan region</strong>.</div>
+        </div>
+      </div>
+
+      <div class="mtn-q">
+        <div class="mtn-q__head" role="button" tabindex="0" aria-expanded="false">
+          <span class="mtn-q__num">20</span>
+          <span class="mtn-q__title">What is the basic north-to-south order of the three main Himalayas?</span>
+          <span class="mtn-q__arrow">⌄</span>
+        </div>
+        <div class="mtn-q__body" hidden>
+          <div class="mtn-answer"><strong>Himadri → Himachal → Shiwalik.</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <p class="rev-subtitle">
+      Final revision rule: <strong>place the range first, then attach the peak, river, pass, climate effect and ecosystem.</strong>
+      That is far harder to forget than a naked list of mountain names.
+    </p>
+
+  </main>
+
+  <script>
+    (function () {
+      function getCards(root) {
+        return Array.from(root.querySelectorAll('.mtn-card, .mtn-q'));
+      }
+
+      function setOpen(card, open) {
+        var body = card.querySelector('.mtn-card__body, .mtn-q__body');
+        var head = card.querySelector('.mtn-card__head, .mtn-q__head');
+
+        if (!body || !head) return;
+
+        card.classList.toggle('mtn-open', open);
+        body.hidden = !open;
+        head.setAttribute('aria-expanded', String(open));
+      }
+
+      document.querySelectorAll('.mtn-card, .mtn-q').forEach(function (card) {
+        var head = card.querySelector('.mtn-card__head, .mtn-q__head');
+
+        setOpen(card, false);
+
+        if (!head) return;
+
+        head.addEventListener('click', function () {
+          setOpen(card, !card.classList.contains('mtn-open'));
+        });
+
+        head.addEventListener('keydown', function (event) {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            setOpen(card, !card.classList.contains('mtn-open'));
+          }
+        });
+      });
+
+      document.querySelectorAll('[data-mtn-all]').forEach(function (button) {
+        button.addEventListener('click', function () {
+          var section = button.closest('.mtn-section');
+          if (!section) return;
+
+          var open = button.getAttribute('data-mtn-all') === 'open';
+
+          getCards(section).forEach(function (card) {
+            setOpen(card, open);
+          });
+        });
+      });
+    })();
+  </script>
+
+  <!-- Report true content height to the parent app.
+       Measures <main class="rev-page"> directly, NOT document.body. -->
+  <script>
+    (function () {
+      function sendHeight() {
+        var el = document.querySelector('.rev-page') || document.body;
+        var h = Math.ceil(el.getBoundingClientRect().height);
+        if (!h) h = el.scrollHeight || 0;
+        if (!h) return;
+        try {
+          window.parent.postMessage({ type: 'revision-height', height: h }, '*');
+        } catch (e) {}
+      }
+      window.addEventListener('load', sendHeight);
+      window.addEventListener('resize', sendHeight);
+      setTimeout(sendHeight, 0);
+      setTimeout(sendHeight, 50);
+      setTimeout(sendHeight, 300);
+      setTimeout(sendHeight, 1000);
+      if (window.ResizeObserver) {
+        new ResizeObserver(sendHeight).observe(document.body);
+      }
+    })();
+  </script>
+</body>
+</html>

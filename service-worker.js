@@ -44,6 +44,8 @@ const PRECACHE_URLS = [
   './revision/20_modern_india_1857_1947_overview.html',
   './revision/21_viceroys.html',
   './revision/22_president_of_india.html',
+  './revision/23_mountains_peaks.html',
+  './revision/24_bihar_rivers_system.html',
 
   './images/10_01_india_minerals.jpg',
   './images/11_01_indian-rivers.jpg',
@@ -62,8 +64,10 @@ const PRECACHE_URLS = [
   './images/15_02_physical-geography.jpg',
   './images/15_03_physical-geography.jpg',
   './images/15_04_physical-geography.jpg',
+  './images/23_01_mountains-peaks.jpg',
 
   './manifest.webmanifest',
+  './icons/favicon-96x96.png',
   './icons/icon-192.png',
   './icons/icon-512.png'
 ];

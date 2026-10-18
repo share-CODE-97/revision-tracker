@@ -1,6 +1,6 @@
 {
-  "name": "Revision Tracker",
-  "short_name": "Revisions",
+  "name": "BPSC GS Revision Tracker",
+  "short_name": "BPSC GS",
   "description": "Spaced repetition & revision workflow engine.",
   "start_url": "./index.html",
   "scope": "./",
