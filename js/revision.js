@@ -43,17 +43,19 @@ window.addEventListener('message', function (event) {
   const msg = event.data;
   if (!msg || msg.type !== 'revision-height') return;
 
+  // Same-origin check whenever the protocol has a real origin.
+  // (file:// has origin "null", so we skip the check there — a strict
+  // event.source identity check can also fail for cross-origin frames
+  // in Chrome on file://, as noted previously.)
+  if (location.protocol !== 'file:' && event.origin !== location.origin) return;
+
   const iframe = document.getElementById('subjectIframe');
   if (!iframe) return;
-
-  // NOTE: We deliberately do NOT check event.source on file:// — Chrome
-  // returns a fresh window proxy per access for cross-origin frames, so a
-  // strict identity check can fail even when the message IS from our frame.
 
   clearTimeout(iframe._fallbackTimer);
 
   const h = Number(msg.height) || 0;
-  if (h > 0) iframe.style.height = Math.max(h, 320) + 'px';
+  if (h > 0) iframe.style.height = Math.min(Math.max(h, 320), 20000) + 'px';
 });
 
 
@@ -184,34 +186,11 @@ function updateScheduleOptionUI() {
 function handleComplete() {
   if (!currentSubjectId) return;
 
-  if (!confirm('Confirm completing this revision session?')) return;
-
-  const now  = new Date();
-  const data = appData.revisions[currentSubjectId];
-  data.history = data.history || [];
-
-  // --- Snapshot for Undo ---
-  appData.lastAction = {
-    revisionId: currentSubjectId,
-    previousCompletedCount: data.completedCount,
-    previousHistory: JSON.parse(JSON.stringify(data.history)),
-    previousNextDueAt: data.nextDueAt,
-    action: 'complete'
-  };
-
-  const previousNextDueAt = data.nextDueAt;
-  data.completedCount = (data.completedCount || 0) + 1;
-
-  // --- Compute the new due timestamp ---
-  let newNextDueAt = null;
-
-  if (selectedScheduleOption === '24h') {
-    newNextDueAt = new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString();
-  } else if (selectedScheduleOption === '48h') {
-    newNextDueAt = new Date(now.getTime() + 48 * 60 * 60 * 1000).toISOString();
-  } else if (selectedScheduleOption === 'custom') {
+  /* ── 1. VALIDATE FIRST — do NOT touch appData yet ─────────────────── */
+  let scheduledAt = null;
+  if (selectedScheduleOption === 'custom') {
     const picker = document.getElementById('customDateTimePicker');
-    if (!picker.value) {
+    if (!picker || !picker.value) {
       alert('Please pick a valid future date & time — or choose +24h / +48h.');
       return;
     }
@@ -220,21 +199,58 @@ function handleComplete() {
       alert('That custom timestamp could not be parsed. Please pick another.');
       return;
     }
-    if (chosen.getTime() <= now.getTime()) {
+    if (chosen.getTime() <= Date.now()) {
       alert('The custom time must be strictly in the future.');
       return;
     }
-    newNextDueAt = chosen.toISOString();
+    scheduledAt = chosen;
   }
-  // If nothing was selected → newNextDueAt stays null → subject moves to
-  // "NO MORE REVISION NEEDED".
 
-  data.nextDueAt = newNextDueAt;
+  /* Guard: nothing selected = "no more revision" — confirm explicitly. */
+  if (!selectedScheduleOption) {
+    if (!confirm('No next revision scheduled — this subject will move to "No More Revision Needed". Complete anyway?')) {
+      return;
+    }
+  }
 
-  // --- Record history ---
+  if (!confirm('Confirm completing this revision session?')) return;
+
+  /* ── 2. DEFENSIVE LOOKUP — never assume the record exists ─────────── */
+  const data = appData.revisions[currentSubjectId];
+  if (!data) {
+    alert('Subject data missing — reload the app and try again.');
+    return;
+  }
+  data.history  = data.history  || [];
+  data.comments = data.comments || [];
+
+  /* ── 3. SNAPSHOT FOR UNDO — taken AFTER validation, so Undo is clean ─ */
+  const now = new Date();
+  appData.lastAction = {
+    revisionId: currentSubjectId,
+    previousCompletedCount: data.completedCount || 0,
+    previousHistory: JSON.parse(JSON.stringify(data.history)),
+    previousNextDueAt: data.nextDueAt,
+    action: 'complete'
+  };
+  const previousNextDueAt = data.nextDueAt;
+
+  /* ── 4. MUTATE ─────────────────────────────────────────────────────── */
+  data.completedCount = (data.completedCount || 0) + 1;
+
+  if (selectedScheduleOption === '24h') {
+    data.nextDueAt = new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString();
+  } else if (selectedScheduleOption === '48h') {
+    data.nextDueAt = new Date(now.getTime() + 48 * 60 * 60 * 1000).toISOString();
+  } else if (selectedScheduleOption === 'custom' && scheduledAt) {
+    data.nextDueAt = scheduledAt.toISOString();
+  } else {
+    data.nextDueAt = null;
+  }
+
   data.history.unshift({
     completedAt: now.toISOString(),
-    scheduledFor: previousNextDueAt,   // what it WAS scheduled for
+    scheduledFor: previousNextDueAt,
     action: 'complete'
   });
 
@@ -274,8 +290,10 @@ function handleUndo() {
  * ==========================================================================*/
 
 function openSubjectMenuModal(subjectId) {
+  const rev = REVISIONS.find(r => r.id === subjectId);
+  if (!rev) return;   // stale or removed subject id — nothing to open
+
   activeModalSubjectId = subjectId;
-  const rev  = REVISIONS.find(r => r.id === subjectId);
   const data = appData.revisions[subjectId] || { completedCount: 0, history: [], comments: [] };
 
   document.getElementById('modalSubjectTitle').textContent = rev.title;

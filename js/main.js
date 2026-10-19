@@ -40,7 +40,7 @@ function navigateToView(viewName, subjectId = null) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-/** Push a subject id to the front of the recent-views MRU list (max 5). */
+/** Push a subject id to the front of the recent-views MRU list (max 3). */
 function trackRecentView(subjectId) {
   if (!subjectId) return;
   appData.recentViews = appData.recentViews.filter(id => id !== subjectId);
@@ -226,7 +226,8 @@ function renderSectionList(items, sectionType) {
     <div class="flex items-center justify-between p-3 rounded-xl bg-slate-950/60 border border-slate-800/80 hover:border-slate-700/80 transition">
       <div class="flex items-center gap-3">
         <span class="font-bold text-xs sm:text-sm text-slate-200">${escapeHtml(rev.title)}</span>
-        <span class="text-[11px] px-2.5 py-0.5 rounded-full font-semibold ${getStatusBadgeClass(data.nextDueAt)}">
+        <span data-countdown-until="${data.nextDueAt || ''}"
+              class="text-[11px] px-2.5 py-0.5 rounded-full font-semibold ${getStatusBadgeClass(data.nextDueAt)}">
           ${formatStatusText(data.nextDueAt)}
         </span>
       </div>
@@ -288,7 +289,8 @@ function renderAllRevisionsSection() {
       <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 rounded-xl bg-slate-950/60 border border-slate-800/80 hover:border-slate-700/80 transition gap-3">
         <div class="flex items-center justify-between sm:justify-start gap-3">
           <span class="font-bold text-sm text-slate-100">${escapeHtml(rev.title)}</span>
-          <span class="text-xs px-2.5 py-0.5 rounded-full font-semibold ${getSubjectCurrentStateClass(data)}">
+          <span ${data.nextDueAt ? `data-countdown-until="${data.nextDueAt}"` : ''}
+                class="text-xs px-2.5 py-0.5 rounded-full font-semibold ${getSubjectCurrentStateClass(data)}">
             ${getSubjectCurrentStateText(data)}
           </span>
         </div>
@@ -400,6 +402,11 @@ function toggleTheme() {
   document.documentElement.setAttribute('data-theme', next);
   localStorage.setItem(THEME_KEY, next);
   updateThemeButtonLabel(next);
+
+  // The revision page inside the iframe reads its theme from its #hash.
+  // Re-pointing the src (same URL, new hash) reloads only the frame.
+  const f = document.getElementById('subjectIframe');
+  if (f && f.src) f.src = f.src.replace(/#theme=[^#]*/, '#theme=' + next);
 }
 
 function updateThemeButtonLabel(theme) {
@@ -413,6 +420,36 @@ function updateThemeButtonLabel(theme) {
 /* ==========================================================================
  * 8. UI HELPERS — collapsible sections, modals, clock
  * ==========================================================================*/
+
+/**
+ * Cheap 1-second tick — rewrites ONLY the countdown text (and the overdue ↔
+ * upcoming colour) of badges marked with [data-countdown-until]. No DOM
+ * rebuild, no calculateStreak(), no innerHTML churn.
+ *
+ * Full renderDashboard() still runs every 30 s to catch section-membership
+ * changes the ticker can't see (future → within-6h → overdue → today).
+ */
+function tickCountdowns() {
+  document.querySelectorAll('[data-countdown-until]').forEach(el => {
+    const until = el.getAttribute('data-countdown-until');
+    if (!until) return;
+
+    el.textContent = formatStatusText(until);
+
+    // Swap overdue ↔ upcoming badge colour without re-rendering the row.
+    const shouldBeOverdue = new Date(until).getTime() < Date.now();
+    const isOverdue       = el.classList.contains('text-rose-400');
+
+    if (shouldBeOverdue && !isOverdue) {
+      el.classList.remove('bg-indigo-500/10', 'text-indigo-400', 'border-indigo-500/20');
+      el.classList.add   ('bg-rose-500/10',   'text-rose-400',   'border-rose-500/20');
+    } else if (!shouldBeOverdue && isOverdue) {
+      el.classList.remove('bg-rose-500/10',   'text-rose-400',   'border-rose-500/20');
+      el.classList.add   ('bg-indigo-500/10', 'text-indigo-400', 'border-indigo-500/20');
+    }
+  });
+}
+
 
 /** Toggle a collapsible section and rotate its chevron icon(s). */
 function toggleSection(sectionId) {
@@ -488,6 +525,17 @@ function setupQuickSearch() {
 function registerServiceWorker() {
   if (!('serviceWorker' in navigator)) return;
 
+  // Service workers require http(s) or localhost. Opening the app from
+  // disk (file://) is supported but gives no offline / install support,
+  // which is a browser rule, not an app limitation.
+  if (location.protocol === 'file:') {
+    console.info(
+      '[App] Running from file:// — offline support and PWA install are ' +
+      'disabled (browser policy). Serve over http://localhost to enable them.'
+    );
+    return;
+  }
+
   window.addEventListener('load', async () => {
     try {
       const reg = await navigator.serviceWorker.register('service-worker.js');
@@ -524,16 +572,32 @@ window.addEventListener('DOMContentLoaded', () => {
   setupQuickSearch();
   renderDashboard();
 
-  // Live tickers.
+  // Live clock — cheap, always runs.
   setInterval(updateLiveClock, 1000);
-  setInterval(renderDashboard, 1000);   // live countdowns
-
   updateLiveClock();
+
+  // 1-second tick — only rewrites countdown text. Skipped while the tab is
+  // backgrounded or while the subject page is open (dashboard hidden).
+  setInterval(() => {
+    if (document.hidden) return;
+    if (document.getElementById('dashboardView').classList.contains('hidden')) return;
+    tickCountdowns();
+  }, 1000);
+
+  // 30-second full rebuild — catches section-membership changes
+  // (future → within-6h → overdue → today) that the 1 s ticker can't see.
+  setInterval(() => {
+    if (document.hidden) return;
+    if (document.getElementById('dashboardView').classList.contains('hidden')) return;
+    renderDashboard();
+  }, 30000);
 
   // Refresh immediately when the tab regains focus (browsers throttle timers
   // on background tabs, so the countdowns can lag without this).
   document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) renderDashboard();
+    if (document.hidden) return;
+    if (document.getElementById('dashboardView').classList.contains('hidden')) return;
+    renderDashboard();
   });
 
   registerServiceWorker();

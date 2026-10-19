@@ -33,12 +33,12 @@
  *   Drag entries up/down to reorder.
  * ==========================================================================*/
 
-const REVISIONS = [
+self.REVISIONS = [
   { id: "01_squares-cubes", title: "SQUARES & CUBES (1–35)", page: "revision/01_squares-cubes.html" },
   { id: "02_table",   title: "TABLE ( 1 - 30 )", page: "revision/02_table.html"         },
   { id: "03_magadha-dynasties", title: "ANCIENT DYNASTIES (KING)",  page: "revision/03_magadha-dynasties.html"},
   { id: "04_medival-history", title: "MEDIVAL HISTORY", page: "revision/04_medival-history.html" },
-  { id: "05_akbar-campaigns", title: "AKBAR MELETRY CAMPAIGNS", page: "revision/05_akbar-campaigns.html"},
+  { id: "05_akbar-campaigns", title: "AKBAR MILITARY CAMPAIGNS", page: "revision/05_akbar-campaigns.html"},
   { id: "06_anglo-wars", title: "ANGLO WAR  ( 18th AND 19th )", page: "revision/06_anglo-wars.html"},
   { id: "07_foreign-crops", title: "FOREIGN CROPS IN INDIA",page: "revision/07_foreign-crops.html"},
   { id: "08_cropping-seasons", title: "CROPPING SEASONS",page: "revision/08_cropping-seasons.html"},

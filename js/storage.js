@@ -90,6 +90,29 @@ let allRevisionsSearchQuery = '';
 const STORAGE_KEY = 'revisionTrackerData';   // main data blob
 const THEME_KEY   = 'revisionTracker.theme'; // 'dark' | 'light'
 
+
+
+/**
+ * Normalise ONE revision record so callers never see missing or
+ * wrong-typed fields. Used by both loadStorage() and importBackup() so a
+ * partial / hand-edited / older backup can never leave the app running on
+ * a record with history: undefined or completedCount: "5".
+ *
+ * Returns the same object reference (mutated in place), so callers can
+ * write: appData.revisions[id] = backfillRevisionRecord(appData.revisions[id]);
+ */
+function backfillRevisionRecord(r) {
+  if (!r || typeof r !== 'object' || Array.isArray(r)) r = {};
+  if (!Array.isArray(r.history))            r.history = [];
+  if (!Array.isArray(r.comments))           r.comments = [];
+  if (typeof r.completedCount !== 'number' || !isFinite(r.completedCount)) {
+    r.completedCount = 0;
+  }
+  if (!('nextDueAt' in r))                  r.nextDueAt = null;
+  return r;
+}
+
+
 /* ==========================================================================
  * 4. LOAD / SAVE / INIT
  * ==========================================================================*/
@@ -119,23 +142,10 @@ function loadStorage() {
   if (!('lastAction' in appData)) appData.lastAction = null;
   if (!appData.version) appData.version = 1;
 
-  // Seed any newly-added manifest subjects with a blank record.
+  // Seed newly-added manifest subjects AND backfill older saved records
+  // via the shared helper — one code path, always identical shape.
   REVISIONS.forEach(rev => {
-    if (!appData.revisions[rev.id]) {
-      appData.revisions[rev.id] = {
-        nextDueAt: null,
-        completedCount: 0,
-        history: [],
-        comments: []
-      };
-    } else {
-      // Backfill fields for older saved records.
-      const r = appData.revisions[rev.id];
-      if (!Array.isArray(r.history))  r.history  = [];
-      if (!Array.isArray(r.comments)) r.comments = [];
-      if (typeof r.completedCount !== 'number') r.completedCount = 0;
-      if (!('nextDueAt' in r)) r.nextDueAt = null;
-    }
+    appData.revisions[rev.id] = backfillRevisionRecord(appData.revisions[rev.id]);
   });
 
   saveStorage();
@@ -221,20 +231,35 @@ function importBackup(event) {
       return;
     }
 
+    // Refuse silently importing a backup from a newer schema version.
+    // (Current schema is v1; older backups without a version field are
+    // treated as v1 and pass through.)
+    if (parsed.version && parsed.version > 1) {
+      if (!confirm(
+        `This backup was created by a newer version (v${parsed.version}).\n` +
+        `Your app is v1. Import anyway? Unknown fields will be ignored.`
+      )) return;
+    }
+
     if (!confirm('Replace ALL current tracking data with the imported backup?')) {
       return;
     }
 
     appData = parsed;
-    // Re-seed any subjects the backup is missing (e.g. ones added since).
+
+    // Defensive: even though we checked parsed.revisions above, it could be
+    // a non-object (e.g. a string) that passed the truthy check.
+    if (!appData.revisions || typeof appData.revisions !== 'object' || Array.isArray(appData.revisions)) {
+      appData.revisions = {};
+    }
+    if (!Array.isArray(appData.recentViews)) appData.recentViews = [];
+    if (!('lastAction' in appData))          appData.lastAction = null;
+
+    // Seed missing subjects AND backfill existing ones — same helper as
+    // loadStorage(), so import can never leave a broken record shape.
     REVISIONS.forEach(rev => {
-      if (!appData.revisions[rev.id]) {
-        appData.revisions[rev.id] = {
-          nextDueAt: null, completedCount: 0, history: [], comments: []
-        };
-      }
+      appData.revisions[rev.id] = backfillRevisionRecord(appData.revisions[rev.id]);
     });
-    if (!appData.recentViews) appData.recentViews = [];
     saveStorage();
 
     closeModal('settingsModal');
