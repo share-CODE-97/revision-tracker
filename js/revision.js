@@ -73,6 +73,16 @@ function loadSubjectPage(subjectId) {
   const data = appData.revisions[subjectId] || { completedCount: 0, nextDueAt: null, history: [], comments: [] };
 
   document.getElementById('subjectViewTitle').textContent = rev.title;
+
+  // Phase 9: Leech Warning
+  const leechBanner = document.getElementById('leechWarningBanner');
+  if (leechBanner) {
+    if (typeof isLeech === 'function' && isLeech(data)) {
+      leechBanner.classList.remove('hidden');
+    } else {
+      leechBanner.classList.add('hidden');
+    }
+  }
   document.getElementById('subjectViewBadge').textContent = getSubjectCurrentStateText(data);
   document.getElementById('subjectViewCompletedCount').textContent = `Total Revised: ${data.completedCount} times`;
 

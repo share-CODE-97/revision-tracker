@@ -2,13 +2,13 @@
  * main.js — Dashboard rendering · Navigation · Global UI · Bootstrap
  * ==========================================================================*/
 
-const APP_VERSION = '2.0.0';
+const APP_VERSION = '3.0.0';
 
 /* ==========================================================================
  * 1. NAVIGATION
  * ==========================================================================*/
 
-function navigateToView(viewName, subjectId = null) {
+function navigateToView(viewName, subjectId = null, skipHashUpdate = false) {
   const dashView = document.getElementById('dashboardView');
   const subjView = document.getElementById('subjectView');
   const analyticsView = document.getElementById('analyticsView');
@@ -37,6 +37,15 @@ function navigateToView(viewName, subjectId = null) {
     currentSubjectId = null;
     if (calendarView) calendarView.classList.remove('hidden');
     if (typeof renderCalendar === 'function') renderCalendar();
+  }
+
+  // Phase 9: Update URL Hash
+  if (!skipHashUpdate) {
+    if (viewName === 'subject' && subjectId) {
+      window.location.hash = `#subject/${subjectId}`;
+    } else {
+      window.location.hash = `#${viewName}`;
+    }
   }
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -78,6 +87,26 @@ function renderRecentViews() {
 /* ==========================================================================
  * 2. DASHBOARD
  * ==========================================================================*/
+
+/* Phase 9: Leech Detection */
+function isLeech(data) {
+  if (!data || !data.history || data.history.length === 0) return false;
+  let lowCount = 0;
+  let consecutiveAgain = 0;
+  
+  // data.history is newest first
+  for (let i = 0; i < data.history.length; i++) {
+    const h = data.history[i];
+    if (h.recall === 'again') {
+      lowCount++;
+      if (i < 2) consecutiveAgain++; // Count if it's the 1st or 2nd most recent
+    } else if (h.recall === 'hard') {
+      lowCount++;
+    }
+  }
+  // It's a leech if 3+ total low ratings, OR 2 back-to-back AGAINs
+  return (lowCount >= 3) || (consecutiveAgain >= 2);
+}
 
 function renderDashboard() {
   const now = new Date();
@@ -305,7 +334,10 @@ function renderAllRevisionsSection() {
     return `
       <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 rounded-xl bg-slate-950/60 border border-slate-800/80 hover:border-slate-700/80 transition gap-3">
         <div class="flex items-center justify-between sm:justify-start gap-3">
-          <span class="font-bold text-sm text-slate-100">${escapeHtml(rev.title)}</span>
+          <span class="font-bold text-sm text-slate-100 flex items-center gap-2">
+            ${escapeHtml(rev.title)}
+            ${isLeech(data) ? `<span title="You are repeatedly struggling with this. Consider rewriting these notes." class="bg-rose-500/20 text-rose-400 border border-rose-500/30 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider"><i class="fa-solid fa-droplet"></i> Leech</span>` : ''}
+          </span>
           <span ${data.nextDueAt ? `data-countdown-until="${data.nextDueAt}"` : ''}
                 class="text-xs px-2.5 py-0.5 rounded-full font-semibold ${getSubjectCurrentStateClass(data)}">
             ${getSubjectCurrentStateText(data)}
@@ -695,6 +727,39 @@ window.addEventListener('DOMContentLoaded', () => {
   setupQuickSearch();
   renderDashboard();
   renderBackupReminder();
+
+  // Phase 9: Handle Initial Route
+  const initialHash = window.location.hash.replace('#', '');
+  if (initialHash) {
+    const parts = initialHash.split('/');
+    if (parts[0] === 'subject' && parts[1]) {
+      navigateToView('subject', parts[1], true);
+    } else if (['analytics', 'calendar'].includes(parts[0])) {
+      navigateToView(parts[0], null, true);
+    }
+  }
+
+  // Phase 9: Handle Browser Back/Forward Buttons
+  window.addEventListener('hashchange', () => {
+    const hash = window.location.hash.replace('#', '');
+    if (!hash) {
+      if (currentSubjectId !== null) navigateToView('dashboard', null, true);
+      return;
+    }
+    const parts = hash.split('/');
+    const view = parts[0];
+    const id = parts[1];
+    
+    if (view === 'subject' && id) {
+      if (currentSubjectId !== id) navigateToView('subject', id, true);
+    } else if (['dashboard', 'analytics', 'calendar'].includes(view)) {
+      // Only navigate if the view isn't already active to prevent loops
+      const viewEl = document.getElementById(`${view}View`);
+      if (viewEl && viewEl.classList.contains('hidden')) {
+        navigateToView(view, null, true);
+      }
+    }
+  });
 
   setInterval(updateLiveClock, 1000);
   updateLiveClock();

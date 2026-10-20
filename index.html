@@ -74,7 +74,7 @@
         <div>
           <h1 class="text-base sm:text-lg font-bold tracking-tight text-white flex items-center gap-2">
             Revision Tracker
-            <span class="text-[10px] font-semibold uppercase tracking-wider bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded-full border border-indigo-500/20">v2.0</span>
+            <span class="text-[10px] font-semibold uppercase tracking-wider bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded-full border border-indigo-500/20">v3.0</span>
           </h1>
           <p class="text-[11px] text-slate-400 font-medium hidden sm:block">Spaced Repetition &amp; Workflow Engine</p>
         </div>
@@ -293,6 +293,15 @@
         <div class="text-right">
           <h2 id="subjectViewTitle" class="text-lg font-bold text-white">Subject Title</h2>
           <span id="subjectViewBadge" class="text-[11px] font-semibold text-indigo-400">Loading state...</span>
+        </div>
+      </div>
+
+      <!-- Phase 9: Leech Warning Banner -->
+      <div id="leechWarningBanner" class="hidden bg-rose-500/10 border border-rose-500/30 p-4 rounded-2xl flex items-start gap-3 shadow-sm">
+        <i class="fa-solid fa-droplet text-rose-400 mt-0.5"></i>
+        <div>
+          <div class="font-bold text-rose-300 text-sm">Struggling with this subject?</div>
+          <div class="text-xs text-slate-300 mt-1">You've rated this topic <strong>AGAIN</strong> or <strong>HARD</strong> multiple times. Consider breaking it into smaller chunks or rewriting your notes before trying again.</div>
         </div>
       </div>
 
