@@ -1,23 +1,12 @@
 /* ============================================================================
- * service-worker.js — auto-updating offline cache
- * ----------------------------------------------------------------------------
- *  • Page navigations        → NETWORK FIRST   (always fresh when online)
- *  • Same-origin .js / .css  → STALE-WHILE-REVALIDATE  (instant + self-updating)
- *  • Images / icons / CDN    → CACHE FIRST     (they rarely change)
- *
- *  • NOTHING is ever deleted by this file.
- *  • If you keep app data in Cache Storage, name that cache 'rt-data-…'
- *    (or anything not starting with 'rt-shell' / 'rt-runtime').
+ * service-worker.js — auto-updating offline cache (Phase 2: Safe Updates)
  * ==========================================================================*/
 
 importScripts('./js/manifest.js');
 
-const SHELL_CACHE   = 'rt-shell';     // HTML, JS, CSS, manifest, icons
-const RUNTIME_CACHE = 'rt-runtime';   // cross-origin stuff (fonts, CDN)
+const SHELL_CACHE   = 'rt-shell-v3';     // BUMPED
+const RUNTIME_CACHE = 'rt-runtime-v3';   // BUMPED
 
-// Derive the revision page URLs directly from manifest.js, so adding a
-// subject there is the ONLY edit needed to precache it offline. No more
-// silent drift between manifest.js and this file.
 const REVISION_URLS = (self.REVISIONS || []).map(r => './' + r.page);
 
 const PRECACHE_URLS = [
@@ -30,6 +19,10 @@ const PRECACHE_URLS = [
   './js/revision.js',
 
   ...REVISION_URLS,
+
+  // Local Fonts (graceful 404 if user hasn't downloaded them yet)
+  './assets/vendor/inter/Inter-Variable.woff2',
+  './assets/vendor/fontawesome/css/all.min.css',
 
   './images/10_01_india_minerals.jpg',
   './images/11_01_indian-rivers.jpg',
@@ -55,41 +48,11 @@ const PRECACHE_URLS = [
   './icons/icon-192.png',
   './icons/icon-512.png'
 ];
-/*
-
-  './revision/01_squares-cubes.html',
-  './revision/02_table.html',
-  './revision/03_magadha-dynasties.html',
-  './revision/04_medival-history.html',
-  './revision/05_akbar-campaigns.html',
-  './revision/06_anglo-wars.html',
-  './revision/07_foreign-crops.html',
-  './revision/08_cropping-seasons.html',
-  './revision/09_alloys-ores.html',
-  './revision/10_india_minerals.html',
-  './revision/11_indian-rivers.html',
-  './revision/12_grasslands-world.html',
-  './revision/13_mountains-volcanoes.html',
-  './revision/14_world-geography.html',
-  './revision/15_physical-geography.html',
-  './revision/16_science-capsule.html',
-  './revision/17_international_organization.html',
-  './revision/18_socio_religious_movement.html',
-  './revision/19_foreign_travellers.html',
-  './revision/20_modern_india_1857_1947_overview.html',
-  './revision/21_viceroys.html',
-  './revision/22_president_of_india.html',
-  './revision/23_mountains_peaks.html',
-  './revision/24_bihar_rivers_system.html',
-
-  */
-
-/* ---------- helpers ------------------------------------------------------ */
 
 function okToCache(res) {
   if (!res) return false;
-  if (res.type === 'opaque') return true;           // CDN without CORS
-  return res.ok;                                    // 200-299
+  if (res.type === 'opaque') return true;
+  return res.ok;
 }
 
 function offline() {
@@ -97,28 +60,51 @@ function offline() {
 }
 
 /* ==========================================================================
- * INSTALL — pre-cache every file, then activate immediately.
+ * INSTALL — NO skipWaiting() here. The new SW waits until the user clicks
+ * "Reload" in the app, preventing interruptions during active revisions.
  * ==========================================================================*/
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
     const cache = await caches.open(SHELL_CACHE);
     await Promise.all(PRECACHE_URLS.map(async url => {
       try {
-        // cache:'reload' bypasses HTTP cache so we really get the current file
         await cache.add(new Request(url, { cache: 'reload' }));
       } catch (e) {
         console.warn('[SW] precache miss:', url);
       }
     }));
-    await self.skipWaiting();
   })());
 });
 
 /* ==========================================================================
- * ACTIVATE — take over clients. We do NOT delete anything here.
+ * ACTIVATE — Clean up old versions, but NEVER touch 'rt-data-*'
  * ==========================================================================*/
 self.addEventListener('activate', event => {
-  event.waitUntil(self.clients.claim());
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          // Delete old SHELL caches
+          if (cacheName.startsWith('rt-shell-') && cacheName !== SHELL_CACHE) {
+            return caches.delete(cacheName);
+          }
+          // Delete old RUNTIME caches
+          if (cacheName.startsWith('rt-runtime-') && cacheName !== RUNTIME_CACHE) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    }).then(() => self.clients.claim())
+  );
+});
+
+/* ==========================================================================
+ * MESSAGE — Listen for user confirming the update
+ * ==========================================================================*/
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
 /* ==========================================================================
@@ -132,17 +118,12 @@ self.addEventListener('fetch', event => {
   const url = new URL(req.url);
   const sameOrigin = url.origin === self.location.origin;
 
-  /* 1. PAGE NAVIGATION — network first ---------------------------------- */
   if (req.mode === 'navigate') {
     event.respondWith((async () => {
       const cache = await caches.open(SHELL_CACHE);
       try {
-        // cache: 'no-cache' forces revalidation so "network first" is
-        // actually fresh (otherwise the HTTP cache can serve a stale copy).
         const fresh = await fetch(new Request(req, { cache: 'no-cache' }));
         if (okToCache(fresh)) {
-          // Redirects produce a response whose URL differs from req.url.
-          // cache.put(req, ...) throws in that case — cache under both keys.
           const put = async u => { try { await cache.put(u, fresh.clone()); } catch (_) {} };
           await put(req);
           if (fresh.url && fresh.url !== req.url) await put(fresh.url);
@@ -151,13 +132,6 @@ self.addEventListener('fetch', event => {
       } catch {
         const hit = await cache.match(req);
         if (hit) return hit;
-
-        // App-shell fallback ONLY for the app's own root navigation.
-        // Revision pages load inside <iframe> (destination === 'iframe',
-        // not 'document'), AND deep links to /revision/*.html land here too.
-        // Falling back to index.html for those would render the ENTIRE APP
-        // inside a small iframe — a very confusing failure. Offline is
-        // honest; the shell reload at root is not.
         const appRootPath = new URL('./', self.location).pathname;
         const indexPath   = new URL('./index.html', self.location).pathname;
         if (url.pathname === appRootPath || url.pathname === indexPath) {
@@ -169,14 +143,10 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  /* 2. SAME-ORIGIN JS / CSS — stale-while-revalidate -------------------- */
   if (sameOrigin && /\.(?:js|css)$/i.test(url.pathname)) {
     const refresh = fetch(new Request(req, { cache: 'no-cache' }))
       .then(async res => {
         if (okToCache(res)) {
-          // AWAIT the put inside the promise chain — previously the chain
-          // resolved before cache.put finished, so a fast SW kill could
-          // drop the update entirely.
           try {
             const c = await caches.open(SHELL_CACHE);
             await c.put(req, res.clone());
@@ -197,7 +167,6 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  /* 3. EVERYTHING ELSE — cache first ------------------------------------ */
   const cacheName = sameOrigin ? SHELL_CACHE : RUNTIME_CACHE;
   event.respondWith((async () => {
     const cache = await caches.open(cacheName);

@@ -8,13 +8,8 @@
 
   <!-- ── PWA ─────────────────────────────────────────────────────────── -->
   <script>
-    // The web manifest can only be loaded over http(s). Injecting it
-    // conditionally avoids repeated CORS errors when the app is opened
-    // directly from disk (file://), where PWA install/offline is impossible
-    // by browser policy. Harmless when served over http(s) — same DOM result.
     if (location.protocol === 'http:' || location.protocol === 'https:') {
-      document.head.insertAdjacentHTML('beforeend',
-        '<link rel="manifest" href="manifest.webmanifest">');
+      document.head.insertAdjacentHTML('beforeend', '<link rel="manifest" href="manifest.webmanifest">');
     }
   </script>
   <meta name="theme-color" content="#0f172a">
@@ -22,37 +17,49 @@
   <link rel="apple-touch-icon" href="icons/icon-192.png">
   <link rel="icon" type="image/png" href="icons/favicon-96x96.png" sizes="96x96" />
 
-  <!-- ── Tailwind CSS (CDN) ─────────────────────────────────────────── -->
+  <!-- ── Tailwind CSS ────────────────────────────────────────────────── -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- ── Font Awesome Icons ─────────────────────────────────────────── -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-  <!-- ── Inter Font ─────────────────────────────────────────────────── -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- ── Font Awesome & Inter (Local with CDN Fallback) ──────────────── -->
+  <link rel="stylesheet" href="assets/vendor/fontawesome/css/all.min.css" onerror="this.href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'">
+  <style>
+    @font-face {
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 300 800;
+      font-display: swap;
+      src: url('assets/vendor/inter/Inter-Variable.woff2') format('woff2');
+    }
+  </style>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- ── Tailwind config (must come AFTER the CDN script) ───────────── -->
+  <!-- ── Tailwind config ─────────────────────────────────────────────── -->
   <script>
     tailwind.config = {
       darkMode: ['class', '[data-theme="dark"]'],
       theme: {
         extend: {
           fontFamily: { sans: ['Inter', 'sans-serif'] },
-          colors: {
-            brand: { 50: '#f0fdf4', 500: '#10b981', 600: '#059669' }
-          }
+          colors: { brand: { 50: '#f0fdf4', 500: '#10b981', 600: '#059669' } }
         }
       }
     };
   </script>
 
-  <!-- ── App styles ────────────────────────────────────────────────── -->
   <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
+
+  <!-- UPDATE AVAILABLE BANNER -->
+  <div id="updateBanner" class="hidden fixed top-0 inset-x-0 z-50 bg-indigo-600 text-white px-4 py-2 flex items-center justify-between shadow-lg">
+    <div class="flex items-center gap-2 text-sm font-semibold">
+      <i class="fa-solid fa-cloud-arrow-down"></i> A new version of the app is available.
+    </div>
+    <button id="updateReloadBtn" class="bg-white text-indigo-600 font-bold text-xs px-3 py-1.5 rounded-lg shadow hover:bg-indigo-50 transition">
+      Reload to Update
+    </button>
+  </div>
 
   <!-- ==================================================================
        HEADER + LIVE CLOCK BAR
@@ -60,7 +67,6 @@
   <header class="bg-slate-900/90 border-b border-slate-800 sticky top-0 z-30 backdrop-blur-md">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
 
-      <!-- Branding -->
       <div class="flex items-center gap-3 cursor-pointer" onclick="navigateToView('dashboard')">
         <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-emerald-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
           <i class="fa-solid fa-brain text-white text-lg"></i>
@@ -68,33 +74,42 @@
         <div>
           <h1 class="text-base sm:text-lg font-bold tracking-tight text-white flex items-center gap-2">
             Revision Tracker
-            <span class="text-[10px] font-semibold uppercase tracking-wider bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded-full border border-indigo-500/20">v8.0</span>
+            <span class="text-[10px] font-semibold uppercase tracking-wider bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded-full border border-indigo-500/20">v2.0</span>
           </h1>
           <p class="text-[11px] text-slate-400 font-medium hidden sm:block">Spaced Repetition &amp; Workflow Engine</p>
         </div>
       </div>
 
-      <!-- Live clock + Settings -->
       <div class="flex items-center gap-4">
         <div class="text-right border-r border-slate-800 pr-4 hidden sm:block">
           <div id="liveClock" class="text-sm font-mono font-bold text-indigo-400 tracking-wider">00/00/0000 --:--:--</div>
-          <div class="text-[10px] text-slate-500 font-medium uppercase tracking-widest">Device Local Time</div>
+          <div class="flex items-center justify-end gap-1.5 text-[10px] text-slate-500 font-medium uppercase tracking-widest mt-0.5">
+            <span id="networkIndicator" class="w-2.5 h-2.5 rounded-full bg-slate-500" title="Checking connection..."></span>
+            <span>Local Time</span>
+          </div>
         </div>
-        <button onclick="openModal('settingsModal')" aria-label="Settings"
+        <button onclick="openModal('settingsModal'); renderSettingsBackupStatus();" aria-label="Settings"
                 class="w-10 h-10 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700/50 flex items-center justify-center transition-all duration-150 active:scale-95 shadow-sm">
           <i class="fa-solid fa-gear text-base"></i>
         </button>
       </div>
     </div>
 
-    <!-- Recent views + quick jump search -->
     <div class="bg-slate-900 border-t border-b border-slate-800/80 px-4 sm:px-8 py-2 flex items-center justify-between text-xs overflow-x-auto gap-4">
       <div class="flex items-center gap-2 shrink-0">
         <span class="font-bold tracking-wider text-slate-500 uppercase text-[10px] flex items-center gap-1">
           <i class="fa-solid fa-clock-rotate-left"></i> RECENT VIEWS:
         </span>
-        <div id="recentViewsContainer" class="flex items-center gap-2 py-0.5 flex-nowrap">
-          <!-- Rendered by renderRecentViews() -->
+        <div class="flex items-center gap-2 py-0.5 flex-nowrap">
+          <button onclick="navigateToView('analytics')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white px-3 py-1 rounded-full border border-slate-700/60 transition flex items-center gap-1.5 shrink-0">
+            <i class="fa-solid fa-chart-line text-[10px] text-emerald-400"></i> Analytics
+          </button>
+          <button onclick="navigateToView('calendar')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white px-3 py-1 rounded-full border border-slate-700/60 transition flex items-center gap-1.5 shrink-0">
+            <i class="fa-solid fa-calendar-days text-[10px] text-indigo-400"></i> Calendar
+          </button>
+          <div id="recentViewsContainer" class="flex items-center gap-2 flex-nowrap">
+            <!-- Rendered by renderRecentViews() -->
+          </div>
         </div>
       </div>
 
@@ -119,33 +134,28 @@
          ═══════════════════════════════════════════════════════════════ -->
     <div id="dashboardView" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
 
-      <!-- STAT CARDS -->
-      <section class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+      <div id="backupReminderBanner" class="hidden"></div>
+
+      <section class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
         <div class="bg-slate-900/80 rounded-2xl p-4 border border-slate-800/80 shadow-sm relative overflow-hidden group hover:border-slate-700 transition">
           <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Total Revisions</div>
           <div id="statTotal" class="text-2xl sm:text-3xl font-extrabold text-white">0</div>
           <div class="text-[10px] text-slate-500 mt-1">Cumulative completed count</div>
-          <div class="absolute -right-2 -bottom-2 opacity-5 text-indigo-400 text-6xl font-black group-hover:scale-110 transition-transform">
-            <i class="fa-solid fa-list-check"></i>
-          </div>
+          <div class="absolute -right-2 -bottom-2 opacity-5 text-indigo-400 text-6xl font-black group-hover:scale-110 transition-transform"><i class="fa-solid fa-list-check"></i></div>
         </div>
 
         <div class="bg-slate-900/80 rounded-2xl p-4 border border-slate-800/80 shadow-sm relative overflow-hidden group hover:border-slate-700 transition">
           <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Completed Today</div>
           <div id="statToday" class="text-2xl sm:text-3xl font-extrabold text-emerald-400">0</div>
           <div class="text-[10px] text-slate-500 mt-1">Calendar date completions</div>
-          <div class="absolute -right-2 -bottom-2 opacity-5 text-emerald-400 text-6xl font-black group-hover:scale-110 transition-transform">
-            <i class="fa-solid fa-circle-check"></i>
-          </div>
+          <div class="absolute -right-2 -bottom-2 opacity-5 text-emerald-400 text-6xl font-black group-hover:scale-110 transition-transform"><i class="fa-solid fa-circle-check"></i></div>
         </div>
 
         <div class="bg-slate-900/80 rounded-2xl p-4 border border-slate-800/80 shadow-sm relative overflow-hidden group hover:border-slate-700 transition">
           <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Overdue Revisions</div>
           <div id="statOverdue" class="text-2xl sm:text-3xl font-extrabold text-rose-400">0</div>
           <div class="text-[10px] text-slate-500 mt-1">Requires urgent revision</div>
-          <div class="absolute -right-2 -bottom-2 opacity-5 text-rose-400 text-6xl font-black group-hover:scale-110 transition-transform">
-            <i class="fa-solid fa-triangle-exclamation"></i>
-          </div>
+          <div class="absolute -right-2 -bottom-2 opacity-5 text-rose-400 text-6xl font-black group-hover:scale-110 transition-transform"><i class="fa-solid fa-triangle-exclamation"></i></div>
         </div>
 
         <div class="bg-slate-900/80 rounded-2xl p-4 border border-slate-800/80 shadow-sm relative overflow-hidden group hover:border-slate-700 transition">
@@ -154,13 +164,24 @@
             <span>0</span> <span class="text-sm font-normal text-slate-400">Days</span>
           </div>
           <div class="text-[10px] text-slate-500 mt-1">Consecutive active days</div>
-          <div class="absolute -right-2 -bottom-2 opacity-5 text-amber-400 text-6xl font-black group-hover:scale-110 transition-transform">
-            <i class="fa-solid fa-fire"></i>
+          <div class="absolute -right-2 -bottom-2 opacity-5 text-amber-400 text-6xl font-black group-hover:scale-110 transition-transform"><i class="fa-solid fa-fire"></i></div>
+        </div>
+
+        <!-- DAILY TARGET CARD -->
+        <div class="bg-slate-900/80 rounded-2xl p-4 border border-slate-800/80 shadow-sm relative overflow-hidden group hover:border-slate-700 transition col-span-2 md:col-span-1 lg:col-span-1">
+          <div class="flex justify-between items-start mb-1">
+            <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Daily Target</div>
+            <div id="dailyTargetText" class="text-[10px] font-bold text-slate-500">0 / 5</div>
           </div>
+          <div class="w-full bg-slate-800 rounded-full h-1.5 mb-2 mt-2">
+            <div id="dailyTargetBar" class="bg-indigo-500 h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+          </div>
+          <div id="dailyTimeText" class="text-[10px] text-slate-500 hidden">Time: 0 / 60 min</div>
+          <div class="absolute -right-2 -bottom-2 opacity-5 text-indigo-400 text-6xl font-black group-hover:scale-110 transition-transform"><i class="fa-solid fa-bullseye"></i></div>
         </div>
       </section>
 
-      <!-- SECTION: TODAY -->
+      <!-- TODAY -->
       <section class="bg-slate-900/80 rounded-2xl border border-slate-800/80 shadow-sm overflow-hidden">
         <button onclick="toggleSection('todayContent')" class="w-full p-4 sm:p-5 flex items-center justify-between bg-slate-900/50 hover:bg-slate-800/40 transition">
           <div class="flex items-center gap-3">
@@ -173,7 +194,7 @@
         <div id="todayContent" class="p-4 border-t border-slate-800/60 space-y-3"></div>
       </section>
 
-      <!-- SECTION: NEXT 6 HOURS -->
+      <!-- NEXT 6 HOURS -->
       <section class="bg-slate-900/80 rounded-2xl border border-slate-800/80 shadow-sm overflow-hidden">
         <button onclick="toggleSection('next6HoursContent')" class="w-full p-4 sm:p-5 flex items-center justify-between bg-slate-900/50 hover:bg-slate-800/40 transition">
           <div class="flex items-center gap-3">
@@ -186,7 +207,7 @@
         <div id="next6HoursContent" class="hidden p-4 border-t border-slate-800/60 space-y-3"></div>
       </section>
 
-      <!-- SECTION: OVERDUE -->
+      <!-- OVERDUE -->
       <section class="bg-slate-900/80 rounded-2xl border border-slate-800/80 shadow-sm overflow-hidden">
         <button onclick="toggleSection('overdueContent')" class="w-full p-4 sm:p-5 flex items-center justify-between bg-slate-900/50 hover:bg-slate-800/40 transition">
           <div class="flex items-center gap-3">
@@ -199,7 +220,7 @@
         <div id="overdueContent" class="hidden p-4 border-t border-slate-800/60 space-y-3"></div>
       </section>
 
-      <!-- SECTION: ALL REVISIONS (with inline search) -->
+      <!-- ALL REVISIONS -->
       <section class="bg-slate-900/80 rounded-2xl border border-slate-800/80 shadow-md overflow-hidden">
         <div class="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900/50 border-b border-slate-800/80">
           <div class="flex items-center justify-between sm:justify-start w-full sm:w-auto gap-3">
@@ -231,7 +252,7 @@
         <div id="allRevisionsContent" class="p-4 border-t border-slate-800/60 space-y-3"></div>
       </section>
 
-      <!-- SECTION: GLOBAL HISTORY -->
+      <!-- GLOBAL HISTORY -->
       <section class="bg-slate-900/80 rounded-2xl border border-slate-800/80 shadow-sm overflow-hidden">
         <button onclick="toggleSection('historyContent')" class="w-full p-4 sm:p-5 flex items-center justify-between bg-slate-900/50 hover:bg-slate-800/40 transition">
           <div class="flex items-center gap-3">
@@ -244,7 +265,7 @@
         <div id="historyContent" class="hidden p-4 border-t border-slate-800/60 space-y-3 max-h-96 overflow-y-auto custom-scrollbar"></div>
       </section>
 
-      <!-- SECTION: NO MORE REVISION NEEDED -->
+      <!-- NO MORE REVISION -->
       <section class="bg-slate-900/80 rounded-2xl border border-slate-800/80 shadow-sm overflow-hidden">
         <button onclick="toggleSection('noMoreContent')" class="w-full p-4 sm:p-5 flex items-center justify-between bg-slate-900/50 hover:bg-slate-800/40 transition">
           <div class="flex items-center gap-3">
@@ -256,7 +277,6 @@
         </button>
         <div id="noMoreContent" class="hidden p-4 border-t border-slate-800/60 space-y-3"></div>
       </section>
-
     </div><!-- /#dashboardView -->
 
 
@@ -265,7 +285,6 @@
          ═══════════════════════════════════════════════════════════════ -->
     <div id="subjectView" class="hidden max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
 
-      <!-- Top nav -->
       <div class="flex items-center justify-between bg-slate-900/80 p-4 rounded-2xl border border-slate-800/80">
         <button onclick="navigateToView('dashboard')"
                 class="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-700 px-3.5 py-2 rounded-xl transition border border-slate-700/50">
@@ -277,7 +296,6 @@
         </div>
       </div>
 
-      <!-- Study material (iframe loads revision/<id>.html) -->
       <div class="bg-slate-900/80 rounded-2xl border border-slate-800/80 p-4 sm:p-6 space-y-4 shadow-md">
         <div class="flex items-center justify-between border-b border-slate-800/80 pb-4">
           <h3 class="text-sm font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
@@ -286,7 +304,6 @@
           <span id="subjectViewCompletedCount" class="text-xs bg-slate-800 text-slate-300 px-3 py-1 rounded-full font-semibold border border-slate-700/50">Total Revised: 0 times</span>
         </div>
 
-        <!-- The revision HTML file is loaded here. -->
         <div class="rounded-xl border border-slate-800/80 bg-slate-950/60 overflow-hidden">
           <iframe id="subjectIframe"
                   title="Revision content"
@@ -296,26 +313,49 @@
         </div>
       </div>
 
-      <!-- Fixed bottom action bar -->
-      <!-- Inline action panel — scrolls with content, no longer fixed -->
       <div class="bg-slate-900/80 rounded-2xl border border-slate-800/80 p-4 shadow-md space-y-3">
 
-        <!-- Undo (only shown when the last action was for this subject) -->
+        <!-- Study Timer (Phase 6) -->
+        <div id="studyTimerPanel" class="hidden bg-slate-950 border border-slate-800 p-3 rounded-xl flex items-center justify-between mb-2">
+          <div class="flex flex-col">
+            <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Study Timer</span>
+            <span id="timerDisplay" class="text-lg font-mono font-bold text-indigo-400">00:00:00</span>
+          </div>
+          <div class="flex gap-2">
+            <button id="timerStartBtn" onclick="toggleTimer()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition">
+              <i class="fa-solid fa-play"></i> Start
+            </button>
+            <button id="timerStopBtn" onclick="stopTimer()" class="hidden bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition">
+              <i class="fa-solid fa-stop"></i> Stop
+            </button>
+          </div>
+        </div>
+
+        <!-- Active Recall (Phase 3) -->
+        <div class="flex flex-col items-center justify-center border-b border-slate-800/80 pb-3 mb-1">
+          <div id="recallBadge" class="hidden"></div>
+          <button id="selfTestBtn" onclick="openSelfTest()" class="w-full py-2 px-3 mb-2 rounded-xl border border-indigo-500/30 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-300 font-semibold text-xs flex items-center justify-center gap-2 transition-all">
+            <i class="fa-solid fa-brain"></i> <span>SELF-TEST</span>
+          </button>
+        </div>
+
         <button id="undoBtn" onclick="handleUndo()"
                 class="hidden text-xs font-semibold text-amber-400 hover:text-amber-300 bg-amber-500/10 hover:bg-amber-500/20 px-3.5 py-2 rounded-xl transition border border-amber-500/30 flex items-center gap-1.5">
           <i class="fa-solid fa-rotate-left"></i> Undo Last Complete
         </button>
 
-        <!-- Custom date picker (revealed when "PICK DATE" is selected) -->
         <div id="customDateContainer" class="hidden bg-slate-950 border border-slate-800 p-3 rounded-xl flex items-center justify-between gap-3">
           <span class="text-xs text-slate-400 font-medium">Select future timestamp:</span>
           <input type="datetime-local" id="customDateTimePicker"
                  class="bg-slate-900 border border-slate-800 text-white text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-indigo-500" />
         </div>
 
-        <!-- All 4 actions on a single line -->
-        <div class="flex gap-2 sm:gap-3">
+        <!-- Smart Suggestion Button (Phase 4) -->
+        <button id="smartSuggestBtn" onclick="selectScheduleOption('smart')" class="hidden w-full py-2.5 px-3 mb-2 rounded-xl bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/50 font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-500/10">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> <span id="smartSuggestText">Suggested: +48 Hours</span>
+        </button>
 
+        <div class="flex gap-2 sm:gap-3">
           <button id="opt24h" onclick="selectScheduleOption('24h')"
                   class="flex-1 py-2 sm:py-2.5 px-1 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-800 text-slate-300 font-semibold text-[11px] sm:text-xs flex flex-col items-center justify-center transition-all">
             <span>+24 HOURS</span>
@@ -338,21 +378,33 @@
                   class="flex-[1.3] py-2 sm:py-2.5 px-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-[11px] sm:text-xs shadow-lg shadow-emerald-600/20 transition active:scale-95 flex items-center justify-center gap-1.5">
             <i class="fa-solid fa-check"></i> <span>COMPLETE</span>
           </button>
-
         </div>
-
       </div>
     </div><!-- /#subjectView -->
+
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         VIEW 3 — ANALYTICS (Phase 5)
+         ═══════════════════════════════════════════════════════════════ -->
+    <div id="analyticsView" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+      <!-- Rendered by analytics.js -->
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         VIEW 4 — CALENDAR (Phase 7)
+         ═══════════════════════════════════════════════════════════════ -->
+    <div id="calendarView" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+      <!-- Rendered by calendar.js -->
+    </div>
 
   </div><!-- /#appContainer -->
 
 
   <!-- ==================================================================
-       MODAL 1 — SUBJECT ⋮ MENU (history + comments)
+       MODAL 1 — SUBJECT ⋮ MENU
        ================================================================== -->
   <div id="subjectMenuModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
-
       <div class="p-5 border-b border-slate-800 flex items-center justify-between bg-slate-900/50">
         <div>
           <h3 id="modalSubjectTitle" class="text-base font-bold text-white">Subject Title</h3>
@@ -364,7 +416,6 @@
       </div>
 
       <div class="p-5 space-y-6 overflow-y-auto custom-scrollbar flex-1">
-        <!-- History -->
         <div class="space-y-3">
           <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
             <i class="fa-solid fa-clock-rotate-left text-indigo-400"></i> Subject History
@@ -372,7 +423,6 @@
           <div id="modalSubjectHistory" class="space-y-2 max-h-44 overflow-y-auto custom-scrollbar pr-1"></div>
         </div>
 
-        <!-- Comments -->
         <div class="space-y-3 border-t border-slate-800/80 pt-4">
           <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
             <i class="fa-solid fa-comments text-emerald-400"></i> Subject Notes &amp; Comments
@@ -400,7 +450,6 @@
        ================================================================== -->
   <div id="settingsModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-
       <div class="p-5 border-b border-slate-800 flex items-center justify-between">
         <h3 class="text-base font-bold text-white flex items-center gap-2">
           <i class="fa-solid fa-gear text-indigo-400"></i> Application Settings
@@ -412,7 +461,6 @@
 
       <div class="p-5 space-y-6 overflow-y-auto custom-scrollbar flex-1 text-xs">
 
-        <!-- Appearance -->
         <div class="space-y-2">
           <h4 class="font-bold text-slate-400 uppercase tracking-wider text-[11px]">Appearance</h4>
           <div class="bg-slate-950 p-3 rounded-xl border border-slate-800/80 flex items-center justify-between">
@@ -424,7 +472,46 @@
           </div>
         </div>
 
-        <!-- Backup -->
+        <div class="space-y-2">
+          <h4 class="font-bold text-slate-400 uppercase tracking-wider text-[11px]">Smart Scheduling (Hours)</h4>
+          <div class="bg-slate-950 p-3 rounded-xl border border-slate-800/80 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-slate-200 font-medium text-rose-400">AGAIN (Barely)</span>
+              <input type="number" id="intAgain" min="1" onchange="updateSmartIntervals()" class="w-16 bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-lg px-2 py-1 text-center">
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-slate-200 font-medium text-amber-400">HARD (Struggled)</span>
+              <input type="number" id="intHard" min="1" onchange="updateSmartIntervals()" class="w-16 bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-lg px-2 py-1 text-center">
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-slate-200 font-medium text-indigo-400">GOOD (Mostly)</span>
+              <input type="number" id="intGood" min="1" onchange="updateSmartIntervals()" class="w-16 bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-lg px-2 py-1 text-center">
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-slate-200 font-medium text-emerald-400">EASY (Confident)</span>
+              <input type="number" id="intEasy" min="1" onchange="updateSmartIntervals()" class="w-16 bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-lg px-2 py-1 text-center">
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <h4 class="font-bold text-slate-400 uppercase tracking-wider text-[11px]">Daily Targets</h4>
+          <div class="bg-slate-950 p-3 rounded-xl border border-slate-800/80 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-slate-200 font-medium">Revision Count Target</span>
+              <input type="number" id="targetCount" min="1" onchange="updateDailyTargets()" class="w-16 bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-lg px-2 py-1 text-center">
+            </div>
+            <div class="flex items-center justify-between border-t border-slate-800/50 pt-2">
+              <span class="text-slate-200 font-medium">Enable Study Timer</span>
+              <input type="checkbox" id="enableTimer" onchange="updateDailyTargets()" class="w-4 h-4 accent-indigo-500">
+            </div>
+            <div id="timerTargetConfig" class="flex items-center justify-between hidden">
+              <span class="text-slate-200 font-medium text-[11px]">Daily Study Time (mins)</span>
+              <input type="number" id="targetMinutes" min="1" onchange="updateDailyTargets()" class="w-16 bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-lg px-2 py-1 text-center">
+            </div>
+          </div>
+        </div>
+
         <div class="space-y-2">
           <h4 class="font-bold text-slate-400 uppercase tracking-wider text-[11px]">Data &amp; Backup</h4>
           <div class="grid grid-cols-2 gap-3">
@@ -440,9 +527,31 @@
               <input type="file" id="importFileInput" accept=".json" onchange="importBackup(event)" class="hidden" />
             </label>
           </div>
+
+          <div class="bg-slate-950 p-3 rounded-xl border border-slate-800/80 space-y-2 mt-3">
+            <div class="flex items-center justify-between">
+              <span class="text-slate-200 font-medium">Backup Reminder</span>
+              <select id="backupReminderSelect" onchange="setBackupReminderDays(this.value)"
+                      class="bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-lg px-2 py-1 focus:outline-none focus:border-indigo-500">
+                <option value="0">Off</option>
+                <option value="3">Every 3 days</option>
+                <option value="7">Every 7 days</option>
+                <option value="14">Every 14 days</option>
+                <option value="30">Every 30 days</option>
+              </select>
+            </div>
+            <div id="backupStatusText" class="text-[11px] text-slate-500">Never exported.</div>
+            <div class="text-[10px] text-slate-500 italic leading-relaxed">
+              A reminder is not an automatic backup. localStorage can be lost if you clear browser data,
+              uninstall the browser, or lose the device. Export regularly and keep the file somewhere safe.
+            </div>
+            <button id="restoreSnapshotBtn" onclick="restorePreImportSnapshot()"
+                    class="hidden w-full bg-slate-900 hover:bg-slate-800 text-amber-400 hover:text-amber-300 text-[11px] font-semibold p-2 rounded-lg border border-amber-500/30 transition">
+              Restore Pre-Import Snapshot
+            </button>
+          </div>
         </div>
 
-        <!-- Danger zone -->
         <div class="space-y-2">
           <h4 class="font-bold text-rose-400 uppercase tracking-wider text-[11px]">Danger Zone</h4>
           <div class="bg-rose-950/20 border border-rose-900/40 p-3 rounded-xl space-y-2">
@@ -457,28 +566,67 @@
           </div>
         </div>
 
-        <!-- About -->
         <div class="text-[11px] text-slate-500 space-y-1 pt-2 border-t border-slate-800/80">
+          <p><strong>Version:</strong> <span id="appVersionDisplay">Loading...</span></p>
           <p><strong>Storage Method:</strong> Browser LocalStorage</p>
           <p><strong>Architecture:</strong> Static Vanilla JavaScript (modular)</p>
           <p><strong>Subjects defined in:</strong> <code>js/manifest.js</code></p>
         </div>
-
       </div>
     </div>
   </div>
 
 
   <!-- ==================================================================
-       SCRIPTS — ORDER MATTERS:
-         manifest  →  storage  →  main  →  revision
-       (manifest declares REVISIONS, storage declares shared state/utils,
-        main and revision consume them. All are classic scripts, so their
-        top-level functions/lets share the global scope.)
+       MODAL 3 — SELF-TEST
        ================================================================== -->
+  <div id="selfTestModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl shadow-2xl overflow-hidden p-6 text-center space-y-6">
+      
+      <div class="space-y-2">
+        <div class="w-16 h-16 bg-indigo-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="fa-solid fa-brain text-indigo-400 text-2xl"></i>
+        </div>
+        <h3 class="text-lg font-bold text-white">Active Recall</h3>
+        <p class="text-sm text-slate-400 leading-relaxed">
+          Try to recall the topic <strong>without looking at the notes</strong>.<br>
+          How well did you remember it?
+        </p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <button onclick="setRating('again')" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 p-3 rounded-xl flex flex-col items-center gap-1 transition">
+          <span class="font-bold text-sm">AGAIN</span>
+          <span class="text-[10px] text-rose-300/70">Barely remembered</span>
+        </button>
+        
+        <button onclick="setRating('hard')" class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 p-3 rounded-xl flex flex-col items-center gap-1 transition">
+          <span class="font-bold text-sm">HARD</span>
+          <span class="text-[10px] text-amber-300/70">Struggled</span>
+        </button>
+        
+        <button onclick="setRating('good')" class="bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 p-3 rounded-xl flex flex-col items-center gap-1 transition">
+          <span class="font-bold text-sm">GOOD</span>
+          <span class="text-[10px] text-indigo-300/70">Remembered mostly</span>
+        </button>
+        
+        <button onclick="setRating('easy')" class="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 p-3 rounded-xl flex flex-col items-center gap-1 transition">
+          <span class="font-bold text-sm">EASY</span>
+          <span class="text-[10px] text-emerald-300/70">Confident</span>
+        </button>
+      </div>
+
+      <button onclick="document.getElementById('selfTestModal').classList.add('hidden')" class="text-xs text-slate-500 hover:text-slate-300 font-medium mt-2">
+        Skip &amp; Read Notes
+      </button>
+    </div>
+  </div>
+
   <script src="js/manifest.js"></script>
   <script src="js/storage.js"></script>
   <script src="js/main.js"></script>
   <script src="js/revision.js"></script>
+  <script src="js/analytics.js"></script>
+  <script src="js/calendar.js"></script>
 </body>
 </html>

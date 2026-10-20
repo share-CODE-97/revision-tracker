@@ -1,164 +1,165 @@
 /* ============================================================================
  * revision.js — Individual subject page
- * ----------------------------------------------------------------------------
- * Everything that only matters once the user is INSIDE a subject:
- *   • loadSubjectPage()  — populate title, badge, count, iframe content
- *   • Schedule option selector (24h / 48h / custom)
- *   • handleComplete()   — record a completion + schedule the next one
- *   • handleUndo()       — one-level undo of the last completion
- *   • Subject ⋮ modal    — per-subject history + full comment CRUD
  * ==========================================================================*/
 
 /* ==========================================================================
- * 1. LOAD THE SUBJECT PAGE
+ * 1. SMART SCHEDULING (Phase 4)
  * ==========================================================================*/
 
-/**
- * Populate the subject view for the given id and reset transient UI state.
- * The revision HTML file is loaded into an <iframe> using the `page` field
- * from REVISIONS — that's why every manifest entry must have a valid path.
- */
-/* ==========================================================================
- * 1b. AUTO-SIZE THE REVISION IFRAME
- * --------------------------------------------------------------------------
- * By default the <iframe> has its own scrollbar AND the outer page has its
- * own — that's the "two scrollbars" problem. To fix it we grow the iframe
- * so it exactly fits its content height, leaving the outer page to handle
- * ALL scrolling.
- *
- * Works whenever the iframe is same-origin (which is the normal case for
- * revision/*.html). If browser security blocks access (some file:// setups),
- * we fall back to a fixed height silently.
- * ==========================================================================*/
+function calculateSmartSchedule(rating) {
+  if (!rating) return null;
+  const intervals = appData.settings.smartIntervals || { again: 8, hard: 24, good: 48, easy: 96 };
+  const hours = intervals[rating] || 24;
+  return new Date(Date.now() + hours * 60 * 60 * 1000);
+}
+
+function updateSmartIntervals() {
+  const a = Number(document.getElementById('intAgain').value) || 8;
+  const h = Number(document.getElementById('intHard').value) || 24;
+  const g = Number(document.getElementById('intGood').value) || 48;
+  const e = Number(document.getElementById('intEasy').value) || 96;
+
+  appData.settings.smartIntervals = { again: a, hard: h, good: g, easy: e };
+  saveStorage();
+  if (currentSessionRating) updateSelfTestUI();
+}
 
 /* ==========================================================================
- * 1c. LISTEN FOR THE REVISION PAGE'S SELF-REPORTED HEIGHT
- * --------------------------------------------------------------------------
- * Every revision/*.html file sends us a postMessage with its own height
- * whenever it loads or its content changes size. We resize the iframe to
- * match, so the iframe never needs its own scrollbar — the outer page
- * handles all scrolling, and the iframe height always fits the content.
+ * 2. TIMER GLOBALS (Phase 6)
  * ==========================================================================*/
+
+let timerInterval = null;
+let timerElapsedMs = 0;
+let timerStartedAt = null;
+
+/* ==========================================================================
+ * 3. IFRAME MESSAGE LISTENER
+ * ==========================================================================*/
+
 window.addEventListener('message', function (event) {
   const msg = event.data;
   if (!msg || msg.type !== 'revision-height') return;
-
-  // Same-origin check whenever the protocol has a real origin.
-  // (file:// has origin "null", so we skip the check there — a strict
-  // event.source identity check can also fail for cross-origin frames
-  // in Chrome on file://, as noted previously.)
   if (location.protocol !== 'file:' && event.origin !== location.origin) return;
 
   const iframe = document.getElementById('subjectIframe');
   if (!iframe) return;
 
   clearTimeout(iframe._fallbackTimer);
-
   const h = Number(msg.height) || 0;
   if (h > 0) iframe.style.height = Math.min(Math.max(h, 320), 20000) + 'px';
 });
-
 
 function autoSizeIframe(iframe) {
   try {
     const doc = iframe.contentDocument || iframe.contentWindow.document;
     if (!doc || !doc.body) return;
-
-    // Reset to auto so the iframe can SHRINK too, then measure.
     iframe.style.height = 'auto';
-    const h = Math.max(
-      doc.documentElement.scrollHeight,
-      doc.body.scrollHeight
-    );
+    const h = Math.max(doc.documentElement.scrollHeight, doc.body.scrollHeight);
     iframe.style.height = Math.max(h, 320) + 'px';
   } catch (e) {
-    // Cross-origin (file:// in Chrome, or a strict CSP) — we can't read the
-    // content, so we can't measure it. Use a generous fixed height so most
-    // revision pages fit without needing a scrollbar. Since the iframe has
-    // scrolling="no", any content beyond this height would be clipped, so we
-    // err on the tall side.
-    console.warn(
-      '[Revision Tracker] Iframe auto-size skipped (cross-origin). ' +
-      'Falling back to a tall fixed height. For perfect auto-sizing, ' +
-      'open the app in Firefox, or serve it over http://localhost.',
-      e.message
-    );
     const fallbackH = Math.max(window.innerHeight * 2, 1200);
     iframe.style.height = fallbackH + 'px';
   }
 }
+
+/* ==========================================================================
+ * 4. LOAD THE SUBJECT PAGE
+ * ==========================================================================*/
+
 function loadSubjectPage(subjectId) {
   const rev = REVISIONS.find(r => r.id === subjectId);
   if (!rev) { navigateToView('dashboard'); return; }
 
-  const data = appData.revisions[subjectId] ||
-               { completedCount: 0, nextDueAt: null, history: [], comments: [] };
+  const data = appData.revisions[subjectId] || { completedCount: 0, nextDueAt: null, history: [], comments: [] };
 
-  // Header.
   document.getElementById('subjectViewTitle').textContent = rev.title;
   document.getElementById('subjectViewBadge').textContent = getSubjectCurrentStateText(data);
-  document.getElementById('subjectViewCompletedCount').textContent =
-    `Total Revised: ${data.completedCount} times`;
+  document.getElementById('subjectViewCompletedCount').textContent = `Total Revised: ${data.completedCount} times`;
 
-  // Reset scheduling selection & clear the custom picker.
   selectedScheduleOption = null;
   const picker = document.getElementById('customDateTimePicker');
   if (picker) picker.value = '';
-  updateScheduleOptionUI();
+  
+  currentSessionRating = null;
+  updateSelfTestUI();
 
-  // Load the study material into the iframe, forwarding the current theme.
   const iframe = document.getElementById('subjectIframe');
   if (iframe) {
     const theme = document.documentElement.getAttribute('data-theme') || 'dark';
-
-    // The revision page posts its own height to us via postMessage (see the
-    // snippet in each revision/*.html file). That's how the iframe sizes
-    // itself perfectly to its content even on file:// where Chrome blocks
-    // direct DOM access.
-    //
-    // Safety net: if no message arrives within 800ms, fall back to direct
-    // measurement (works on http:// and Firefox file://).
     iframe.onload = function () {
       clearTimeout(iframe._fallbackTimer);
-      iframe._fallbackTimer = setTimeout(function () {
-        autoSizeIframe(iframe);
-      }, 800);
+      iframe._fallbackTimer = setTimeout(function () { autoSizeIframe(iframe); }, 800);
     };
-
     iframe.src = `${rev.page}#theme=${theme}`;
   }
 
-  // Show "Undo" only if the last action was for THIS subject.
   const undoBtn = document.getElementById('undoBtn');
   if (appData.lastAction && appData.lastAction.revisionId === subjectId) {
     undoBtn.classList.remove('hidden');
   } else {
     undoBtn.classList.add('hidden');
   }
+
+  // Setup Study Timer (Phase 6)
+  if (timerInterval) clearInterval(timerInterval);
+  const timerPanel = document.getElementById('studyTimerPanel');
+  
+  if (timerPanel) {
+    if (appData.settings && appData.settings.studyTimerEnabled) {
+      timerPanel.classList.remove('hidden');
+      
+      if (studySession && studySession.subjectId === subjectId) {
+        timerElapsedMs = studySession.accumulatedMs;
+        if (studySession.startedAt) {
+          timerStartedAt = new Date(studySession.startedAt).getTime();
+          timerInterval = setInterval(updateTimerDisplay, 1000);
+          document.getElementById('timerStartBtn').innerHTML = '<i class="fa-solid fa-pause"></i> Pause';
+          document.getElementById('timerStopBtn').classList.remove('hidden');
+        } else {
+          timerStartedAt = null;
+          document.getElementById('timerStartBtn').innerHTML = '<i class="fa-solid fa-play"></i> Resume';
+          document.getElementById('timerStopBtn').classList.remove('hidden');
+        }
+        updateTimerDisplay();
+      } else {
+        studySession = null;
+        timerElapsedMs = 0;
+        timerStartedAt = null;
+        updateTimerDisplay();
+        document.getElementById('timerStartBtn').innerHTML = '<i class="fa-solid fa-play"></i> Start';
+        document.getElementById('timerStopBtn').classList.add('hidden');
+      }
+    } else {
+      timerPanel.classList.add('hidden');
+    }
+  }
 }
 
 /* ==========================================================================
- * 2. SCHEDULE OPTION SELECTOR (bottom action bar)
+ * 5. SCHEDULE SELECTOR
  * ==========================================================================*/
 
-/** Toggle one of the three schedule buttons. Clicking the active one clears it. */
 function selectScheduleOption(opt) {
   selectedScheduleOption = (selectedScheduleOption === opt) ? null : opt;
   updateScheduleOptionUI();
 }
 
-/** Sync button styling + the custom-date popover with the current selection. */
 function updateScheduleOptionUI() {
   const opt24   = document.getElementById('opt24h');
   const opt48   = document.getElementById('opt48h');
   const optCust = document.getElementById('optCustom');
+  const optSmart = document.getElementById('smartSuggestBtn');
   const custom  = document.getElementById('customDateContainer');
+
+  if (!opt24 || !opt48 || !optCust || !custom) return;
 
   [opt24, opt48, optCust].forEach(btn => {
     btn.classList.remove('border-indigo-500', 'bg-indigo-600/20', 'text-indigo-300');
     btn.classList.add('border-slate-800', 'bg-slate-950', 'text-slate-300');
   });
   custom.classList.add('hidden');
+
+  if (optSmart) optSmart.classList.remove('ring-2', 'ring-indigo-400', 'bg-indigo-600/40');
 
   if (selectedScheduleOption === '24h') {
     opt24.classList.add('border-indigo-500', 'bg-indigo-600/20', 'text-indigo-300');
@@ -167,64 +168,39 @@ function updateScheduleOptionUI() {
   } else if (selectedScheduleOption === 'custom') {
     optCust.classList.add('border-indigo-500', 'bg-indigo-600/20', 'text-indigo-300');
     custom.classList.remove('hidden');
+  } else if (selectedScheduleOption === 'smart' && optSmart) {
+    optSmart.classList.add('ring-2', 'ring-indigo-400', 'bg-indigo-600/40');
   }
 }
 
 /* ==========================================================================
- * 3. COMPLETE A REVISION SESSION
+ * 6. COMPLETE & UNDO
  * ==========================================================================*/
 
-/**
- * Record a completion:
- *   1. Snapshot the previous state into appData.lastAction (for Undo).
- *   2. Increment completedCount.
- *   3. Compute the new nextDueAt from the chosen schedule option — or leave
- *      it null if "no more revision needed" was selected (i.e. nothing picked).
- *   4. Push a history entry.
- *   5. Persist and return to the dashboard.
- */
 function handleComplete() {
   if (!currentSubjectId) return;
 
-  /* ── 1. VALIDATE FIRST — do NOT touch appData yet ─────────────────── */
   let scheduledAt = null;
   if (selectedScheduleOption === 'custom') {
     const picker = document.getElementById('customDateTimePicker');
-    if (!picker || !picker.value) {
-      alert('Please pick a valid future date & time — or choose +24h / +48h.');
-      return;
-    }
+    if (!picker || !picker.value) { alert('Please pick a valid future date & time.'); return; }
     const chosen = new Date(picker.value);
-    if (isNaN(chosen.getTime())) {
-      alert('That custom timestamp could not be parsed. Please pick another.');
-      return;
-    }
-    if (chosen.getTime() <= Date.now()) {
-      alert('The custom time must be strictly in the future.');
-      return;
-    }
+    if (isNaN(chosen.getTime())) { alert('That timestamp could not be parsed.'); return; }
+    if (chosen.getTime() <= Date.now()) { alert('The custom time must be strictly in the future.'); return; }
     scheduledAt = chosen;
   }
 
-  /* Guard: nothing selected = "no more revision" — confirm explicitly. */
   if (!selectedScheduleOption) {
-    if (!confirm('No next revision scheduled — this subject will move to "No More Revision Needed". Complete anyway?')) {
-      return;
-    }
+    if (!confirm('No next revision scheduled — this subject will move to "No More Revision Needed". Complete anyway?')) return;
   }
 
   if (!confirm('Confirm completing this revision session?')) return;
 
-  /* ── 2. DEFENSIVE LOOKUP — never assume the record exists ─────────── */
   const data = appData.revisions[currentSubjectId];
-  if (!data) {
-    alert('Subject data missing — reload the app and try again.');
-    return;
-  }
+  if (!data) { alert('Subject data missing — reload the app.'); return; }
   data.history  = data.history  || [];
   data.comments = data.comments || [];
 
-  /* ── 3. SNAPSHOT FOR UNDO — taken AFTER validation, so Undo is clean ─ */
   const now = new Date();
   appData.lastAction = {
     revisionId: currentSubjectId,
@@ -235,7 +211,6 @@ function handleComplete() {
   };
   const previousNextDueAt = data.nextDueAt;
 
-  /* ── 4. MUTATE ─────────────────────────────────────────────────────── */
   data.completedCount = (data.completedCount || 0) + 1;
 
   if (selectedScheduleOption === '24h') {
@@ -244,33 +219,36 @@ function handleComplete() {
     data.nextDueAt = new Date(now.getTime() + 48 * 60 * 60 * 1000).toISOString();
   } else if (selectedScheduleOption === 'custom' && scheduledAt) {
     data.nextDueAt = scheduledAt.toISOString();
+  } else if (selectedScheduleOption === 'smart') {
+    const smartDate = calculateSmartSchedule(currentSessionRating);
+    data.nextDueAt = smartDate ? smartDate.toISOString() : null;
   } else {
     data.nextDueAt = null;
   }
 
+  // Capture timer data for this completion
+  let studyMs = timerElapsedMs;
+  if (timerStartedAt) studyMs += (Date.now() - timerStartedAt);
+
   data.history.unshift({
     completedAt: now.toISOString(),
     scheduledFor: previousNextDueAt,
-    action: 'complete'
+    action: 'complete',
+    recall: currentSessionRating,
+    studyMs: studyMs
   });
+
+  if (appData.settings.studyTimerEnabled && typeof stopTimer === 'function') {
+    stopTimer(); 
+  }
 
   saveStorage();
   navigateToView('dashboard');
 }
 
-/* ==========================================================================
- * 4. UNDO LAST COMPLETION
- * ==========================================================================*/
-
-/**
- * Restore the state captured in appData.lastAction.
- * Only available on the subject page that was actually completed, and only
- * until another completion overwrites lastAction (single-level undo).
- */
 function handleUndo() {
   if (!appData.lastAction) return;
   if (appData.lastAction.revisionId !== currentSubjectId) return;
-
   if (!confirm('Undo the last completion action for this subject?')) return;
 
   const last = appData.lastAction;
@@ -286,12 +264,131 @@ function handleUndo() {
 }
 
 /* ==========================================================================
- * 5. SUBJECT ⋮ MODAL — history + comments
+ * 7. ACTIVE RECALL (SELF-TEST)
+ * ==========================================================================*/
+
+function openSelfTest() {
+  if (!currentSubjectId) return;
+  document.getElementById('selfTestModal').classList.remove('hidden');
+}
+
+function setRating(rating) {
+  if (!['again', 'hard', 'good', 'easy'].includes(rating)) return;
+  currentSessionRating = rating;
+  document.getElementById('selfTestModal').classList.add('hidden');
+  updateSelfTestUI();
+}
+
+function updateSelfTestUI() {
+  const btn = document.getElementById('selfTestBtn');
+  const badge = document.getElementById('recallBadge');
+  const smartBtn = document.getElementById('smartSuggestBtn');
+  const smartText = document.getElementById('smartSuggestText');
+  
+  if (!btn || !badge || !smartBtn || !smartText) return;
+
+  if (!currentSessionRating) {
+    btn.innerHTML = `<i class="fa-solid fa-brain"></i> <span>SELF-TEST</span>`;
+    btn.className = "w-full py-2 px-3 mb-2 rounded-xl border border-indigo-500/30 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-300 font-semibold text-xs flex items-center justify-center gap-2 transition-all";
+    badge.classList.add('hidden');
+    smartBtn.classList.add('hidden');
+  } else {
+    btn.innerHTML = `<i class="fa-solid fa-pen"></i> <span>CHANGE RATING</span>`;
+    btn.className = "w-full py-2 px-3 mb-2 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs flex items-center justify-center gap-2 transition-all";
+    
+    badge.classList.remove('hidden');
+    const colors = {
+      again: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
+      hard: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+      good: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20',
+      easy: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+    };
+    const labels = { again: 'AGAIN', hard: 'HARD', good: 'GOOD', easy: 'EASY' };
+    
+    badge.className = `text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider mb-2 inline-block border ${colors[currentSessionRating]}`;
+    badge.textContent = `Rated: ${labels[currentSessionRating]}`;
+
+    const suggestedDate = calculateSmartSchedule(currentSessionRating);
+    const diffHours = Math.round((suggestedDate - Date.now()) / (1000 * 60 * 60));
+    smartText.textContent = `Suggested: +${diffHours} Hours (${labels[currentSessionRating]})`;
+    smartBtn.classList.remove('hidden');
+  }
+  updateScheduleOptionUI();
+}
+
+/* ==========================================================================
+ * 8. STUDY TIMER
+ * ==========================================================================*/
+
+function updateTimerDisplay() {
+  let currentTotal = timerElapsedMs;
+  if (timerStartedAt) currentTotal += (Date.now() - timerStartedAt);
+  
+  const secs = Math.floor((currentTotal / 1000) % 60);
+  const mins = Math.floor((currentTotal / 60000) % 60);
+  const hrs = Math.floor(currentTotal / 3600000);
+  
+  const el = document.getElementById('timerDisplay');
+  if (el) el.textContent = `${pad(hrs)}:${pad(mins)}:${pad(secs)}`;
+}
+
+function toggleTimer(silent = false) {
+  const btn = document.getElementById('timerStartBtn');
+  const stopBtn = document.getElementById('timerStopBtn');
+  if (!btn || !stopBtn) return;
+  
+  // Auto-save timer every 10s while running
+  if (!timerInterval && !silent) {
+    setInterval(() => {
+      if (timerStartedAt) {
+        studySession = { subjectId: currentSubjectId, startedAt: new Date(timerStartedAt).toISOString(), accumulatedMs: timerElapsedMs };
+        saveStorage();
+      }
+    }, 10000);
+  }
+  
+  if (!timerStartedAt) {
+    timerStartedAt = Date.now();
+    timerInterval = setInterval(updateTimerDisplay, 1000);
+    btn.innerHTML = '<i class="fa-solid fa-pause"></i> Pause';
+    stopBtn.classList.remove('hidden');
+    
+    studySession = { subjectId: currentSubjectId, startedAt: new Date(timerStartedAt).toISOString(), accumulatedMs: timerElapsedMs };
+    saveStorage();
+  } else {
+    timerElapsedMs += (Date.now() - timerStartedAt);
+    timerStartedAt = null;
+    clearInterval(timerInterval);
+    btn.innerHTML = '<i class="fa-solid fa-play"></i> Resume';
+    
+    studySession = { subjectId: currentSubjectId, startedAt: null, accumulatedMs: timerElapsedMs };
+    saveStorage();
+  }
+  updateTimerDisplay();
+}
+
+function stopTimer() {
+  if (timerStartedAt) timerElapsedMs += (Date.now() - timerStartedAt);
+  timerStartedAt = null;
+  clearInterval(timerInterval);
+  studySession = null;
+  timerElapsedMs = 0;
+  updateTimerDisplay();
+  
+  const btn = document.getElementById('timerStartBtn');
+  const stopBtn = document.getElementById('timerStopBtn');
+  if (btn) btn.innerHTML = '<i class="fa-solid fa-play"></i> Start';
+  if (stopBtn) stopBtn.classList.add('hidden');
+  saveStorage();
+}
+
+/* ==========================================================================
+ * 9. COMMENTS MODAL
  * ==========================================================================*/
 
 function openSubjectMenuModal(subjectId) {
   const rev = REVISIONS.find(r => r.id === subjectId);
-  if (!rev) return;   // stale or removed subject id — nothing to open
+  if (!rev) return;
 
   activeModalSubjectId = subjectId;
   const data = appData.revisions[subjectId] || { completedCount: 0, history: [], comments: [] };
@@ -306,7 +403,6 @@ function openSubjectMenuModal(subjectId) {
   openModal('subjectMenuModal');
 }
 
-/** Render the per-subject history list inside the modal. */
 function renderModalSubjectHistory(history) {
   const container = document.getElementById('modalSubjectHistory');
   if (!history || history.length === 0) {
@@ -322,7 +418,6 @@ function renderModalSubjectHistory(history) {
     </div>`).join('');
 }
 
-/** Render the per-subject comment list inside the modal. */
 function renderModalComments(comments) {
   const container = document.getElementById('modalCommentsList');
   if (!comments || comments.length === 0) {
@@ -341,10 +436,6 @@ function renderModalComments(comments) {
       </div>
     </div>`).join('');
 }
-
-/* ==========================================================================
- * 6. COMMENT CRUD
- * ==========================================================================*/
 
 function addComment() {
   if (!activeModalSubjectId) return;
@@ -367,7 +458,6 @@ function addComment() {
   renderModalComments(data.comments);
 }
 
-/** Swap a comment card into inline edit mode. */
 function editComment(commentId) {
   const data    = appData.revisions[activeModalSubjectId];
   const comment = (data.comments || []).find(c => c.id === commentId);
@@ -397,7 +487,6 @@ function saveEditComment(commentId) {
   renderModalComments(data.comments);
 }
 
-/** Discard inline edits — just re-render from stored data. */
 function cancelEditComment() {
   const data = appData.revisions[activeModalSubjectId];
   renderModalComments(data.comments || []);

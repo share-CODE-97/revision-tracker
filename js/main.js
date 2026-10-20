@@ -1,46 +1,47 @@
 /* ============================================================================
  * main.js — Dashboard rendering · Navigation · Global UI · Bootstrap
- * ----------------------------------------------------------------------------
- * Contains everything that is NOT specific to the individual subject page:
- *   • navigateToView() + recent-views strip
- *   • renderDashboard() and all its section renderers
- *   • Streak calculation, status text, badge classes
- *   • ALL REVISIONS search
- *   • Theme toggle, live clock, quick "jump to subject" search
- *   • Collapsible-section helpers, modal open/close
- *   • Bootstrap (DOMContentLoaded) + service-worker registration
  * ==========================================================================*/
+
+const APP_VERSION = '2.0.0';
 
 /* ==========================================================================
- * 1. NAVIGATION BETWEEN VIEWS
+ * 1. NAVIGATION
  * ==========================================================================*/
 
-/**
- * Switch between the dashboard and the individual subject view.
- * @param {'dashboard'|'subject'} viewName
- * @param {string|null} subjectId — required when viewName === 'subject'
- */
 function navigateToView(viewName, subjectId = null) {
   const dashView = document.getElementById('dashboardView');
   const subjView = document.getElementById('subjectView');
+  const analyticsView = document.getElementById('analyticsView');
+  const calendarView = document.getElementById('calendarView');
+
+  // Hide all views
+  dashView.classList.add('hidden');
+  subjView.classList.add('hidden');
+  if (analyticsView) analyticsView.classList.add('hidden');
+  if (calendarView) calendarView.classList.add('hidden');
 
   if (viewName === 'dashboard') {
     dashView.classList.remove('hidden');
-    subjView.classList.add('hidden');
     currentSubjectId = null;
     renderDashboard();
   } else if (viewName === 'subject' && subjectId) {
     currentSubjectId = subjectId;
     trackRecentView(subjectId);
-    dashView.classList.add('hidden');
     subjView.classList.remove('hidden');
-    loadSubjectPage(subjectId);   // lives in revision.js
+    loadSubjectPage(subjectId);
+  } else if (viewName === 'analytics') {
+    currentSubjectId = null;
+    if (analyticsView) analyticsView.classList.remove('hidden');
+    if (typeof renderAnalytics === 'function') renderAnalytics();
+  } else if (viewName === 'calendar') {
+    currentSubjectId = null;
+    if (calendarView) calendarView.classList.remove('hidden');
+    if (typeof renderCalendar === 'function') renderCalendar();
   }
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-/** Push a subject id to the front of the recent-views MRU list (max 3). */
 function trackRecentView(subjectId) {
   if (!subjectId) return;
   appData.recentViews = appData.recentViews.filter(id => id !== subjectId);
@@ -52,7 +53,6 @@ function trackRecentView(subjectId) {
   renderRecentViews();
 }
 
-/** Render the "RECENT VIEWS" pills in the header sub-bar. */
 function renderRecentViews() {
   const container = document.getElementById('recentViewsContainer');
 
@@ -76,17 +76,11 @@ function renderRecentViews() {
 }
 
 /* ==========================================================================
- * 2. DASHBOARD — MAIN RENDERER
+ * 2. DASHBOARD
  * ==========================================================================*/
 
-/**
- * Re-render every stat card and every section.
- * Called on load, on navigation, after any mutation, AND every second by the
- * live countdown interval. Keep it fast — it touches a lot of DOM.
- */
 function renderDashboard() {
   const now = new Date();
-
   let totalCompletions = 0;
   let completedToday = 0;
   let overdueCount = 0;
@@ -104,7 +98,6 @@ function renderDashboard() {
     const data = appData.revisions[rev.id] || { completedCount: 0, nextDueAt: null, history: [] };
     totalCompletions += data.completedCount || 0;
 
-    // Tally today's completions and collect global history entries.
     (data.history || []).forEach(h => {
       const compTime = new Date(h.completedAt).getTime();
       if (compTime >= todayStart && compTime < todayEnd) completedToday++;
@@ -117,8 +110,6 @@ function renderDashboard() {
       });
     });
 
-    // Classify this subject into exactly one bucket.
-    // NOTE: this is an if/else-if chain — buckets are mutually exclusive.
     if (data.nextDueAt) {
       const dueTime = new Date(data.nextDueAt).getTime();
       const nowTime = now.getTime();
@@ -140,50 +131,79 @@ function renderDashboard() {
   next6HoursItems.sort((a, b) => a.dueTime - b.dueTime);
   overdueItems.sort((a, b)    => a.dueTime - b.dueTime);
 
-  /* ---- Stat cards ---- */
+  /* Stat cards */
   document.getElementById('statTotal').textContent   = totalCompletions;
   document.getElementById('statToday').textContent   = completedToday;
   document.getElementById('statOverdue').textContent = overdueCount;
   document.getElementById('statStreak').innerHTML =
     `<span>${calculateStreak()}</span> <span class="text-sm font-normal text-slate-400">Days</span>`;
 
-  /* ---- Section badges + content ---- */
+  /* Daily Targets (Phase 6) */
+  const settings = appData.settings || {};
+  const targetCount = settings.dailyTargetCount || 5;
+  const targetMins = settings.dailyTargetMinutes || 60;
+  const showTimer = settings.studyTimerEnabled || false;
+  const countPct = Math.min((completedToday / targetCount) * 100, 100);
+  
+  const targetTextEl = document.getElementById('dailyTargetText');
+  const targetBarEl = document.getElementById('dailyTargetBar');
+  const timeTextEl = document.getElementById('dailyTimeText');
+  
+  if (targetTextEl && targetBarEl && timeTextEl) {
+    targetTextEl.textContent = `${completedToday} / ${targetCount}`;
+    targetBarEl.style.width = `${countPct}%`;
+    if (completedToday >= targetCount) {
+      targetBarEl.classList.remove('bg-indigo-500');
+      targetBarEl.classList.add('bg-emerald-500');
+    } else {
+      targetBarEl.classList.remove('bg-emerald-500');
+      targetBarEl.classList.add('bg-indigo-500');
+    }
+
+    if (showTimer) {
+      let totalMinsToday = 0;
+      REVISIONS.forEach(rev => {
+        const data = appData.revisions[rev.id] || { history: [] };
+        (data.history || []).forEach(h => {
+          const compTime = new Date(h.completedAt);
+          if (compTime >= new Date(new Date().setHours(0,0,0,0)) && h.studyMs) {
+            totalMinsToday += h.studyMs / 60000;
+          }
+        });
+      });
+      timeTextEl.classList.remove('hidden');
+      timeTextEl.textContent = `Time: ${Math.round(totalMinsToday)} / ${targetMins} min`;
+    } else {
+      timeTextEl.classList.add('hidden');
+    }
+  }
+
+  /* Sections */
   document.getElementById('todayBadge').textContent = todayItems.length;
-  document.getElementById('todayContent').innerHTML =
-    renderSectionList(todayItems, 'TODAY');
+  document.getElementById('todayContent').innerHTML = renderSectionList(todayItems, 'TODAY');
 
   document.getElementById('next6HoursBadge').textContent = next6HoursItems.length;
-  document.getElementById('next6HoursContent').innerHTML =
-    renderSectionList(next6HoursItems, 'NEXT 6 HOURS');
+  document.getElementById('next6HoursContent').innerHTML = renderSectionList(next6HoursItems, 'NEXT 6 HOURS');
 
   document.getElementById('overdueBadge').textContent = overdueItems.length;
-  document.getElementById('overdueContent').innerHTML =
-    renderSectionList(overdueItems, 'OVERDUE');
+  document.getElementById('overdueContent').innerHTML = renderSectionList(overdueItems, 'OVERDUE');
 
   document.getElementById('noMoreBadge').textContent = noMoreItems.length;
   document.getElementById('noMoreContent').innerHTML = renderNoMoreList(noMoreItems);
 
   renderAllRevisionsSection();
 
-  /* ---- Global history (latest 50) ---- */
+  /* Global history */
   globalHistoryList.sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt));
   const latest50 = globalHistoryList.slice(0, 50);
   document.getElementById('globalHistoryBadge').textContent = latest50.length;
   document.getElementById('historyContent').innerHTML = renderGlobalHistoryList(latest50);
+
+  renderBackupReminder();
 }
 
-/* ==========================================================================
- * 3. STREAK
- * ==========================================================================*/
-
-/**
- * Consecutive-day streak ending today, counted across ALL subjects.
- * Walks backwards from today through the set of dates that have at least one
- * completion. Returns 0 if nothing was completed today.
- */
 function calculateStreak() {
   const allDates = new Set();
-
   REVISIONS.forEach(rev => {
     const hist = (appData.revisions[rev.id] && appData.revisions[rev.id].history) || [];
     hist.forEach(h => {
@@ -210,10 +230,9 @@ function calculateStreak() {
 }
 
 /* ==========================================================================
- * 4. SECTION LIST RENDERERS
+ * 3. SECTION LIST RENDERERS
  * ==========================================================================*/
 
-/** Renders a TODAY / NEXT 6 HOURS / OVERDUE row list. */
 function renderSectionList(items, sectionType) {
   if (items.length === 0) {
     let msg = 'Nothing scheduled for today.';
@@ -242,7 +261,6 @@ function renderSectionList(items, sectionType) {
     </div>`).join('');
 }
 
-/** Renders the "NO MORE REVISION NEEDED" list. */
 function renderNoMoreList(items) {
   if (items.length === 0) {
     return `<div class="text-xs text-slate-500 py-3 text-center italic">No completed revisions waiting here.</div>`;
@@ -267,7 +285,6 @@ function renderNoMoreList(items) {
     </div>`).join('');
 }
 
-/** Renders the "ALL REVISIONS" list, honouring the current search filter. */
 function renderAllRevisionsSection() {
   let filtered = REVISIONS;
   if (allRevisionsSearchQuery) {
@@ -306,7 +323,6 @@ function renderAllRevisionsSection() {
   }).join('');
 }
 
-/** Renders the global history list (already sliced to 50). */
 function renderGlobalHistoryList(historyList) {
   if (historyList.length === 0) {
     return `<div class="text-xs text-slate-500 py-3 text-center italic">No revision history yet.</div>`;
@@ -325,18 +341,11 @@ function renderGlobalHistoryList(historyList) {
 }
 
 /* ==========================================================================
- * 5. STATUS TEXT & BADGE CLASSES
+ * 4. STATUS TEXT & BADGES
  * ==========================================================================*/
 
-/**
- * Human-readable status string for a due timestamp.
- *   • Negative diff  → "OVERDUE HH:MM:SS"
- *   • ≤ 6 h diff     → "Due in HH:MM:SS"
- *   • Otherwise      → "Due DD/MM/YYYY HH:MM"
- */
 function formatStatusText(nextDueAt) {
   if (!nextDueAt) return 'NO MORE REVISION';
-
   const diff = new Date(nextDueAt).getTime() - Date.now();
 
   if (diff < 0) {
@@ -350,7 +359,6 @@ function formatStatusText(nextDueAt) {
   return `Due ${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
-/** Tailwind classes for a due-date badge. */
 function getStatusBadgeClass(nextDueAt) {
   if (!nextDueAt) return 'bg-slate-800 text-slate-400';
   return new Date(nextDueAt).getTime() < Date.now()
@@ -358,7 +366,6 @@ function getStatusBadgeClass(nextDueAt) {
     : 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20';
 }
 
-/** Combined state text for the ALL REVISIONS list. */
 function getSubjectCurrentStateText(data) {
   const neverStarted = data.completedCount === 0 && (!data.history || data.history.length === 0) && !data.nextDueAt;
   if (neverStarted) return 'NOT STARTED';
@@ -367,7 +374,6 @@ function getSubjectCurrentStateText(data) {
   return 'NOT STARTED';
 }
 
-/** Combined state badge classes for the ALL REVISIONS list. */
 function getSubjectCurrentStateClass(data) {
   const neverStarted = data.completedCount === 0 && (!data.history || data.history.length === 0) && !data.nextDueAt;
   if (neverStarted) return 'bg-slate-800 text-slate-400 border border-slate-700/50';
@@ -377,7 +383,7 @@ function getSubjectCurrentStateClass(data) {
 }
 
 /* ==========================================================================
- * 6. ALL-REVISIONS SEARCH
+ * 5. SEARCH
  * ==========================================================================*/
 
 function handleAllRevisionsSearch(val) {
@@ -391,99 +397,6 @@ function clearRevisionsSearch() {
   document.getElementById('allRevisionsSearch').value = '';
   handleAllRevisionsSearch('');
 }
-
-/* ==========================================================================
- * 7. THEME
- * ==========================================================================*/
-
-function toggleTheme() {
-  const current = document.documentElement.getAttribute('data-theme') || 'dark';
-  const next    = current === 'dark' ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', next);
-  localStorage.setItem(THEME_KEY, next);
-  updateThemeButtonLabel(next);
-
-  // The revision page inside the iframe reads its theme from its #hash.
-  // Re-pointing the src (same URL, new hash) reloads only the frame.
-  const f = document.getElementById('subjectIframe');
-  if (f && f.src) f.src = f.src.replace(/#theme=[^#]*/, '#theme=' + next);
-}
-
-function updateThemeButtonLabel(theme) {
-  const btn = document.getElementById('themeToggleBtn');
-  if (!btn) return;
-  btn.innerHTML = theme === 'dark'
-    ? `<i class="fa-solid fa-moon text-indigo-400"></i> Dark Theme`
-    : `<i class="fa-solid fa-sun text-amber-500"></i> Light Theme`;
-}
-
-/* ==========================================================================
- * 8. UI HELPERS — collapsible sections, modals, clock
- * ==========================================================================*/
-
-/**
- * Cheap 1-second tick — rewrites ONLY the countdown text (and the overdue ↔
- * upcoming colour) of badges marked with [data-countdown-until]. No DOM
- * rebuild, no calculateStreak(), no innerHTML churn.
- *
- * Full renderDashboard() still runs every 30 s to catch section-membership
- * changes the ticker can't see (future → within-6h → overdue → today).
- */
-function tickCountdowns() {
-  document.querySelectorAll('[data-countdown-until]').forEach(el => {
-    const until = el.getAttribute('data-countdown-until');
-    if (!until) return;
-
-    el.textContent = formatStatusText(until);
-
-    // Swap overdue ↔ upcoming badge colour without re-rendering the row.
-    const shouldBeOverdue = new Date(until).getTime() < Date.now();
-    const isOverdue       = el.classList.contains('text-rose-400');
-
-    if (shouldBeOverdue && !isOverdue) {
-      el.classList.remove('bg-indigo-500/10', 'text-indigo-400', 'border-indigo-500/20');
-      el.classList.add   ('bg-rose-500/10',   'text-rose-400',   'border-rose-500/20');
-    } else if (!shouldBeOverdue && isOverdue) {
-      el.classList.remove('bg-rose-500/10',   'text-rose-400',   'border-rose-500/20');
-      el.classList.add   ('bg-indigo-500/10', 'text-indigo-400', 'border-indigo-500/20');
-    }
-  });
-}
-
-
-/** Toggle a collapsible section and rotate its chevron icon(s). */
-function toggleSection(sectionId) {
-  const content    = document.getElementById(sectionId);
-  const icon       = document.getElementById(sectionId + '-icon');
-  const iconMobile = document.getElementById(sectionId + '-icon-mobile');
-
-  if (content.classList.contains('hidden')) {
-    content.classList.remove('hidden');
-    if (icon)       icon.classList.remove('rotate-180');
-    if (iconMobile) iconMobile.classList.remove('rotate-180');
-  } else {
-    content.classList.add('hidden');
-    if (icon)       icon.classList.add('rotate-180');
-    if (iconMobile) iconMobile.classList.add('rotate-180');
-  }
-}
-
-function openModal(id)  { document.getElementById(id).classList.remove('hidden'); }
-function closeModal(id) { document.getElementById(id).classList.add('hidden');    }
-
-/** Tick the header's "Device Local Time" clock. */
-function updateLiveClock() {
-  const el = document.getElementById('liveClock');
-  if (!el) return;
-  const now = new Date();
-  el.textContent =
-    `${pad(now.getDate())}/${pad(now.getMonth() + 1)}/${now.getFullYear()} ` +
-    `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
-}
-
-/* ==========================================================================
- * 9. QUICK "JUMP TO SUBJECT" SEARCH (header, desktop only)
- * ==========================================================================*/
 
 function setupQuickSearch() {
   const input   = document.getElementById('quickViewSearch');
@@ -506,7 +419,6 @@ function setupQuickSearch() {
     results.classList.remove('hidden');
   });
 
-  // Close the dropdown when clicking outside it.
   document.addEventListener('click', e => {
     if (!input.contains(e.target) && !results.contains(e.target)) {
       results.classList.add('hidden');
@@ -515,44 +427,240 @@ function setupQuickSearch() {
 }
 
 /* ==========================================================================
- * 10. SERVICE WORKER REGISTRATION
+ * 6. THEME & UI HELPERS
  * ==========================================================================*/
 
-/**
- * Register the service worker for offline use, and keep it auto-updating.
- * Silently no-ops on file:// or insecure origins where SW is unavailable.
- */
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme') || 'dark';
+  const next    = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem(THEME_KEY, next);
+  updateThemeButtonLabel(next);
+
+  const f = document.getElementById('subjectIframe');
+  if (f && f.src) f.src = f.src.replace(/#theme=[^#]*/, '#theme=' + next);
+}
+
+function updateThemeButtonLabel(theme) {
+  const btn = document.getElementById('themeToggleBtn');
+  if (!btn) return;
+  btn.innerHTML = theme === 'dark'
+    ? `<i class="fa-solid fa-moon text-indigo-400"></i> Dark Theme`
+    : `<i class="fa-solid fa-sun text-amber-500"></i> Light Theme`;
+}
+
+function toggleSection(sectionId) {
+  const content    = document.getElementById(sectionId);
+  const icon       = document.getElementById(sectionId + '-icon');
+  const iconMobile = document.getElementById(sectionId + '-icon-mobile');
+
+  if (content.classList.contains('hidden')) {
+    content.classList.remove('hidden');
+    if (icon)       icon.classList.remove('rotate-180');
+    if (iconMobile) iconMobile.classList.remove('rotate-180');
+  } else {
+    content.classList.add('hidden');
+    if (icon)       icon.classList.add('rotate-180');
+    if (iconMobile) iconMobile.classList.add('rotate-180');
+  }
+}
+
+function openModal(id)  { document.getElementById(id).classList.remove('hidden'); }
+function closeModal(id) { document.getElementById(id).classList.add('hidden');    }
+
+function updateLiveClock() {
+  const el = document.getElementById('liveClock');
+  if (!el) return;
+  const now = new Date();
+  el.textContent =
+    `${pad(now.getDate())}/${pad(now.getMonth() + 1)}/${now.getFullYear()} ` +
+    `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+}
+
+function tickCountdowns() {
+  document.querySelectorAll('[data-countdown-until]').forEach(el => {
+    const until = el.getAttribute('data-countdown-until');
+    if (!until) return;
+    el.textContent = formatStatusText(until);
+    
+    const shouldBeOverdue = new Date(until).getTime() < Date.now();
+    const isOverdue       = el.classList.contains('text-rose-400');
+
+    if (shouldBeOverdue && !isOverdue) {
+      el.classList.remove('bg-indigo-500/10', 'text-indigo-400', 'border-indigo-500/20');
+      el.classList.add   ('bg-rose-500/10',   'text-rose-400',   'border-rose-500/20');
+    } else if (!shouldBeOverdue && isOverdue) {
+      el.classList.remove('bg-rose-500/10',   'text-rose-400',   'border-rose-500/20');
+      el.classList.add   ('bg-indigo-500/10', 'text-indigo-400', 'border-indigo-500/20');
+    }
+  });
+}
+
+/* ==========================================================================
+ * 7. BACKUP & SETTINGS UI
+ * ==========================================================================*/
+
+function renderBackupReminder() {
+  const banner = document.getElementById('backupReminderBanner');
+  if (!banner) return;
+
+  if (typeof isBackupReminderDue !== 'function' || !isBackupReminderDue()) {
+    banner.classList.add('hidden'); banner.innerHTML = ''; return;
+  }
+  if (sessionStorage.getItem('backupReminderDismissed') === '1') {
+    banner.classList.add('hidden'); banner.innerHTML = ''; return;
+  }
+
+  const s = appData.settings || {};
+  let reason = !s.lastBackupAt ? 'You have never exported a backup.' : `Last export: ${formatDateDisplay(s.lastBackupAt)}.`;
+
+  banner.innerHTML = `
+    <div class="flex flex-col sm:flex-row sm:items-center gap-3 p-3 sm:p-4 bg-amber-500/10 border border-amber-500/30 rounded-2xl text-xs">
+      <i class="fa-solid fa-shield-halved text-amber-400 text-base shrink-0"></i>
+      <div class="flex-1">
+        <div class="font-bold text-amber-300">Backup reminder</div>
+        <div class="text-slate-300 mt-0.5">${escapeHtml(reason)} localStorage is not durable — export to protect against device loss.</div>
+      </div>
+      <div class="flex items-center gap-2 shrink-0">
+        <button onclick="exportBackup(); sessionStorage.setItem('backupReminderDismissed','1');"
+                class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-bold px-3 py-1.5 rounded-lg border border-amber-500/40 transition">
+          Export Now
+        </button>
+        <button onclick="sessionStorage.setItem('backupReminderDismissed','1'); renderBackupReminder();"
+                class="text-slate-400 hover:text-white px-2 py-1.5 transition">
+          Dismiss
+        </button>
+      </div>
+    </div>`;
+  banner.classList.remove('hidden');
+}
+
+function renderSettingsBackupStatus() {
+  const status = document.getElementById('backupStatusText');
+  const restoreBtn = document.getElementById('restoreSnapshotBtn');
+  const select = document.getElementById('backupReminderSelect');
+  
+  const s = appData.settings || {};
+
+  if (status) {
+    if (s.lastBackupAt) {
+      const days = Math.floor((Date.now() - new Date(s.lastBackupAt).getTime()) / 86400000);
+      status.textContent = `Last export: ${formatDateDisplay(s.lastBackupAt)} (${days} day${days === 1 ? '' : 's'} ago)`;
+    } else {
+      status.textContent = 'Never exported.';
+    }
+  }
+
+  if (select) select.value = String(s.backupReminderDays || 0);
+
+  // Smart Intervals
+  const intervals = s.smartIntervals || { again: 8, hard: 24, good: 48, easy: 96 };
+  const elAgain = document.getElementById('intAgain');
+  const elHard = document.getElementById('intHard');
+  const elGood = document.getElementById('intGood');
+  const elEasy = document.getElementById('intEasy');
+  
+  if (elAgain) elAgain.value = intervals.again;
+  if (elHard) elHard.value = intervals.hard;
+  if (elGood) elGood.value = intervals.good;
+  if (elEasy) elEasy.value = intervals.easy;
+
+  // Daily Targets
+  const elTargetCount = document.getElementById('targetCount');
+  const elEnableTimer = document.getElementById('enableTimer');
+  const elTargetMinutes = document.getElementById('targetMinutes');
+  const elTimerConfig = document.getElementById('timerTargetConfig');
+
+  if (elTargetCount) elTargetCount.value = s.dailyTargetCount || 5;
+  if (elEnableTimer) elEnableTimer.checked = !!s.studyTimerEnabled;
+  if (elTargetMinutes) elTargetMinutes.value = s.dailyTargetMinutes || 60;
+  if (elTimerConfig) {
+    if (s.studyTimerEnabled) elTimerConfig.classList.remove('hidden');
+    else elTimerConfig.classList.add('hidden');
+  }
+
+  if (restoreBtn) {
+    const hasSnapshot = !!localStorage.getItem(SNAPSHOT_KEY);
+    restoreBtn.classList.toggle('hidden', !hasSnapshot);
+    if (hasSnapshot) {
+      try {
+        const snap = JSON.parse(localStorage.getItem(SNAPSHOT_KEY));
+        restoreBtn.textContent = `Restore Pre-Import Snapshot (${formatDateDisplay(snap.savedAt)})`;
+      } catch (_) {
+        restoreBtn.textContent = 'Restore Pre-Import Snapshot';
+      }
+    }
+  }
+}
+
+function updateDailyTargets() {
+  const elCount = document.getElementById('targetCount');
+  const elEnable = document.getElementById('enableTimer');
+  const elMins = document.getElementById('targetMinutes');
+  
+  if (!elCount || !elEnable || !elMins) return;
+  
+  const count = Number(elCount.value) || 5;
+  const enabled = elEnable.checked;
+  const mins = Number(elMins.value) || 60;
+
+  appData.settings = appData.settings || {};
+  appData.settings.dailyTargetCount = count;
+  appData.settings.studyTimerEnabled = enabled;
+  appData.settings.dailyTargetMinutes = mins;
+  
+  saveStorage();
+  
+  const elTimerConfig = document.getElementById('timerTargetConfig');
+  if (elTimerConfig) {
+    if (enabled) elTimerConfig.classList.remove('hidden');
+    else elTimerConfig.classList.add('hidden');
+  }
+
+  renderDashboard();
+}
+
+/* ==========================================================================
+ * 8. NETWORK & PWA
+ * ==========================================================================*/
+
+function updateConnectionStatus() {
+  const el = document.getElementById('networkIndicator');
+  if (!el) return;
+  if (navigator.onLine) {
+    el.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500 transition-colors duration-300';
+    el.title = 'Online';
+  } else {
+    el.className = 'w-2.5 h-2.5 rounded-full bg-rose-500 transition-colors duration-300';
+    el.title = 'Offline — changes saved locally';
+  }
+}
+
 function registerServiceWorker() {
   if (!('serviceWorker' in navigator)) return;
-
-  // Service workers require http(s) or localhost. Opening the app from
-  // disk (file://) is supported but gives no offline / install support,
-  // which is a browser rule, not an app limitation.
   if (location.protocol === 'file:') {
-    console.info(
-      '[App] Running from file:// — offline support and PWA install are ' +
-      'disabled (browser policy). Serve over http://localhost to enable them.'
-    );
+    console.info('[App] file:// detected — PWA disabled.');
     return;
   }
 
   window.addEventListener('load', async () => {
     try {
       const reg = await navigator.serviceWorker.register('service-worker.js');
+      setInterval(() => reg.update(), 15 * 60 * 1000);
 
-      // ① Re-check service-worker.js every 2 minutes
-      setInterval(() => reg.update(), 2 * 60 * 1000);
-
-      // ② Also re-check whenever the user returns to the tab / PWA
-      document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'visible') reg.update();
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            showUpdateBanner(newWorker);
+          }
+        });
       });
 
-      // ③ When a new SW takes over, reload once so the user sees it
-      let reloaded = false;
+      let refreshing = false;
       navigator.serviceWorker.addEventListener('controllerchange', () => {
-        if (reloaded) return;
-        reloaded = true;
+        if (refreshing) return;
+        refreshing = true;
         window.location.reload();
       });
 
@@ -562,43 +670,59 @@ function registerServiceWorker() {
   });
 }
 
+function showUpdateBanner(worker) {
+  const banner = document.getElementById('updateBanner');
+  if (!banner) return;
+  banner.classList.remove('hidden');
+  
+  const btn = document.getElementById('updateReloadBtn');
+  const newBtn = btn.cloneNode(true);
+  btn.parentNode.replaceChild(newBtn, btn);
+
+  newBtn.addEventListener('click', () => {
+    newBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Updating...';
+    worker.postMessage({ type: 'SKIP_WAITING' });
+  });
+}
+
 /* ==========================================================================
- * 11. BOOTSTRAP
+ * 9. BOOTSTRAP
  * ==========================================================================*/
 
 window.addEventListener('DOMContentLoaded', () => {
-  loadStorage();          // storage.js — also applies the saved theme
+  loadStorage();
   renderRecentViews();
   setupQuickSearch();
   renderDashboard();
+  renderBackupReminder();
 
-  // Live clock — cheap, always runs.
   setInterval(updateLiveClock, 1000);
   updateLiveClock();
 
-  // 1-second tick — only rewrites countdown text. Skipped while the tab is
-  // backgrounded or while the subject page is open (dashboard hidden).
   setInterval(() => {
     if (document.hidden) return;
     if (document.getElementById('dashboardView').classList.contains('hidden')) return;
     tickCountdowns();
   }, 1000);
 
-  // 30-second full rebuild — catches section-membership changes
-  // (future → within-6h → overdue → today) that the 1 s ticker can't see.
   setInterval(() => {
     if (document.hidden) return;
     if (document.getElementById('dashboardView').classList.contains('hidden')) return;
     renderDashboard();
   }, 30000);
 
-  // Refresh immediately when the tab regains focus (browsers throttle timers
-  // on background tabs, so the countdowns can lag without this).
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) return;
-    if (document.getElementById('dashboardView').classList.contains('hidden')) return;
-    renderDashboard();
+    if (!document.hidden && !document.getElementById('dashboardView').classList.contains('hidden')) {
+      renderDashboard();
+    }
   });
+
+  window.addEventListener('online', updateConnectionStatus);
+  window.addEventListener('offline', updateConnectionStatus);
+  updateConnectionStatus();
+
+  const versionEl = document.getElementById('appVersionDisplay');
+  if (versionEl) versionEl.textContent = `v${APP_VERSION}`;
 
   registerServiceWorker();
 });
